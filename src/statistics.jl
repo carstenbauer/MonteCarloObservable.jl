@@ -1,6 +1,6 @@
 using StatsBase
 
-function Base.mean{T}(mco::monte_carlo_observable{T})
+function Base.mean{T}(mco::Observable{T})
     return mean(mco.bins[mco.colons..., 1:(mco.curr_bin - 1)], mco.last_dim)
 end
 
@@ -36,7 +36,7 @@ function integrated_autocorrelation_time{T}(t::Array{T})
 end
 
 
-function integrated_autocorrelation_time{T}(mco::monte_carlo_observable{T})
+function integrated_autocorrelation_time{T}(mco::Observable{T})
     ac_buffer_size = size(mco.autocorrelation_buffer)[end]
 
     # Nmax = min(mco.n_measurements, ac_buffer_size)
@@ -86,7 +86,7 @@ function binning_error{T}(t::Array{T}, bin_size=-1)
 end
 
 
-function binning_error{T}(mco::monte_carlo_observable{T})
+function binning_error{T}(mco::Observable{T})
     return 1./(mco.curr_bin - 1) * var(mco.bins[mco.colons..., 1:(mco.curr_bin - 1)], mco.last_dim)
 end
 
@@ -95,18 +95,18 @@ end
 # Jackknife functions
 ###################################################
 
-@inline function jackknife_block{T}(k, mco::monte_carlo_observable{T})
+@inline function jackknife_block{T}(k, mco::Observable{T})
     return mean(mco.bins[mco.colons..., collect([1:k; (k + 2):(mco.curr_bin - 1)])], mco.last_dim)
 end
 
 
-@inline function jackknife_blocks{T}(f::Function, k, mcos::Array{monte_carlo_observable{T}, 1})
+@inline function jackknife_blocks{T}(f::Function, k, mcos::Array{Observable{T}, 1})
     blocks = [mco.bins[mco.colons..., collect([1:k; (k + 2):(mco.curr_bin - 1)])] for mco in mcos]
     return mean(f(blocks...), mcos[1].last_dim)
 end
 
 
-function jackknife_error{T}(mco::monte_carlo_observable{T})
+function jackknife_error{T}(mco::Observable{T})
     n_blocks = mco.curr_bin - 1
     blocks = cat(mco.last_dim, [jackknife_block(i, mco) for i in 1:n_blocks]...)
     m = mean(blocks, mco.last_dim)
@@ -114,13 +114,13 @@ function jackknife_error{T}(mco::monte_carlo_observable{T})
 end
 
 
-function jackknife_error{T}(f::Function, mcos::Array{monte_carlo_observable{T}, 1})
+function jackknife_error{T}(f::Function, mcos::Array{Observable{T}, 1})
     n_blocks = mcos[1].curr_bin - 1
     blocks = cat(mcos[1].last_dim, [jackknife_blocks(f, i, mcos) for i in 1:n_blocks]...)
     m = mean(blocks, mco.last_dim)
     return (n_blocks - 1) / n_blocks * sum((blocks .- m).^2, mco.last_dim)
 end
 
-function Base.var{T}(mco::monte_carlo_observable{T})
+function Base.var{T}(mco::Observable{T})
     return jackknife_error(mco)
 end

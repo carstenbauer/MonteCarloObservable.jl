@@ -6,11 +6,11 @@ Adding a measurement to the observable triggers the following cascade:
     - buffer is averaged and added to bins
         + if all bins are used -> rebin, adjust buffer size
 """
-function Base.push!{T}(mco::monte_carlo_observable{T}, measurement::T, verbose = false)
+function Base.push!{T}(mco::Observable{T}, measurement::T, verbose = false)
     push!(mco, T[measurement], verbose)
 end
 
-function Base.push!{T}(mco::monte_carlo_observable{T}, measurement::Array{T}, verbose = false)
+function Base.push!{T}(mco::Observable{T}, measurement::Array{T}, verbose = false)
     colons = [Colon() for _ in mco.entry_dims]
     buffer_size = size(mco.measurement_buffer)[end]
     ac_buffer_size = size(mco.autocorrelation_buffer)[end]
@@ -61,12 +61,12 @@ function Base.push!{T}(mco::monte_carlo_observable{T}, measurement::Array{T}, ve
     mco.n_measurements += 1
 end
 
-function HDF5.write{T}(h5file::HDF5File, mco::monte_carlo_observable{T})
+function HDF5.write{T}(h5file::HDF5File, mco::Observable{T})
     write_parameters(h5file, mco)
     write_datasets(h5file, mco)
 end
 
-function write_parameters{T}(h5file::HDF5File, mco::monte_carlo_observable{T})
+function write_parameters{T}(h5file::HDF5File, mco::Observable{T})
     grp_prefix = "simulation/results/$(mco.name)"
 
     if exists(h5file, grp_prefix)
@@ -86,7 +86,7 @@ function write_parameters{T}(h5file::HDF5File, mco::monte_carlo_observable{T})
 
 end
 
-function write_datasets{T}(h5file::HDF5File, mco::monte_carlo_observable{T})
+function write_datasets{T}(h5file::HDF5File, mco::Observable{T})
     colons = [Colon() for _ in mco.entry_dims]
     grp_prefix = "simulation/results/$(mco.name)"
     timeseries_size = (size(mco.timeseries), (mco.entry_dims..., -1))
@@ -114,7 +114,7 @@ function write_datasets{T}(h5file::HDF5File, mco::monte_carlo_observable{T})
     end
 end
 
-function Base.read!{T}(h5file::HDF5File, mco::monte_carlo_observable{T})
+function Base.read!{T}(h5file::HDF5File, mco::Observable{T})
     grp_prefix = "simulation/results/$(mco.name)"
 
     if exists(h5file, grp_prefix)

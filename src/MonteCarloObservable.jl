@@ -6,14 +6,14 @@ module MonteCarloObservable
     include("statistics.jl")
     include("io.jl")
 
-    export monte_carlo_observable
+    export Observable
     export integrated_autocorrelation_time
     export binning_error
     export jackknife_error
 
-    function Base.start(mco::monte_carlo_observable) state = 1 end
-    function Base.done(mco::monte_carlo_observable, state::Int) return state == mco.curr_bin end
-    function Base.next(mco::monte_carlo_observable, state::Int)
+    function Base.start(mco::Observable) state = 1 end
+    function Base.done(mco::Observable, state::Int) return state == mco.curr_bin end
+    function Base.next(mco::Observable, state::Int)
         return mco.bins[mco.colons..., state], state + 1
     end
 end
