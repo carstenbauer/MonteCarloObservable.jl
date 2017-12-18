@@ -11,7 +11,7 @@ function Base.push!{T}(mco::Observable{T}, measurement::T, verbose = false)
 end
 
 function Base.push!{T}(mco::Observable{T}, measurement::Array{T}, verbose = false)
-    colons = [Colon() for _ in mco.entry_dims]
+    colons = [Colon() for _ in mco.entry_size]
     buffer_size = size(mco.measurement_buffer)[end]
     ac_buffer_size = size(mco.autocorrelation_buffer)[end]
     bin_size = size(mco.bins)[end]
@@ -28,7 +28,7 @@ function Base.push!{T}(mco::Observable{T}, measurement::Array{T}, verbose = fals
         if mco.keep_timeseries == true
             if verbose println("Appending to timeseries") end
             timeseries_copy = copy(mco.timeseries)
-            mco.timeseries = Array{T}(mco.entry_dims..., mco.n_measurements)
+            mco.timeseries = Array{T}(mco.entry_size..., mco.n_measurements)
             if size(timeseries_copy)[end] > 0
                 if verbose println("Timeseries length $(size(timeseries_copy)[end])") end
 
@@ -51,7 +51,7 @@ function Base.push!{T}(mco::Observable{T}, measurement::Array{T}, verbose = fals
             if verbose println("Starting refill at $(mco.curr_bin)" ) end
             mco.bins[colons..., mco.curr_bin:end] = typemin(T)
 
-            mco.measurement_buffer = typemin(T) * ones(mco.entry_dims..., 2 * buffer_size)
+            mco.measurement_buffer = typemin(T) * ones(mco.entry_size..., 2 * buffer_size)
             if verbose println("New buffer size $(size(mco.measurement_buffer)[end])" ) end
         else
             mco.curr_bin += 1
@@ -87,11 +87,11 @@ function write_parameters{T}(h5file::HDF5File, mco::Observable{T})
 end
 
 function write_datasets{T}(h5file::HDF5File, mco::Observable{T})
-    colons = [Colon() for _ in mco.entry_dims]
+    colons = [Colon() for _ in mco.entry_size]
     grp_prefix = "simulation/results/$(mco.name)"
-    timeseries_size = (size(mco.timeseries), (mco.entry_dims..., -1))
-    buffer_size = (size(mco.measurement_buffer), (mco.entry_dims..., -1))
-    chunk_size = (mco.entry_dims..., 256)
+    timeseries_size = (size(mco.timeseries), (mco.entry_size..., -1))
+    buffer_size = (size(mco.measurement_buffer), (mco.entry_size..., -1))
+    chunk_size = (mco.entry_size..., 256)
 
     if exists(h5file, "$(grp_prefix)/measurement_buffer")
         set_dims!(h5file["$(grp_prefix)/measurement_buffer"], size(mco.measurement_buffer))
