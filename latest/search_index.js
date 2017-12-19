@@ -49,6 +49,54 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.Distributed.clear!",
+    "category": "Method",
+    "text": "clear!(obs::Observable{T})\n\nClears all measurement information in obs. Identical to init! and reset!.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T},AbstractArray{T,N} where N}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.add!",
+    "category": "Method",
+    "text": "add!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false)\n\nAdd multiple measurements to observable obs.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T},T}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.add!",
+    "category": "Method",
+    "text": "add!(obs::Observable{T}, measurement::T; verbose=false)\n\nAdd a measurement to observable obs.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.reset!",
+    "category": "Method",
+    "text": "reset!(obs::Observable{T})\n\nResets all measurement information in obs. Identical to init! and clear!.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.timeseries-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.timeseries",
+    "category": "Method",
+    "text": "timeseries(obs::Observable{T})\n\nReturns the measurement timeseries of this observable. If keep_in_memory == false it will read the timeseries from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.Observable-Union{Tuple{String}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.Observable",
+    "category": "Method",
+    "text": "Observable{T}(name)\n\nCreate an observable.\n\n\n\n"
+},
+
+{
     "location": "functions.html#Docs-1",
     "page": "Functions",
     "title": "Docs",
