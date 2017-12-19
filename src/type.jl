@@ -12,6 +12,7 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
     # internal
     n_meas::Int # total number of measurements
     elsize::Tuple{Vararg{Int}}
+    colons::Vector{Colon}
     timeseries::Vector{T}
     tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for keep_in_memory == false)
 
@@ -36,7 +37,7 @@ function Observable{T}(name::String; buffersize::Int=100, prealloc::Int=1000, ke
     obs.prealloc = prealloc
     obs.keep_in_memory = keep_in_memory
     obs.outfile = outfile
-    obs.HDF5_grp = group
+    obs.HDF5_grp = endswith(group, "/")?group:group*"/";
 
     init!(obs)
     return obs
@@ -52,6 +53,7 @@ function init!(obs::Observable{T}) where T
     # internal
     obs.n_meas = 0
     obs.elsize = () # will be determined on first add! call
+    obs.colons = [Colon() for _ in 1:ndims(T)]
 
     obs.tsidx = 1
     obs.timeseries = Vector{T}(obs.prealloc) # init with Missing values in Julia 1.0
@@ -65,4 +67,5 @@ function init!(obs::Observable{T}) where T
         ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")
         obs.outformat = ext
     end
+    nothing
 end

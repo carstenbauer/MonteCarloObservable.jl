@@ -5,7 +5,7 @@
 Add a `measurement` to observable `obs`.
 """
 function add!(obs::Observable{T}, measurement::T; verbose=false) where T
-    obs.elsize == () && obs.elsize = size(measurement)
+    isempty(obs.elsize) && (obs.elsize = size(measurement))
     size(measurement) == obs.elsize || error("Measurement size != observable size")
 
     # update mean estimate
@@ -44,7 +44,9 @@ Add multiple `measurements` to observable `obs`.
 """
 function add!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false) where T
     # OPT: if length(measurements) > prealloc or buffersize we should avoid multiple reallocations
-    @inbounds for i in eachindex(measurements) push!(obs, measurements[i]; verbose) end
+    @inbounds for i in eachindex(measurements)
+        add!(obs, measurements[i]; verbose=verbose)
+    end
 end
 
 # push! === add! mappings
@@ -54,7 +56,7 @@ end
 Add multiple `measurements` to observable `obs`.
 Note that because of preallocation this isn't really a push.
 """
-Base.push!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false) where T = add!(obs, measurements; verbose)
+Base.push!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false) where T = add!(obs, measurements; verbose=verbose)
 
 
 """
@@ -63,7 +65,7 @@ Base.push!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false) wh
 Add a `measurement` to observable `obs`.
 Note that because of preallocation this isn't really a push.
 """
-Base.push!(obs::Observable{T}, measurement::T; verbose=false) where T = add!(obs, measurement; verbose)
+Base.push!(obs::Observable{T}, measurement::T; verbose=false) where T = add!(obs, measurement; verbose=verbose)
 
 
 # extract information
@@ -75,7 +77,7 @@ If `keep_in_memory == false` it will read the timeseries from disk and thus migh
 
 See also [getindex](@ref) and [view](@ref).
 """
-timeseries(obs::Observable{T}) = obs[1:end]
+timeseries(obs::Observable{T}) where T = obs[1:end]
 
 
 # init! == clear! == reset! mappings
@@ -102,7 +104,7 @@ reset!(obs::Observable{T}) where T = init!(obs)
 
 Returns the type `T` of a measurment of the observable.
 """
-Base.eltype(obs:Observable{T}) where T = T
+Base.eltype(obs::Observable{T}) where T = T
 
 """
     length(obs::Observable{T})
@@ -145,3 +147,11 @@ end
 Determine wether the observable has not been measurement yet.
 """
 Base.isempty(obs::Observable{T}) where T = obs.n_meas == 0
+
+# iteration interface implementation
+# TODO: load timeseries in start (in case it is loaded from disk)
+# function Base.start(mco::Observable) state = 1 end
+# function Base.done(mco::Observable, state::Int) return state == mco.curr_bin end
+# function Base.next(mco::Observable, state::Int)
+#     return mco.bins[mco.colons..., state], state + 1
+# end

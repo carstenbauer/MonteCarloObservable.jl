@@ -8,5 +8,12 @@ Two distinctions:
 =#
 
 function getindex_fromfile(obs::Observable{T}, args...) where T
-    # TODO
+    const format = obs.outformat
+
+    if format == "h5" || format == "hdf5"
+        # if eltype(T) <: Real
+            # h5read(obs.outfile, joinpath(obs.grp,obs.name,"timeseries"), (args...))
+    else
+        error("Bug: obs.outformat not known in getindex_fromfile! Please file a github issue.")
+    end
 end
