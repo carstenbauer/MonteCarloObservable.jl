@@ -7,3 +7,6 @@ Two distinctions:
 2) Let's only use JLD here for now.
 =#
 
+function getindex_fromfile(obs::Observable{T}, args...) where T
+    # TODO
+end

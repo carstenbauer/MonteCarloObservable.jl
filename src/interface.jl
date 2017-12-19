@@ -9,39 +9,32 @@ function add!(obs::Observable{T}, measurement::T; verbose=false) where T
     size(measurement) == obs.elsize || error("Measurement size != observable size")
 
     # update mean estimate
+    verbose && println("Updating mean estimate.")
     obs.mean = (obs.n_meas * obs.mean + measurement) / (obs.n_meas + 1)
     obs.n_meas += 1
 
-    # add to buffer
-    if obs.buffer_needed
-        obs.buffer[obs.bidx] = measurement
-        obs.bidx += 1
-        
-        if obs.bidx == length(buffer)+1 # overflow
-            if obs.keep_timeseries && !obs.keep_in_memory
-                # dump buffer chunk to file
-                # reset buffer
-            end
-
-            if obs.estimate_error
-                # calculate error somehow
-            end
-
-            obs.bidx = 1
-        end
-    end
-
     # add to timeseries
-    if ts_needed 
-        obs.timeseries[obs.n_meas] = measurement
-        
-        if obs.n_meas+1 == length(obs.timeseries)+1 # overflow
+    verbose && println("Adding measurment to timeseries [chunk].")
+    obs.timeseries[obs.tsidx] = measurement
+    obs.tsidx += 1
+    
+    if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow 
+        verbose && println("Handling timeseries [chunk] overflow.")
+        if obs.keep_in_memory
+            verbose && println("Increasing timeseries size.")
             tslength = length(obs.timeseries)
             new_timeseries = Vector{T}(tslength + obs.prealloc)
             new_timeseries[1:tslength] = obs.timeseries
             obs.timeseries = new_timeseries
+        else
+            verbose && println("Dumping timeseries chunk to disk.")
+            # TODO
+            verbose && println("Setting timeseries index to 1.")
+            obs.tsidx = 1
         end
     end
+    verbose && println("Done.")
+    nothing
 end
 
 """
@@ -77,20 +70,12 @@ Base.push!(obs::Observable{T}, measurement::T; verbose=false) where T = add!(obs
 """
     timeseries(obs::Observable{T})
 
-Returns the timeseries of this observable if available (`keep_timeseries == true`).
-If `keep_in_memory == false` it will read the timeseries from HDF5 file.
-"""
-function timeseries(obs::Observable{T})
-    # obs.keep_timeseries || error("No timeseries for this observable (`keep_timeseries == false`).")
+Returns the measurement timeseries of this observable.
+If `keep_in_memory == false` it will read the timeseries from disk and thus might take some time.
 
-    if obs.keep_in_memory
-        # do not return a view here to be consistent with hdf5 case
-        return obs.timeseries = obs.timeseries[1:n_meas]
-    else
-        # read ts from hdf file
-        return obs.timeseries
-    end
-end
+See also [getindex](@ref) and [view](@ref).
+"""
+timeseries(obs::Observable{T}) = obs[1:end]
 
 
 # init! == clear! == reset! mappings
@@ -125,13 +110,34 @@ Base.eltype(obs:Observable{T}) where T = T
 Number of measurements of the observable.
 """
 Base.length(obs::Observable{T}) where T = obs.n_meas
+Base.endof(obs::Observable{T}) where T = length(obs)
 
 """
     getindex(obs::Observable{T}, args...)
 
-Get an element of the timeseries of the observable (if available).
+Get an element of the measurement timeseries of the observable.
 """
-Base.getindex(obs::Observable{T}, args...) where T = getindex(timeseries(obs), args...)
+function Base.getindex(obs::Observable{T}, args...) where T
+    if obs.keep_in_memory
+        return getindex(view(obs.timeseries, 1:obs.n_meas), args...)
+    else
+        return getindex_fromfile(obs, args...)
+    end
+end
+
+"""
+    view(obs::Observable{T}, args...)
+
+Get a view into the measurement timeseries of the observable.
+"""
+function Base.view(obs::Observable{T}, args...) where T
+    if obs.keep_in_memory
+        view(view(obs.timeseries, 1:obs.n_meas), args...)
+    else
+        error("Only supported for `keep_in_memory == true`.");
+        # TODO: type unstable?
+    end
+end
 
 """
     isempty(obs::Observable{T})

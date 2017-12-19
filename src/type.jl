@@ -4,24 +4,16 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
     # parameters (external)
     name::String
     buffersize::Int
-    prealloc::Int # timeseries
-    keep_timeseries::Bool # otherwise just estimate mean
-    keep_in_memory::Bool # and dump to HDF5 in the end vs dumping in chunks
-    outfile::String # format deduced from extension (.h5, .hdf5, .jld, .bin, .csv)
+    prealloc::Int
+    keep_in_memory::Bool # and maybe dump to HDF5 in the end vs keeping on disk (dumping in chunks)
+    outfile::String # format deduced from extension (.h5, .hdf5) (TODO: add .jld, .csv, .bin)
     HDF5_grp::String # where to put data in HDF5 and JLD case
-
-    estimate_error::Bool # automatic error estimation
 
     # internal
     n_meas::Int # total number of measurements
     elsize::Tuple{Vararg{Int}}
-
     timeseries::Vector{T}
-    ts_needed::Bool
-
-    bidx::Int # buffer idx of next free slot
-    buffer::Vector{T}
-    buffer_needed::Bool
+    tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for keep_in_memory == false)
 
     mean::T # estimate for mean
 
@@ -38,16 +30,13 @@ end
 Create an observable.
 """
 function Observable{T}(name::String; buffersize::Int=100, prealloc::Int=1000, keep_timeseries::Bool=false,
-                         keep_in_memory::Bool=true, outfile::String="$(name).h5", HDF5_grp::String=name, estimate_error::Bool=false) where T
+                         keep_in_memory::Bool=true, outfile::String="$(name).h5", group::String=name, estimate_error::Bool=false) where T
     obs = Observable{T}()
     obs.name = name
-    obs.buffersize = buffersize
     obs.prealloc = prealloc
-    obs.keep_timeseries = keep_timeseries
     obs.keep_in_memory = keep_in_memory
     obs.outfile = outfile
-    obs.HDF5_grp = HDF5_grp
-    obs.estimate_error = estimate_error
+    obs.HDF5_grp = group
 
     init!(obs)
     return obs
@@ -64,17 +53,13 @@ function init!(obs::Observable{T}) where T
     obs.n_meas = 0
     obs.elsize = () # will be determined on first add! call
 
-    obs.buffer_needed = (obs.keep_timeseries && !obs.keep_in_memory) || obs.estimate_error
-    obs.bidx = 1
-    obs.buffer = obs.buffer_needed ? Vector{T}(obs.buffersize) : Vector{T}(0);
-
-    obs.ts_needed = obs.keep_timeseries && obs.keep_in_memory
-    obs.ts_needed ? obs.timeseries = Vector{T}(obs.prealloc) : obs.timeseries = Vector{T}(0); # initialize with missing values in Julia 1.0
+    obs.tsidx = 1
+    obs.timeseries = Vector{T}(obs.prealloc) # init with Missing values in Julia 1.0
 
     obs.mean = zero(T)
 
     # figure out outformat
-    allowed_ext = ["h5", "hdf5", "jld", "bin", "csv"]
+    allowed_ext = ["h5", "hdf5"] # ["h5", "hdf5", "jld", "bin", "csv"]
     try
         ext = lowercase(obs.outfile[end-search(reverse(obs.outfile), '.')+2:end])
         ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")

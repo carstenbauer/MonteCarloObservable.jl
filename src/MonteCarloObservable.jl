@@ -6,9 +6,11 @@ module MonteCarloObservable
     import Base.eltype
     import Base.length
     import Base.getindex
+    import Base.endof
+    import Base.view
     import Base.isempty
-
     import Base.mean
+    
     import Base.std
 
     include("type.jl")
