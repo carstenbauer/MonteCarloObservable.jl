@@ -2,8 +2,18 @@ module MonteCarloObservable
 
     using HDF5
 
+    import Base.push!
+    import Base.eltype
+    import Base.length
+    import Base.getindex
+    import Base.isempty
+
+    import Base.mean
+    import Base.std
+
     include("type.jl")
     include("statistics.jl")
+    include("interface.jl")
     include("io.jl")
 
     export Observable

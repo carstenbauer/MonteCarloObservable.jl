@@ -1,27 +1,12 @@
 using ErrorAnalysis
 
-"""
-    mean(obs::Observable{T})
+function Base.mean(mco::Observable{T}) where T
+    return mean(mco.bins[mco.colons..., 1:(mco.curr_bin - 1)], mco.last_dim)
+end
 
-Estimate of the mean of the observable.
-"""
-Base.mean(obs::Observable{T}) where T = obs.mean
-
-"""
-    std(obs::Observable{T})
-
-Estimate of the standard deviation (one-sigma error) of the mean.
-Respects correlations between measurements through binning analysis.
-"""
-Base.std(obs::Observable{T}) where T = binning_error(timeseries(obs), binsize=10) # This is of course stupid!
-
-# function Base.mean(mco::Observable{T}) where T
-#     return mean(mco.bins[mco.colons..., 1:(mco.curr_bin - 1)], mco.last_dim)
-# end
-
-# function Base.var(mco::Observable{T}) where T
-#     return jackknife_error(mco)
-# end
+function Base.var(mco::Observable{T}) where T
+    return jackknife_error(mco)
+end
 
 # integrated autocorrelation time
 # TODO: Any advantage of peters manual implementation over the simple StatsBase version in ErrorAnalysis?

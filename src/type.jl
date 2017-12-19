@@ -1,20 +1,83 @@
-mutable struct Observable{T}
+mutable struct Observable{T<:Union{AbstractArray, Number}}
+    # TODO: What are allowed types of observables? As a group there should be the concept of a mean. So far allow any kind of array and number.
+
+    # parameters (external)
     name::String
+    buffersize::Int
+    prealloc::Int # timeseries
+    keep_timeseries::Bool # otherwise just estimate mean
+    keep_in_memory::Bool # and dump to HDF5 in the end vs dumping in chunks
+    outfile::String # format deduced from extension (.h5, .hdf5, .jld, .bin, .csv)
+    HDF5_grp::String # where to put data in HDF5 and JLD case
 
-    entry_size::Vector{Int}
-    last_dim::Int
-    colons::Vector{Colon}
+    estimate_error::Bool # automatic error estimation
 
-    n_measurements::Int
-    keep_timeseries::Int
-    timeseries::Array{T}
-    measurement_buffer::Array{T}
-    bins::Array{T}
-    bin_variance_series::Array{T}
-    curr_bin::Int
-    autocorrelation_buffer::Array{T}
+    # internal
+    n_meas::Int # total number of measurements
+    elsize::Tuple{Vararg{Int}}
 
+    timeseries::Vector{T}
+    ts_needed::Bool
+
+    bidx::Int # buffer idx of next free slot
+    buffer::Vector{T}
+    buffer_needed::Bool
+
+    mean::T # estimate for mean
+
+    outformat::String
+
+    Observable{T}() where T = new()
 end
 
-# TODO: constructors
-# Observable(name::String, entry_size::Array{Int, 1}=[1]) = new(name, 1, false, size(entry_size, 1) + 1, entry_size, prod(entry_size), typemin(T) * ones(entry_size..., 0), typemin(T) * ones(entry_size..., 1), typemin(T) * ones(entry_size..., 2^8), typemin(T) * ones(T, entry_size..., 16), 1, typemin(T) * ones(T, entry_size..., 2^10), [Colon() for _ in entry_size])
+# constructors
+
+"""
+    Observable{T}(name)
+
+Create an observable.
+"""
+function Observable{T}(name::String; buffersize::Int=100, prealloc::Int=1000, keep_timeseries::Bool=false,
+                         keep_in_memory::Bool=true, outfile::String="$(name).h5", HDF5_grp::String=name, estimate_error::Bool=false) where T
+    obs = Observable{T}()
+    obs.name = name
+    obs.buffersize = buffersize
+    obs.prealloc = prealloc
+    obs.keep_timeseries = keep_timeseries
+    obs.keep_in_memory = keep_in_memory
+    obs.outfile = outfile
+    obs.HDF5_grp = HDF5_grp
+    obs.estimate_error = estimate_error
+
+    init!(obs)
+    return obs
+end
+Observable(T::DataType, posargs...; keyargs...) = Observable{T}(posargs...; keyargs...)
+
+"""
+    init!(obs)
+
+Initialize non-external fields of observable `obs`.
+"""
+function init!(obs::Observable{T}) where T
+    # internal
+    obs.n_meas = 0
+    obs.elsize = () # will be determined on first add! call
+
+    obs.buffer_needed = (obs.keep_timeseries && !obs.keep_in_memory) || obs.estimate_error
+    obs.bidx = 1
+    obs.buffer = obs.buffer_needed ? Vector{T}(obs.buffersize) : Vector{T}(0);
+
+    obs.ts_needed = obs.keep_timeseries && obs.keep_in_memory
+    obs.ts_needed ? obs.timeseries = Vector{T}(obs.prealloc) : obs.timeseries = Vector{T}(0); # initialize with missing values in Julia 1.0
+
+    obs.mean = zero(T)
+
+    # figure out outformat
+    allowed_ext = ["h5", "hdf5", "jld", "bin", "csv"]
+    try
+        ext = lowercase(obs.outfile[end-search(reverse(obs.outfile), '.')+2:end])
+        ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")
+        obs.outformat = ext
+    end
+end
