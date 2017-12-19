@@ -1,5 +1,13 @@
 using ErrorAnalysis
 
+import ErrorAnalysis.binning_error
+import ErrorAnalysis.jackknife_error
+
+# define ErrorAnalysis tools for Observable{T} type
+binning_error(obs::Observable{T}, args...; keyws...) where T = binning_error(timeseries(obs), args...; keyws...)
+jackknife_error(g::Function, obs::Observable{T}, args...; keyws...) where T = jackknife_error(g, timeseries(obs), args...; keyws...)
+# TODO integrated autocorrelation
+
 """
     mean(obs::Observable{T})
 
@@ -13,49 +21,12 @@ Base.mean(obs::Observable{T}) where T = obs.mean
 Estimate of the standard deviation (one-sigma error) of the mean.
 Respects correlations between measurements through binning analysis.
 """
-Base.std(obs::Observable{T}) where T = binning_error(timeseries(obs), binsize=10) # This is of course stupid!
+Base.std(obs::Observable{T}) where T = binning_error(obs, binsize=10) # This is of course stupid! Base binsize on integrated autocorrelation.
 
-# function Base.mean(mco::Observable{T}) where T
-#     return mean(mco.bins[mco.colons..., 1:(mco.curr_bin - 1)], mco.last_dim)
-# end
+"""
+    var(obs::Observable{T})
 
-# function Base.var(mco::Observable{T}) where T
-#     return jackknife_error(mco)
-# end
-
-# integrated autocorrelation time
-# TODO: Any advantage of peters manual implementation over the simple StatsBase version in ErrorAnalysis?
-
-# binning_error
-# function binning_error{T}(mco::Observable{T})
-#     return 1./(mco.curr_bin - 1) * var(mco.bins[mco.colons..., 1:(mco.curr_bin - 1)], mco.last_dim)
-# end
-
-
-
-# jackknife_error
-# @inline function jackknife_block{T}(k, mco::Observable{T})
-#     return mean(mco.bins[mco.colons..., collect([1:k; (k + 2):(mco.curr_bin - 1)])], mco.last_dim)
-# end
-
-
-# @inline function jackknife_blocks{T}(f::Function, k, mcos::Array{Observable{T}, 1})
-#     blocks = [mco.bins[mco.colons..., collect([1:k; (k + 2):(mco.curr_bin - 1)])] for mco in mcos]
-#     return mean(f(blocks...), mcos[1].last_dim)
-# end
-
-
-# function jackknife_error{T}(mco::Observable{T})
-#     n_blocks = mco.curr_bin - 1
-#     blocks = cat(mco.last_dim, [jackknife_block(i, mco) for i in 1:n_blocks]...)
-#     m = mean(blocks, mco.last_dim)
-#     return (n_blocks - 1) / n_blocks * sum((blocks .- m).^2, mco.last_dim)
-# end
-
-
-# function jackknife_error{T}(f::Function, mcos::Array{Observable{T}, 1})
-#     n_blocks = mcos[1].curr_bin - 1
-#     blocks = cat(mcos[1].last_dim, [jackknife_blocks(f, i, mcos) for i in 1:n_blocks]...)
-#     m = mean(blocks, mco.last_dim)
-#     return (n_blocks - 1) / n_blocks * sum((blocks .- m).^2, mco.last_dim)
-# end
+Estimate of the variance of the mean.
+Respects correlations between measurements through binning analysis.
+"""
+Base.var(obs::Observable{T}) where T = std(obs)^2
