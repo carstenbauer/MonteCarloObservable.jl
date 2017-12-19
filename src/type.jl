@@ -3,7 +3,6 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
 
     # parameters (external)
     name::String
-    buffersize::Int
     prealloc::Int
     keep_in_memory::Bool # and maybe dump to HDF5 in the end vs keeping on disk (dumping in chunks)
     outfile::String # format deduced from extension (.h5, .hdf5) (TODO: add .jld, .csv, .bin)
