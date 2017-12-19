@@ -1,4 +1,4 @@
-type Observable{T} where T
+mutable struct Observable{T}
     name::String
 
     entry_size::Vector{Int}
