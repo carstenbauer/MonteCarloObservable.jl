@@ -27,8 +27,8 @@ branches:
 #     on_build_failure: false
 #     on_build_status_changed: false
 
-install:
-# Python deps
+init:
+  # Python deps
   # - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
   # - conda config --set always_yes yes --set changeps1 no
   # - conda update -q conda
@@ -42,6 +42,10 @@ install:
         "C:\projects\julia-binary.exe")
 # Run installer silently, output to C:\projects\julia
   - C:\projects\julia-binary.exe /S /D=C:\projects\julia
+
+install:
+  - C:\projects\julia-build\bin\julia -E "Pkg.add(\"HDF5\")"
+  - C:\projects\julia-build\bin\julia -E "Pkg.clone(\"https://github.com/crstnbr/ErrorAnalysis.jl\")"
 
 build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
