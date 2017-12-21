@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "MonteCarloObservable.timeseries",
     "category": "Method",
-    "text": "timeseries(obs::Observable{T})\n\nReturns the measurement timeseries of this observable. If keep_in_memory == false it will read the timeseries from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
+    "text": "timeseries(obs::Observable{T})\n\nReturns the measurement timeseries of an observable.\n\nIf keep_in_memory == false it will read the timeseries from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
 },
 
 {
