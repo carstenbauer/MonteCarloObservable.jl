@@ -12,6 +12,11 @@ module MonteCarloObservable
     import Base.mean
     import Base.std
     import Base.clear!
+    import Base.ndims
+    import Base.size
+
+    import Base.show
+    import Base.summary
 
     include("type.jl")
     include("statistics.jl")

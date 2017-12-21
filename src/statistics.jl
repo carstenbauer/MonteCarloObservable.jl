@@ -20,6 +20,11 @@ Base.mean(obs::Observable{T}) where T = obs.mean
 
 Estimate of the standard deviation (one-sigma error) of the mean.
 Respects correlations between measurements through binning analysis.
+
+Note that this is not the same as `Base.std(timeseries(obs))`, not even 
+for uncorrelated measurements.
+
+Corresponds to the square root of [`var(obs)`](@ref). See also [`mean(obs)`](@ref).
 """
 Base.std(obs::Observable{T}) where T = binning_error(obs, binsize=10)
 # This is of course stupid! Base binsize on integrated autocorrelation.
@@ -29,5 +34,10 @@ Base.std(obs::Observable{T}) where T = binning_error(obs, binsize=10)
 
 Estimate of the variance of the mean.
 Respects correlations between measurements through binning analysis.
+
+Note that this is not the same as `Base.var(timeseries(obs))`, not even 
+for uncorrelated measurements.
+
+Corresponds to the square of [`std(obs)`](@ref). See also [`mean(obs)`](@ref).
 """
 Base.var(obs::Observable{T}) where T = std(obs)^2

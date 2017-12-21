@@ -57,7 +57,8 @@ function init!(obs::Observable{T}) where T
     obs.tsidx = 1
     obs.timeseries = Vector{T}(obs.prealloc) # init with Missing values in Julia 1.0
 
-    obs.mean = zero(T)
+    zero_arraylike = convert(T, fill(zero(eltype(T)),fill(0, ndims(T))...)) # arraylike means convert(T, array) is possible
+    obs.mean = ndims(T) == 0 ? convert(T, zero(eltype(T))) : zero_arraylike
 
     # figure out outformat
     allowed_ext = ["h5", "hdf5"] # ["h5", "hdf5", "jld", "bin", "csv"]

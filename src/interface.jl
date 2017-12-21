@@ -5,7 +5,11 @@
 Add a `measurement` to observable `obs`.
 """
 function add!(obs::Observable{T}, measurement::T; verbose=false) where T
-    isempty(obs.elsize) && (obs.elsize = size(measurement))
+    if isempty(obs.elsize) # first add
+        obs.elsize = size(measurement)
+        obs.mean = zero(measurement)
+    end
+
     size(measurement) == obs.elsize || error("Measurement size != observable size")
 
     # update mean estimate
@@ -72,10 +76,11 @@ Base.push!(obs::Observable{T}, measurement::T; verbose=false) where T = add!(obs
 """
     timeseries(obs::Observable{T})
 
-Returns the measurement timeseries of this observable.
+Returns the measurement timeseries of an observable.
+
 If `keep_in_memory == false` it will read the timeseries from disk and thus might take some time.
 
-See also [getindex](@ref) and [view](@ref).
+See also [`getindex`](@ref) and [`view`](@ref).
 """
 timeseries(obs::Observable{T}) where T = obs[1:end]
 
@@ -85,7 +90,7 @@ timeseries(obs::Observable{T}) where T = obs[1:end]
     clear!(obs::Observable{T})
 
 Clears all measurement information in `obs`.
-Identical to [init!](@ref) and [reset!](@ref).
+Identical to [`init!`](@ref) and [`reset!`](@ref).
 """
 clear!(obs::Observable{T}) where T = init!(obs)
 
@@ -93,7 +98,7 @@ clear!(obs::Observable{T}) where T = init!(obs)
     reset!(obs::Observable{T})
 
 Resets all measurement information in `obs`.
-Identical to [init!](@ref) and [clear!](@ref).
+Identical to [`init!`](@ref) and [`clear!`](@ref).
 """
 reset!(obs::Observable{T}) where T = init!(obs)
 
@@ -113,6 +118,22 @@ Number of measurements of the observable.
 """
 Base.length(obs::Observable{T}) where T = obs.n_meas
 Base.endof(obs::Observable{T}) where T = length(obs)
+
+"""
+    size(obs::Observable{T})
+
+Size of the observable (of one measurement).
+"""
+Base.size(obs::Observable{T}) where T = obs.elsize
+
+"""
+    ndims(obs::Observable{T})
+
+Number of dimensions of the observable (of one measurement).
+
+Equivalent to `ndims(T)`.
+"""
+Base.ndims(obs::Observable{T}) where T = ndims(T)
 
 """
     getindex(obs::Observable{T}, args...)
@@ -144,7 +165,7 @@ end
 """
     isempty(obs::Observable{T})
 
-Determine wether the observable has not been measurement yet.
+Determine wether the observable hasn't been measured yet.
 """
 Base.isempty(obs::Observable{T}) where T = obs.n_meas == 0
 
@@ -155,3 +176,12 @@ Base.isempty(obs::Observable{T}) where T = obs.n_meas == 0
 # function Base.next(mco::Observable, state::Int)
 #     return mco.bins[mco.colons..., state], state + 1
 # end
+
+
+# display, show, print magic
+# Base.summary(obs::Observable{T}) where T = "Observable{$(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T)}"
+Base.summary(obs::Observable{T}) where T = "Observable of type $(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs)!=1?"s":"")"
+Base.show(io::IO, obs::Observable{T}) where T = print(io, summary(obs))
+Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = print(io, summary(obs))
+# Base.show(io::IO, obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io, obs.timeseries[1:obs.n_meas], true; header=false))
+# Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io,obs.timeseries[1:obs.n_meas], false; header=false))
