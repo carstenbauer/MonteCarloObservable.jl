@@ -73,6 +73,30 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.inmemory",
+    "category": "Method",
+    "text": "inmemory(obs::Observable{T})\n\nChecks wether the observable is kept in memory (vs. on disk).\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.name",
+    "category": "Method",
+    "text": "name(obs::Observable{T})\n\nReturns the name of the observable.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.rename-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.rename",
+    "category": "Method",
+    "text": "rename(obs::Observable{T}, name)\n\nRenames the observable.\n\n\n\n"
+},
+
+{
     "location": "functions.html#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
     "page": "Functions",
     "title": "MonteCarloObservable.reset!",
