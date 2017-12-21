@@ -19,6 +19,7 @@ module MonteCarloObservable
     import Base.done
     import Base.show
     import Base.summary
+    import Base.similar
 
     include("type.jl")
     include("statistics.jl")
@@ -34,4 +35,7 @@ module MonteCarloObservable
     export timeseries
     export reset!
     export clear!
+    export rename
+    export name
+    export inmemory
 end

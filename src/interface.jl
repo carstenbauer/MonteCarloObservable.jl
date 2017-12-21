@@ -183,3 +183,28 @@ Base.show(io::IO, obs::Observable{T}) where T = print(io, summary(obs))
 Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = print(io, summary(obs))
 # Base.show(io::IO, obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io, obs.timeseries[1:obs.n_meas], true; header=false))
 # Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io,obs.timeseries[1:obs.n_meas], false; header=false))
+
+
+# Base.similar(obs::Observable{T}) where T = Observable(T, )
+# Base.similar(obs::Observable{T}, name::AbstractString) where T = Observable(T, name)
+
+"""
+    rename(obs::Observable{T}, name)
+
+Renames the observable.
+"""
+rename(obs::Observable{T}, name::AbstractString) where T = begin obs.name = name; nothing end
+
+"""
+    name(obs::Observable{T})
+
+Returns the name of the observable.
+"""
+name(obs::Observable{T}) where T = obs.name
+
+"""
+    inmemory(obs::Observable{T})
+
+Checks wether the observable is kept in memory (vs. on disk).
+"""
+inmemory(obs::Observable{T}) where T = obs.keep_in_memory
