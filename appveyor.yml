@@ -42,8 +42,8 @@ branches:
 #     on_build_status_changed: false
 
 install:
-  - C:\projects\julia-build\bin\julia -E "Pkg.add(\"HDF5\")"
-  - C:\projects\julia-build\bin\julia -E "Pkg.clone(\"https://github.com/crstnbr/ErrorAnalysis.jl\")"
+  - C:\projects\julia\bin\julia -e "Pkg.add(\"HDF5\")"
+  - C:\projects\julia\bin\julia -e "Pkg.clone(\"https://github.com/crstnbr/ErrorAnalysis.jl\")"
 
 build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
