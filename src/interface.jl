@@ -171,16 +171,14 @@ Base.isempty(obs::Observable{T}) where T = obs.n_meas == 0
 
 # iteration interface implementation
 # TODO: load timeseries in start (in case it is loaded from disk)
-# function Base.start(mco::Observable) state = 1 end
-# function Base.done(mco::Observable, state::Int) return state == mco.curr_bin end
-# function Base.next(mco::Observable, state::Int)
-#     return mco.bins[mco.colons..., state], state + 1
-# end
+Base.start(obs::Observable) = 1
+Base.done(obs::Observable, state::Int) = state == length(obs)+1
+Base.next(obs::Observable, state::Int) = obs[state], state + 1
 
 
 # display, show, print magic
 # Base.summary(obs::Observable{T}) where T = "Observable{$(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T)}"
-Base.summary(obs::Observable{T}) where T = "Observable of type $(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs)!=1?"s":"")"
+Base.summary(obs::Observable{T}) where T = "Observable \"$(obs.name)\" of type $(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs)!=1?"s":"")"
 Base.show(io::IO, obs::Observable{T}) where T = print(io, summary(obs))
 Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = print(io, summary(obs))
 # Base.show(io::IO, obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io, obs.timeseries[1:obs.n_meas], true; header=false))

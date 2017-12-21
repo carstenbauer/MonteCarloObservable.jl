@@ -14,7 +14,9 @@ module MonteCarloObservable
     import Base.clear!
     import Base.ndims
     import Base.size
-
+    import Base.start
+    import Base.next
+    import Base.done
     import Base.show
     import Base.summary
 
