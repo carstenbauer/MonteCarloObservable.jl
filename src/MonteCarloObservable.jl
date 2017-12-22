@@ -1,7 +1,6 @@
 module MonteCarloObservable
 
-    using HDF5
-    using JLD
+    using JLD, HDF5
 
     import Base.push!
     import Base.eltype
@@ -12,6 +11,7 @@ module MonteCarloObservable
     import Base.isempty
     import Base.mean
     import Base.std
+    import Base.var
     import Base.clear!
     import Base.ndims
     import Base.size
@@ -60,6 +60,7 @@ module MonteCarloObservable
     export isempty
     export mean
     export std
+    export var
     export clear!
     export ndims
     export size

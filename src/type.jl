@@ -3,7 +3,7 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
 
     # parameters (external)
     name::String
-    prealloc::Int
+    alloc::Int
     inmemory::Bool # and maybe dump to HDF5 in the end vs keeping on disk (dumping in chunks)
     outfile::String # format deduced from extension (.h5, .hdf5) (TODO: add .jld, .csv, .bin)
     HDF5_grp::String # where to put data in HDF5 and JLD case
@@ -29,13 +29,14 @@ end
 
 Create an observable.
 """
-function Observable{T}(name::String; buffersize::Int=100, prealloc::Int=1000, keep_timeseries::Bool=false,
-                         inmemory::Bool=true, outfile::String="$(name).h5", group::String=name, estimate_error::Bool=false) where T
+function Observable{T}(name::String; buffersize::Int=100, alloc::Int=1000, keep_timeseries::Bool=false,
+                         inmemory::Bool=true, outfile::String="$(name).jld", group::String=name, estimate_error::Bool=false) where T
     obs = Observable{T}()
     obs.name = name
-    obs.prealloc = prealloc
+    obs.alloc = alloc
     obs.inmemory = inmemory
     obs.outfile = outfile
+    !isfile(obs.outfile) || warn("Overriding \"$(obs.outfile)\".")
     obs.HDF5_grp = endswith(group, "/")?group:group*"/";
 
     init!(obs)
@@ -51,11 +52,11 @@ Initialize non-external fields of observable `obs`.
 function init!(obs::Observable{T}) where T
     # internal
     obs.n_meas = 0
-    obs.elsize = () # will be determined on first add! call
+    obs.elsize = (-1,) # will be determined on first add! call
     obs.colons = [Colon() for _ in 1:ndims(T)]
 
     obs.tsidx = 1
-    obs.timeseries = Vector{T}(obs.prealloc) # init with Missing values in Julia 1.0
+    obs.timeseries = Vector{T}(obs.alloc) # init with Missing values in Julia 1.0
 
     if ndims(T) == 0
         obs.mean = convert(T, zero(eltype(T)))
@@ -64,9 +65,9 @@ function init!(obs::Observable{T}) where T
     end
 
     # figure out outformat
-    allowed_ext = ["h5", "hdf5"] # ["h5", "hdf5", "jld", "bin", "csv"]
+    allowed_ext = ["jld"] # ["h5", "hdf5", "jld", "bin", "csv"]
     try
-        ext = extension(obs.outfile)
+        ext = fileext(obs.outfile)
         ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")
         obs.outformat = ext
     end

@@ -5,7 +5,7 @@
 Add a `measurement` to observable `obs`.
 """
 function add!(obs::Observable{T}, measurement::T; verbose=false) where T
-    if isempty(obs.elsize) # first add
+    if obs.elsize == (-1,) # first add
         obs.elsize = size(measurement)
         obs.mean = zero(measurement)
     end
@@ -27,12 +27,12 @@ function add!(obs::Observable{T}, measurement::T; verbose=false) where T
         if obs.inmemory
             verbose && println("Increasing timeseries size.")
             tslength = length(obs.timeseries)
-            new_timeseries = Vector{T}(tslength + obs.prealloc)
+            new_timeseries = Vector{T}(tslength + obs.alloc)
             new_timeseries[1:tslength] = obs.timeseries
             obs.timeseries = new_timeseries
         else
             verbose && println("Dumping timeseries chunk to disk.")
-            # TODO
+            updateondisk(obs)
             verbose && println("Setting timeseries index to 1.")
             obs.tsidx = 1
         end
@@ -47,7 +47,7 @@ end
 Add multiple `measurements` to observable `obs`.
 """
 function add!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false) where T
-    # OPT: if length(measurements) > prealloc or buffersize we should avoid multiple reallocations
+    # OPT: if length(measurements) > alloc or buffersize we should avoid multiple reallocations
     @inbounds for i in eachindex(measurements)
         add!(obs, measurements[i]; verbose=verbose)
     end
