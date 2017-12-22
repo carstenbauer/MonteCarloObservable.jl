@@ -1,6 +1,7 @@
 module MonteCarloObservable
 
     using HDF5
+    using JLD
 
     import Base.push!
     import Base.eltype
@@ -20,8 +21,10 @@ module MonteCarloObservable
     import Base.show
     import Base.summary
     import Base.similar
+    import Base.==
 
     include("type.jl")
+    include("helpers.jl")
     include("statistics.jl")
     include("interface.jl")
     include("io.jl")
@@ -38,4 +41,6 @@ module MonteCarloObservable
     export rename
     export name
     export inmemory
+    export saveobs
+    export loadobs
 end

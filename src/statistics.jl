@@ -13,7 +13,7 @@ jackknife_error(g::Function, obs::Observable{T}, args...; keyws...) where T = ja
 
 Estimate of the mean of the observable.
 """
-Base.mean(obs::Observable{T}) where T = obs.mean
+mean(obs::Observable{T}) where T = obs.mean
 
 """
     std(obs::Observable{T})
@@ -26,7 +26,7 @@ for uncorrelated measurements.
 
 Corresponds to the square root of [`var(obs)`](@ref). See also [`mean(obs)`](@ref).
 """
-Base.std(obs::Observable{T}) where T = binning_error(obs, binsize=10)
+std(obs::Observable{T}) where T = binning_error(obs, binsize=10)
 # This is of course stupid! Base binsize on integrated autocorrelation.
 
 """
@@ -40,4 +40,4 @@ for uncorrelated measurements.
 
 Corresponds to the square of [`std(obs)`](@ref). See also [`mean(obs)`](@ref).
 """
-Base.var(obs::Observable{T}) where T = std(obs)^2
+var(obs::Observable{T}) where T = std(obs)^2

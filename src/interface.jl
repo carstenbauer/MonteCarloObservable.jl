@@ -208,3 +208,18 @@ name(obs::Observable{T}) where T = obs.name
 Checks wether the observable is kept in memory (vs. on disk).
 """
 inmemory(obs::Observable{T}) where T = obs.inmemory
+
+
+
+
+function ==(a::Observable{T}, b::Observable{S}) where {T,S}
+    T == S || (return false)
+
+    for f in fieldnames(a)
+        f == :timeseries || getfield(a, f) == getfield(b, f) || (return false)
+        # compare only non (basically) zero part of timeseries array
+        f == :timeseries && (timeseries(a) == timeseries(b) || (return false))
+    end
+
+    return true
+end

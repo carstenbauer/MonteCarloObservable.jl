@@ -66,7 +66,7 @@ function init!(obs::Observable{T}) where T
     # figure out outformat
     allowed_ext = ["h5", "hdf5"] # ["h5", "hdf5", "jld", "bin", "csv"]
     try
-        ext = lowercase(obs.outfile[end-search(reverse(obs.outfile), '.')+2:end])
+        ext = extension(obs.outfile)
         ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")
         obs.outformat = ext
     end
