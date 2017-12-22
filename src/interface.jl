@@ -24,7 +24,7 @@ function add!(obs::Observable{T}, measurement::T; verbose=false) where T
     
     if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow 
         verbose && println("Handling timeseries [chunk] overflow.")
-        if obs.keep_in_memory
+        if obs.inmemory
             verbose && println("Increasing timeseries size.")
             tslength = length(obs.timeseries)
             new_timeseries = Vector{T}(tslength + obs.prealloc)
@@ -78,7 +78,7 @@ Base.push!(obs::Observable{T}, measurement::T; verbose=false) where T = add!(obs
 
 Returns the measurement timeseries of an observable.
 
-If `keep_in_memory == false` it will read the timeseries from disk and thus might take some time.
+If `inmemory(obs) == false` it will read the timeseries from disk and thus might take some time.
 
 See also [`getindex`](@ref) and [`view`](@ref).
 """
@@ -141,7 +141,7 @@ Base.ndims(obs::Observable{T}) where T = ndims(T)
 Get an element of the measurement timeseries of the observable.
 """
 function Base.getindex(obs::Observable{T}, args...) where T
-    if obs.keep_in_memory
+    if obs.inmemory
         return getindex(view(obs.timeseries, 1:obs.n_meas), args...)
     else
         return getindex_fromfile(obs, args...)
@@ -154,10 +154,10 @@ end
 Get a view into the measurement timeseries of the observable.
 """
 function Base.view(obs::Observable{T}, args...) where T
-    if obs.keep_in_memory
+    if obs.inmemory
         view(view(obs.timeseries, 1:obs.n_meas), args...)
     else
-        error("Only supported for `keep_in_memory == true`.");
+        error("Only supported for `inmemory(obs) == true`.");
         # TODO: type unstable?
     end
 end
@@ -207,4 +207,4 @@ name(obs::Observable{T}) where T = obs.name
 
 Checks wether the observable is kept in memory (vs. on disk).
 """
-inmemory(obs::Observable{T}) where T = obs.keep_in_memory
+inmemory(obs::Observable{T}) where T = obs.inmemory

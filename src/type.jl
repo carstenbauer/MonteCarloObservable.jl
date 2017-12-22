@@ -4,7 +4,7 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
     # parameters (external)
     name::String
     prealloc::Int
-    keep_in_memory::Bool # and maybe dump to HDF5 in the end vs keeping on disk (dumping in chunks)
+    inmemory::Bool # and maybe dump to HDF5 in the end vs keeping on disk (dumping in chunks)
     outfile::String # format deduced from extension (.h5, .hdf5) (TODO: add .jld, .csv, .bin)
     HDF5_grp::String # where to put data in HDF5 and JLD case
 
@@ -13,7 +13,7 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
     elsize::Tuple{Vararg{Int}}
     colons::Vector{Colon}
     timeseries::Vector{T}
-    tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for keep_in_memory == false)
+    tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for inmemory == false)
 
     mean::T # estimate for mean
 
@@ -30,11 +30,11 @@ end
 Create an observable.
 """
 function Observable{T}(name::String; buffersize::Int=100, prealloc::Int=1000, keep_timeseries::Bool=false,
-                         keep_in_memory::Bool=true, outfile::String="$(name).h5", group::String=name, estimate_error::Bool=false) where T
+                         inmemory::Bool=true, outfile::String="$(name).h5", group::String=name, estimate_error::Bool=false) where T
     obs = Observable{T}()
     obs.name = name
     obs.prealloc = prealloc
-    obs.keep_in_memory = keep_in_memory
+    obs.inmemory = inmemory
     obs.outfile = outfile
     obs.HDF5_grp = endswith(group, "/")?group:group*"/";
 
