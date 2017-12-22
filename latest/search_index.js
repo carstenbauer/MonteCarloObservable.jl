@@ -57,11 +57,91 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#Base.eltype-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.eltype",
+    "category": "Method",
+    "text": "eltype(obs::Observable{T})\n\nReturns the type T of a measurment of the observable.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.getindex",
+    "category": "Method",
+    "text": "getindex(obs::Observable{T}, args...)\n\nGet an element of the measurement timeseries of the observable.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.isempty-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.isempty",
+    "category": "Method",
+    "text": "isempty(obs::Observable{T})\n\nDetermine wether the observable hasn't been measured yet.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.length-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.length",
+    "category": "Method",
+    "text": "length(obs::Observable{T})\n\nNumber of measurements of the observable.\n\n\n\n"
+},
+
+{
     "location": "functions.html#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
     "page": "Functions",
     "title": "Base.mean",
     "category": "Method",
     "text": "mean(obs::Observable{T})\n\nEstimate of the mean of the observable.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.ndims-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.ndims",
+    "category": "Method",
+    "text": "ndims(obs::Observable{T})\n\nNumber of dimensions of the observable (of one measurement).\n\nEquivalent to ndims(T).\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T},AbstractArray{T,N} where N}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.push!",
+    "category": "Method",
+    "text": "push!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false)\n\nAdd multiple measurements to observable obs. Note that because of preallocation this isn't really a push.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T},T}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.push!",
+    "category": "Method",
+    "text": "push!(obs::Observable{T}, measurement::T; verbose=false)\n\nAdd a measurement to observable obs. Note that because of preallocation this isn't really a push.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.size-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.size",
+    "category": "Method",
+    "text": "size(obs::Observable{T})\n\nSize of the observable (of one measurement).\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.std-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.std",
+    "category": "Method",
+    "text": "std(obs::Observable{T})\n\nEstimate of the standard deviation (one-sigma error) of the mean. Respects correlations between measurements through binning analysis.\n\nNote that this is not the same as Base.std(timeseries(obs)), not even  for uncorrelated measurements.\n\nCorresponds to the square root of var(obs). See also mean(obs).\n\n\n\n"
+},
+
+{
+    "location": "functions.html#Base.view-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.view",
+    "category": "Method",
+    "text": "view(obs::Observable{T}, args...)\n\nGet a view into the measurement timeseries of the observable.\n\n\n\n"
 },
 
 {
