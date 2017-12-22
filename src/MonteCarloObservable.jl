@@ -20,7 +20,7 @@ module MonteCarloObservable
     import Base.done
     import Base.show
     import Base.summary
-    import Base.similar
+    # import Base.similar
     import Base.==
 
     include("type.jl")
@@ -30,18 +30,42 @@ module MonteCarloObservable
     include("io.jl")
 
     export Observable
+
+    # statistics
     # export integrated_autocorrelation_time
     export binning_error
     export jackknife_error
 
+    # interface
     export add!
     export timeseries
     export reset!
-    export clear!
     export rename
     export name
     export inmemory
+
+    # io
     export saveobs
     export loadobs
+
+    # overwritten Base
+    export clear!
     export mean
+    export push!
+    export eltype
+    export length
+    export getindex
+    export endof
+    export view
+    export isempty
+    export mean
+    export std
+    export clear!
+    export ndims
+    export size
+    export start
+    export next
+    export done
+    export show
+    export summary
 end
