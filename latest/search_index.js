@@ -57,6 +57,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.mean",
+    "category": "Method",
+    "text": "mean(obs::Observable{T})\n\nEstimate of the mean of the observable.\n\n\n\n"
+},
+
+{
     "location": "functions.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T},AbstractArray{T,N} where N}, Tuple{T}} where T",
     "page": "Functions",
     "title": "MonteCarloObservable.add!",
@@ -81,6 +89,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}",
+    "page": "Functions",
+    "title": "MonteCarloObservable.loadobs",
+    "category": "Method",
+    "text": "loadobs(obs::Observable{T})\n\nLoad complete representation of an observable from JLD file.\n\nSee also saveobs.\n\n\n\n"
+},
+
+{
     "location": "functions.html#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
     "page": "Functions",
     "title": "MonteCarloObservable.name",
@@ -102,6 +118,14 @@ var documenterSearchIndex = {"docs": [
     "title": "MonteCarloObservable.reset!",
     "category": "Method",
     "text": "reset!(obs::Observable{T})\n\nResets all measurement information in obs. Identical to init! and clear!.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.saveobs",
+    "category": "Method",
+    "text": "saveobs(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])\n\nSaves complete representation of the observable to JLD file.\n\nDefault filename is \"Observables.jld\" and default entryname is name(obs).\n\nSee also loadobs.\n\n\n\n"
 },
 
 {
