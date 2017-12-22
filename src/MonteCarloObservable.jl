@@ -43,4 +43,5 @@ module MonteCarloObservable
     export inmemory
     export saveobs
     export loadobs
+    export mean
 end
