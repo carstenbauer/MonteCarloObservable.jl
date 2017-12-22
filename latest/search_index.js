@@ -137,6 +137,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#Base.var-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "Base.var",
+    "category": "Method",
+    "text": "var(obs::Observable{T})\n\nEstimate of the variance of the mean. Respects correlations between measurements through binning analysis.\n\nNote that this is not the same as Base.var(timeseries(obs)), not even  for uncorrelated measurements.\n\nCorresponds to the square of std(obs). See also mean(obs).\n\n\n\n"
+},
+
+{
     "location": "functions.html#Base.view-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "Functions",
     "title": "Base.view",
@@ -173,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "MonteCarloObservable.loadobs",
     "category": "Method",
-    "text": "loadobs(obs::Observable{T})\n\nLoad complete representation of an observable from JLD file.\n\nSee also saveobs.\n\n\n\n"
+    "text": "loadobs(filename::AbstractString, entryname::AbstractString)\n\nLoad complete representation of an observable from JLD file.\n\nSee also saveobs.\n\n\n\n"
 },
 
 {
