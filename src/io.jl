@@ -24,6 +24,7 @@ function getindex_fromfile(obs::Observable{T}, idx::Int) where T
         chunknr != currmemchunk || (return obs.timeseries[chunkidx]) # chunk not stored to file yet
 
         if eltype(T) <: Complex
+            # h5read with indices is not supported for compoud data. We could store as separate _real _imag to make this more efficient.
             return load(obs.outfile, joinpath(grp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
         else # Real
             return squeeze(h5read(obs.outfile, joinpath(grp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx)), obs.n_dims+1)
@@ -47,7 +48,7 @@ function saveobs(obs::Observable{T}, filename::AbstractString=obs.outfile, entry
     if !isfile(filename)
         save(filename, entryname, obs)
     else
-        jldopen(filename, isfile(filename)?"r+":"w") do f
+        jldopen(filename, "r+") do f
             !HDF5.has(f.plain, entryname) || delete!(f, entryname)
             write(f, entryname, obs)
         end
@@ -68,6 +69,28 @@ function loadobs(filename::AbstractString, entryname::AbstractString)
 end
 
 """
+    export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])
+
+Export results for given observable nicely to JLD.
+
+Will export name, number of measurements, estimates for mean and one-sigma error (standard deviation).
+Optionally (`timeseries==true`) exports the full timeseries as well.
+"""
+function export_results(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false) where T
+    const grp = endswith(group, "/")?group:group*"/"
+
+    jldopen(filename, isfile(filename)?"r+":"w") do f
+        !HDF5.has(f.plain, grp) || delete!(f, grp)
+        write(f, joinpath(grp, "name"), name(obs))
+        write(f, joinpath(grp, "count"), length(obs))
+        timeseries && write(f, joinpath(grp, "timeseries"), MonteCarloObservable.timeseries(obs))
+        write(f, joinpath(grp, "mean"), mean(obs))
+        write(f, joinpath(grp, "std"), std(obs))
+    end
+    nothing
+end
+
+"""
     updateondisk(obs::Observable{T}[, filename::AbstractString, group::AbstractString])
 
 This is the crucial function if `inmemory(obs) == false`. It updates the timeseries on disk.
@@ -76,8 +99,6 @@ It is called from `add!` everytime the alloc limit is reached (overflow).
 function updateondisk(obs::Observable{T}, filename::AbstractString=obs.outfile, dataset::AbstractString=obs.HDF5_dset) where T
     @assert !obs.inmemory
     @assert obs.tsidx == length(obs.timeseries)+1
-
-    # TODO from fileext -> open files differently
 
     jldopen(filename, isfile(filename)?"r+":"w", compress=true) do f
         updateondisk(obs, f, dataset)
@@ -94,7 +115,6 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
     @assert !obs.inmemory
     @assert obs.tsidx == length(obs.timeseries)+1
 
-    # TODOOO: !inmemory => HDF5_dset/observable
     const obsname = name(obs)
     const grp = dataset*"/"
     const alloc = obs.alloc
@@ -113,7 +133,7 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
     else
         try
             cc = read(f, joinpath(grp, "chunk_count"))
-            write(f, joinpath(grp,"ts_chunk$(cc+1)"), obs.timeseries) # TODO JLD.serializer (Array{T} -> T+1dim)
+            write(f, joinpath(grp,"ts_chunk$(cc+1)"), obs.timeseries)
 
             delete!(f, joinpath(grp, "chunk_count"))
             write(f, joinpath(grp,"chunk_count"), cc+1)

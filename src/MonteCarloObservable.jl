@@ -47,6 +47,7 @@ module MonteCarloObservable
     # io
     export saveobs
     export loadobs
+    export export_results
     export loadobs_frommemory
     export timeseries_frommemory
     export timeseries_frommemory_flat
