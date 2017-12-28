@@ -185,6 +185,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#MonteCarloObservable.loadobs_frommemory-Tuple{AbstractString,AbstractString}",
+    "page": "Functions",
+    "title": "MonteCarloObservable.loadobs_frommemory",
+    "category": "Method",
+    "text": "loadobs_frommemory(filename::AbstractString, group::AbstractString)\n\nCreate an observable based on memory dump (inmemory==false).\n\n\n\n"
+},
+
+{
     "location": "functions.html#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
     "page": "Functions",
     "title": "MonteCarloObservable.name",
@@ -222,6 +230,22 @@ var documenterSearchIndex = {"docs": [
     "title": "MonteCarloObservable.timeseries",
     "category": "Method",
     "text": "timeseries(obs::Observable{T})\n\nReturns the measurement timeseries of an observable.\n\nIf inmemory(obs) == false it will read the timeseries from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.timeseries_frommemory-Tuple{AbstractString,AbstractString}",
+    "page": "Functions",
+    "title": "MonteCarloObservable.timeseries_frommemory",
+    "category": "Method",
+    "text": "timeseries_frommemory(filename::AbstractString, group::AbstractString)\n\nLoad timeseries from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate timeseries chunks. Output will be a vector of measurements.\n\n\n\n"
+},
+
+{
+    "location": "functions.html#MonteCarloObservable.timeseries_frommemory_flat-Tuple{AbstractString,AbstractString}",
+    "page": "Functions",
+    "title": "MonteCarloObservable.timeseries_frommemory_flat",
+    "category": "Method",
+    "text": "timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)\n\nLoad timeseries from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate timeseries chunks. Output will be higher-dimensional array whose last dimension corresponds to Monte Carlo time.\n\n\n\n"
 },
 
 {
