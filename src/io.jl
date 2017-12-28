@@ -24,7 +24,7 @@ function getindex_fromfile(obs::Observable{T}, idx::Int) where T
         chunknr != currmemchunk || (return obs.timeseries[chunkidx]) # chunk not stored to file yet
 
         if eltype(T) <: Complex
-            # h5read with indices is not supported for compoud data. We could store as separate _real _imag to make this more efficient.
+            # h5read with indices is not supported for compoud data. We could only store as separate _real _imag to make this more efficient.
             return load(obs.outfile, joinpath(grp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
         else # Real
             return squeeze(h5read(obs.outfile, joinpath(grp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx)), obs.n_dims+1)
@@ -216,6 +216,8 @@ function timeseries_frommemory(filename::AbstractString, group::AbstractString)
     const colons = [Colon() for _ in 1:ndims(ts)-1]
     return [ts[colons..., i] for i in 1:size(ts, ndims(ts))]
 end
+
+timeseries_frommemory(obs::Observable{T}) where T = timeseries_frommemory(obs.outfile, obs.HDF5_dset)
 
 """
     timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)

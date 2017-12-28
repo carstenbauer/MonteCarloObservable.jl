@@ -144,11 +144,9 @@ function Base.getindex(obs::Observable{T}, args...) where T
     if obs.inmemory
         return getindex(view(obs.timeseries, 1:obs.n_meas), args...)
     else
-        if typeof(args[1]) != Int
-            # it should be a range
-            # TODO: load full ts (glue ts_chunks together) and load range
-            # TODO 2.0: Next step: Load only necessary chunks
-            error("Only single integer indexing for `inmemory(obs) == false` supported.")
+        if typeof(args[1]) != Int # args is probably a range
+            vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[args...]
+            # TODO: Load only necessary chunks to improve speed here.
         else
             const idx = args[1]
             idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
@@ -167,7 +165,6 @@ function Base.view(obs::Observable{T}, args...) where T
         view(view(obs.timeseries, 1:obs.n_meas), args...)
     else
         error("Only supported for `inmemory(obs) == true`.");
-        # TODO: type unstable?
     end
 end
 
