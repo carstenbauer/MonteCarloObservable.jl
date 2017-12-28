@@ -147,7 +147,11 @@ end
 JLD.writeas(x::Vector{T}) where T<:AbstractArray = cat(ndims(T)+1, x...)
 # JLD.readas()
 
+"""
+    loadobs_frommemory(filename::AbstractString, group::AbstractString)
 
+Create an observable based on memory dump (`inmemory==false`).
+"""
 function loadobs_frommemory(filename::AbstractString, group::AbstractString)
     const grp = endswith(group, "/")?group:group*"/"
 
@@ -180,6 +184,27 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
     end
 end
 
+"""
+    timeseries_frommemory(filename::AbstractString, group::AbstractString)
+
+Load timeseries from memory dump (`inmemory==false`) in HDF5/JLD file.
+
+Will load and concatenate timeseries chunks. Output will be a vector of measurements.
+"""
+function timeseries_frommemory(filename::AbstractString, group::AbstractString)
+    const ts = timeseries_frommemory_flat(filename,group)
+    const colons = [Colon() for _ in 1:ndims(ts)-1]
+    return [ts[colons..., i] for i in 1:size(ts, ndims(ts))]
+end
+
+"""
+    timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
+
+Load timeseries from memory dump (`inmemory==false`) in HDF5/JLD file.
+
+Will load and concatenate timeseries chunks. Output will be higher-dimensional
+array whose last dimension corresponds to Monte Carlo time.
+"""
 function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
     const grp = endswith(group, "/")?group:group*"/"
 
@@ -202,10 +227,4 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
 
         return flat_timeseries
     end
-end
-
-function timeseries_frommemory(filename::AbstractString, group::AbstractString)
-    const ts = timeseries_frommemory_flat(filename,group)
-    const colons = [Colon() for _ in 1:ndims(ts)-1]
-    return [ts[colons..., i] for i in 1:size(ts, ndims(ts))]
 end
