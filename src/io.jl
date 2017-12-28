@@ -71,12 +71,12 @@ end
 """
     export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])
 
-Export results for given observable nicely to JLD.
+Export result for given observable nicely to JLD.
 
 Will export name, number of measurements, estimates for mean and one-sigma error (standard deviation).
 Optionally (`timeseries==true`) exports the full timeseries as well.
 """
-function export_results(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false) where T
+function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false) where T
     const grp = endswith(group, "/")?group:group*"/"
 
     jldopen(filename, isfile(filename)?"r+":"w") do f
