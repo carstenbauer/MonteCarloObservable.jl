@@ -47,6 +47,9 @@ module MonteCarloObservable
     # io
     export saveobs
     export loadobs
+    export loadobs_frommemory
+    export timeseries_frommemory
+    export timeseries_frommemory_flat
 
     # overwritten Base
     export clear!

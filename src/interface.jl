@@ -144,7 +144,16 @@ function Base.getindex(obs::Observable{T}, args...) where T
     if obs.inmemory
         return getindex(view(obs.timeseries, 1:obs.n_meas), args...)
     else
-        return getindex_fromfile(obs, args...)
+        if typeof(args[1]) != Int
+            # it should be a range
+            # TODO: load full ts (glue ts_chunks together) and load range
+            # TODO 2.0: Next step: Load only necessary chunks
+            error("Only single integer indexing for `inmemory(obs) == false` supported.")
+        else
+            const idx = args[1]
+            idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
+            return getindex_fromfile(obs, idx)
+        end
     end
 end
 
@@ -178,7 +187,7 @@ Base.next(obs::Observable, state::Int) = obs[state], state + 1
 
 # display, show, print magic
 # Base.summary(obs::Observable{T}) where T = "Observable{$(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T)}"
-Base.summary(obs::Observable{T}) where T = "Observable \"$(obs.name)\" of type $(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs)!=1?"s":"")"
+Base.summary(obs::Observable{T}) where T = "Observable \"$(obs.name)\" of type $((obs.elsize == (-1,)) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs)!=1?"s":"")"
 Base.show(io::IO, obs::Observable{T}) where T = print(io, summary(obs))
 Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = print(io, summary(obs))
 # Base.show(io::IO, obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io, obs.timeseries[1:obs.n_meas], true; header=false))
