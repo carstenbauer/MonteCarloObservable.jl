@@ -173,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Functions",
     "title": "MonteCarloObservable.export_result",
     "category": "Method",
-    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full timeseries as well.\n\n\n\n"
+    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full timeseries as well.\n\n\n\n"
 },
 
 {
