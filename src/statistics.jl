@@ -6,7 +6,6 @@ import ErrorAnalysis.jackknife_error
 # define ErrorAnalysis tools for Observable{T} type
 binning_error(obs::Observable{T}, args...; keyws...) where T = binning_error(timeseries(obs), args...; keyws...)
 jackknife_error(g::Function, obs::Observable{T}, args...; keyws...) where T = jackknife_error(g, timeseries(obs), args...; keyws...)
-# TODO integrated autocorrelation
 
 """
     mean(obs::Observable{T})
@@ -26,8 +25,10 @@ for uncorrelated measurements.
 
 Corresponds to the square root of [`var(obs)`](@ref). See also [`mean(obs)`](@ref).
 """
-std(obs::Observable{T}) where T = binning_error(obs, binsize=10)
-# This is of course stupid! Base binsize on integrated autocorrelation.
+function std(obs::Observable{T}) where T
+    # choose binsize such that we have at least 32 full bins.
+    binning_error(obs, binsize=floor(Int, length(obs)/32))
+end
 
 """
     var(obs::Observable{T})
