@@ -180,31 +180,6 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
     end
 end
 
-
-function timeseries_frommemory(filename::AbstractString, group::AbstractString)
-    const grp = endswith(group, "/")?group:group*"/"
-
-    jldopen(filename) do f
-        const n_meas = read(f, joinpath(grp, "count"))
-        const element_type = read(f, joinpath(grp, "eltype"))
-        const chunk_count = read(f,joinpath(grp, "chunk_count"))
-        const T = eval(parse(element_type))
-        const colons = [Colon() for _ in 1:ndims(T)]
-
-        const firstchunk = read(f, joinpath(grp,"ts_chunk1"))
-        chunks = Vector{typeof(firstchunk)}(chunk_count)
-        chunks[1] = firstchunk
-
-        for c in 2:chunk_count
-            chunks[c] = read(f, joinpath(grp,"ts_chunk$(c)"))
-        end
-
-        flat_timeseries = cat(ndims(T)+1, chunks...)
-
-        return [flat_timeseries[colons..., i] for i in 1:n_meas]
-    end
-end
-
 function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
     const grp = endswith(group, "/")?group:group*"/"
 
