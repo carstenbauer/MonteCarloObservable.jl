@@ -169,6 +169,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions.html#MonteCarloObservable.export_results-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Functions",
+    "title": "MonteCarloObservable.export_results",
+    "category": "Method",
+    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])\n\nExport results for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full timeseries as well.\n\n\n\n"
+},
+
+{
     "location": "functions.html#MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
     "page": "Functions",
     "title": "MonteCarloObservable.inmemory",
