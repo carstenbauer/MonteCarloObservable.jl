@@ -169,11 +169,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions.html#MonteCarloObservable.export_results-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "functions.html#MonteCarloObservable.export_result-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
     "page": "Functions",
-    "title": "MonteCarloObservable.export_results",
+    "title": "MonteCarloObservable.export_result",
     "category": "Method",
-    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])\n\nExport results for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full timeseries as well.\n\n\n\n"
+    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full timeseries as well.\n\n\n\n"
 },
 
 {
