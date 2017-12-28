@@ -69,7 +69,7 @@ function loadobs(filename::AbstractString, entryname::AbstractString)
 end
 
 """
-    export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])
+    export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])
 
 Export result for given observable nicely to JLD.
 
