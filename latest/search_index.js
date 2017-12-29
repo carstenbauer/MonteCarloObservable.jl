@@ -141,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "General",
     "title": "MonteCarloObservable.Observable",
     "category": "Method",
-    "text": "Observable(T::DataType, name::String)\n\nCreate an observable of type T.\n\n\n\n"
+    "text": "Observable(T::DataType, name::String; keyargs...)\n\nCreate an observable of type T.\n\nSee Observable{T}.\n\n\n\n"
 },
 
 {
@@ -149,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "General",
     "title": "MonteCarloObservable.Observable",
     "category": "Method",
-    "text": "Observable{T}(name::String)\n\nCreate an observable of type T.\n\n\n\n"
+    "text": "Observable{T}(name::String; keyargs...)\n\nCreate an observable of type T.\n\nThe following keywords are allowed:\n\nalloc: preallocated size of time series container\noutfile: default HDF5/JLD output file for io operations\ndataset: target path within outfile\ninmemory: wether to keep the time series in memory or on disk\n\nSee also Observable.\n\n\n\n"
 },
 
 {
