@@ -26,12 +26,21 @@ end
 # constructors
 
 """
-    Observable{T}(name::String)
+    Observable{T}(name::String; keyargs...)
 
 Create an observable of type `T`.
+
+The following keywords are allowed:
+
+* `alloc`: preallocated size of time series container
+* `outfile`: default HDF5/JLD output file for io operations
+* `dataset`: target path within `outfile`
+* `inmemory`: wether to keep the time series in memory or on disk
+
+See also [`Observable`](@ref).
 """
-function Observable{T}(name::String; buffersize::Int=100, alloc::Int=1000, inmemory::Bool=true,
-                       outfile::String="Observables.jld", dataset::String=name, estimate_error::Bool=false) where T
+function Observable{T}(name::String; alloc::Int=1000, inmemory::Bool=true,
+                       outfile::String="Observables.jld", dataset::String=name) where T
     obs = Observable{T}()
     obs.name = name
     obs.alloc = alloc
@@ -44,9 +53,11 @@ function Observable{T}(name::String; buffersize::Int=100, alloc::Int=1000, inmem
 end
 
 """
-    Observable(T::DataType, name::String)
+    Observable(T::DataType, name::String; keyargs...)
 
 Create an observable of type `T`.
+
+See [`Observable{T}`](@ref).
 """
 Observable(T::DataType, posargs...; keyargs...) = Observable{T}(posargs...; keyargs...)
 
