@@ -11,10 +11,17 @@ makedocs(
     sitename = "MonteCarloObservable.jl",
     pages = [
         "Home" => "index.md",
-        "Functions" => "functions.md"
-        # "Subsection" => [
-        #     ...
-        # ]
+        "Manual" => [
+            "Getting started" => "manual/gettingstarted.md",
+            "Error estimation" => "manual/errorestimation.md",
+            "Memory / disk storage" => "manual/memdisk.md"
+        ],
+        "Methods" => [
+            # "All" => "methods/all.md",
+            "General" => "methods/general.md",
+            "Statistics" => "methods/statistics.md",
+            "IO" => "methods/io.md"
+        ]
     ]
 )
 
