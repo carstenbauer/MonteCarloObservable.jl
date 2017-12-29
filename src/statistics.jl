@@ -4,7 +4,23 @@ import ErrorAnalysis.binning_error
 import ErrorAnalysis.jackknife_error
 
 # define ErrorAnalysis tools for Observable{T} type
+"""
+    binning_error(obs::Observable{T}[; binsize=0, warnings=false])
+
+Calculates statistical one-sigma error (eff. standard deviation) for correlated data.
+How: Binning of data and assuming statistical independence of bins
+(i.e. R plateau has been reached). (Eq. 3.18 of Book basically)
+
+The default `binsize=0` indicates automatic binning.
+"""
 binning_error(obs::Observable{T}, args...; keyws...) where T = binning_error(timeseries(obs), args...; keyws...)
+
+"""
+    jackknife_error(g::Function, obs::Observable{T}; [binsize=10])
+
+Computes the jackknife standard deviation of `g(<obs>)` by binning
+the observable's time series and performing leave-one-out analysis.
+"""
 jackknife_error(g::Function, obs::Observable{T}, args...; keyws...) where T = jackknife_error(g, timeseries(obs), args...; keyws...)
 
 """

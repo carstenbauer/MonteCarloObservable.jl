@@ -17,23 +17,23 @@ function add!(obs::Observable{T}, measurement::T; verbose=false) where T
     obs.mean = (obs.n_meas * obs.mean + measurement) / (obs.n_meas + 1)
     obs.n_meas += 1
 
-    # add to timeseries
-    verbose && println("Adding measurment to timeseries [chunk].")
+    # add to time series
+    verbose && println("Adding measurment to time series [chunk].")
     obs.timeseries[obs.tsidx] = measurement
     obs.tsidx += 1
     
     if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow 
-        verbose && println("Handling timeseries [chunk] overflow.")
+        verbose && println("Handling time series [chunk] overflow.")
         if obs.inmemory
-            verbose && println("Increasing timeseries size.")
+            verbose && println("Increasing time series size.")
             tslength = length(obs.timeseries)
             new_timeseries = Vector{T}(tslength + obs.alloc)
             new_timeseries[1:tslength] = obs.timeseries
             obs.timeseries = new_timeseries
         else
-            verbose && println("Dumping timeseries chunk to disk.")
+            verbose && println("Dumping time series chunk to disk.")
             updateondisk(obs)
-            verbose && println("Setting timeseries index to 1.")
+            verbose && println("Setting time series index to 1.")
             obs.tsidx = 1
         end
     end
@@ -47,7 +47,7 @@ end
 Add multiple `measurements` to observable `obs`.
 """
 function add!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false) where T
-    # OPT: if length(measurements) > alloc or buffersize we should avoid multiple reallocations
+    # OPT: if length(measurements) > alloc we should avoid multiple reallocations
     @inbounds for i in eachindex(measurements)
         add!(obs, measurements[i]; verbose=verbose)
     end
@@ -76,9 +76,9 @@ Base.push!(obs::Observable{T}, measurement::T; verbose=false) where T = add!(obs
 """
     timeseries(obs::Observable{T})
 
-Returns the measurement timeseries of an observable.
+Returns the measurement time series of an observable.
 
-If `inmemory(obs) == false` it will read the timeseries from disk and thus might take some time.
+If `inmemory(obs) == false` it will read the time series from disk and thus might take some time.
 
 See also [`getindex`](@ref) and [`view`](@ref).
 """
@@ -138,7 +138,7 @@ Base.ndims(obs::Observable{T}) where T = ndims(T)
 """
     getindex(obs::Observable{T}, args...)
 
-Get an element of the measurement timeseries of the observable.
+Get an element of the measurement time series of the observable.
 """
 function Base.getindex(obs::Observable{T}, args...) where T
     if obs.inmemory
@@ -158,7 +158,7 @@ end
 """
     view(obs::Observable{T}, args...)
 
-Get a view into the measurement timeseries of the observable.
+Get a view into the measurement time series of the observable.
 """
 function Base.view(obs::Observable{T}, args...) where T
     if obs.inmemory

@@ -1,12 +1,12 @@
 #=
     # inmemory
     1) saveobs, loadobs: saving a restorable version of the Observable{T} object
-    2) exportobs: export results of obs (name, n_meas, timeseries) to file (Maybe: support (incomplete) import)
+    2) exportobs: export results of obs (name, n_meas, time series) to file (Maybe: support (incomplete) import)
     
     # !inmemory
     1) saveobs, loadobs: same as above
         - how to avoid same grp conflict? if inmemory dump to trg/obsname if !inmemory dump to trg/obsname/observable
-    2) exportobs: export results of obs (name, n_meas, timeseries) to file (Maybe: support (incomplete) import)
+    2) exportobs: export results of obs (name, n_meas, time series) to file (Maybe: support (incomplete) import)
         - will have to load everything to memory before dumping.
     3) loadobsmemory
 =#
@@ -74,7 +74,7 @@ end
 Export result for given observable nicely to JLD.
 
 Will export name, number of measurements, estimates for mean and one-sigma error (standard deviation).
-Optionally (`timeseries==true`) exports the full timeseries as well.
+Optionally (`timeseries==true`) exports the full time series as well.
 """
 function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false) where T
     const grp = endswith(group, "/")?group:group*"/"
@@ -93,7 +93,7 @@ end
 """
     updateondisk(obs::Observable{T}[, filename::AbstractString, group::AbstractString])
 
-This is the crucial function if `inmemory(obs) == false`. It updates the timeseries on disk.
+This is the crucial function if `inmemory(obs) == false`. It updates the time series on disk.
 It is called from `add!` everytime the alloc limit is reached (overflow).
 """
 function updateondisk(obs::Observable{T}, filename::AbstractString=obs.outfile, dataset::AbstractString=obs.HDF5_dset) where T
@@ -158,7 +158,7 @@ end
 
 # Write estimate for mean and one-sigma error (standard deviation) to file.
 
-# Measurement timeseries will be dumped as well if `timeseries = true` .
+# Measurement time series will be dumped as well if `timeseries = true` .
 # """
 # function writeobs(obs::Observable{T}, filename::AbstractString="Observables.jld" timeseries::Bool=false) where T
 
@@ -207,9 +207,9 @@ end
 """
     timeseries_frommemory(filename::AbstractString, group::AbstractString)
 
-Load timeseries from memory dump (`inmemory==false`) in HDF5/JLD file.
+Load time series from memory dump (`inmemory==false`) in HDF5/JLD file.
 
-Will load and concatenate timeseries chunks. Output will be a vector of measurements.
+Will load and concatenate time series chunks. Output will be a vector of measurements.
 """
 function timeseries_frommemory(filename::AbstractString, group::AbstractString)
     const ts = timeseries_frommemory_flat(filename,group)
@@ -222,9 +222,9 @@ timeseries_frommemory(obs::Observable{T}) where T = timeseries_frommemory(obs.ou
 """
     timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
 
-Load timeseries from memory dump (`inmemory==false`) in HDF5/JLD file.
+Load time series from memory dump (`inmemory==false`) in HDF5/JLD file.
 
-Will load and concatenate timeseries chunks. Output will be higher-dimensional
+Will load and concatenate time series chunks. Output will be higher-dimensional
 array whose last dimension corresponds to Monte Carlo time.
 """
 function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)

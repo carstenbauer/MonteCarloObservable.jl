@@ -26,9 +26,9 @@ end
 # constructors
 
 """
-    Observable{T}(name)
+    Observable{T}(name::String)
 
-Create an observable.
+Create an observable of type `T`.
 """
 function Observable{T}(name::String; buffersize::Int=100, alloc::Int=1000, inmemory::Bool=true,
                        outfile::String="Observables.jld", dataset::String=name, estimate_error::Bool=false) where T
@@ -42,6 +42,12 @@ function Observable{T}(name::String; buffersize::Int=100, alloc::Int=1000, inmem
     init!(obs)
     return obs
 end
+
+"""
+    Observable(T::DataType, name::String)
+
+Create an observable of type `T`.
+"""
 Observable(T::DataType, posargs...; keyargs...) = Observable{T}(posargs...; keyargs...)
 
 """

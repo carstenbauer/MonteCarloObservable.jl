@@ -18,12 +18,15 @@ using MonteCarloObservable
 obs = Observable(Float64, "myobservable")
 add!(obs, 1.23) # add measurement
 obs
-push!(obs, rand(10)) # same as add!
+push!(obs, rand(4)) # same as add!
 length(obs)
-mean(obs)
-std(obs) # one-sigma error of mean (binning analysis)
 timeseries(obs)
 obs[3] # conventional element accessing
 obs[end-2:end]
+add!(obs, rand(995))
+mean(obs)
+std(obs) # one-sigma error of mean (binning analysis)
 saveobs(obs, "myobservable.jld")
 ```
+
+**TODO:** mention `alloc` keyword and importance of preallocation.
