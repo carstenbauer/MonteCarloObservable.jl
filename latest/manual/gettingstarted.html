@@ -9,38 +9,34 @@ julia&gt; add!(obs, 1.23) # add measurement
 julia&gt; obs
 Observable &quot;myobservable&quot; of type  Float64 with 1 measurement
 
-julia&gt; push!(obs, rand(10)) # same as add!
+julia&gt; push!(obs, rand(4)) # same as add!
 
 julia&gt; length(obs)
-11
-
-julia&gt; mean(obs)
-0.5424030567148136
-
-julia&gt; std(obs) # one-sigma error of mean (binning analysis)
-ERROR: UndefVarError: obs not defined
+5
 
 julia&gt; timeseries(obs)
-11-element Array{Float64,1}:
+5-element Array{Float64,1}:
  1.23
- 0.0167722
- 0.500013
- 0.819787
- 0.665928
- 0.955185
- 0.0974344
- 0.785888
- 0.104748
- 0.572976
- 0.217701
+ 0.949351
+ 0.85753
+ 0.0821584
+ 0.489664
 
 julia&gt; obs[3] # conventional element accessing
-0.5000132787710918
+0.8575303808872283
 
 julia&gt; obs[end-2:end]
 3-element Array{Float64,1}:
- 0.104748
- 0.572976
- 0.217701
+ 0.85753
+ 0.0821584
+ 0.489664
 
-julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)</code></pre><footer><hr/><a class="previous" href="../index.html"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="errorestimation.html"><span class="direction">Next</span><span class="title">Error estimation</span></a></footer></article></body></html>
+julia&gt; add!(obs, rand(995))
+
+julia&gt; mean(obs)
+0.4979814316573466
+
+julia&gt; std(obs) # one-sigma error of mean (binning analysis)
+0.009084956474257892
+
+julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)</code></pre><p><strong>TODO:</strong> mention <code>alloc</code> keyword and importance of preallocation.</p><footer><hr/><a class="previous" href="../index.html"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="errorestimation.html"><span class="direction">Next</span><span class="title">Error estimation</span></a></footer></article></body></html>

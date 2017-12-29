@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Example",
     "category": "section",
-    "text": "This is a simple demontration of how to use the package for measuring a floating point observable:using MonteCarloObservable\nobs = Observable(Float64, \"myobservable\")\nadd!(obs, 1.23) # add measurement\nobs\npush!(obs, rand(10)) # same as add!\nlength(obs)\nmean(obs)\nstd(obs) # one-sigma error of mean (binning analysis)\ntimeseries(obs)\nobs[3] # conventional element accessing\nobs[end-2:end]\nsaveobs(obs, \"myobservable.jld\")"
+    "text": "This is a simple demontration of how to use the package for measuring a floating point observable:using MonteCarloObservable\nobs = Observable(Float64, \"myobservable\")\nadd!(obs, 1.23) # add measurement\nobs\npush!(obs, rand(4)) # same as add!\nlength(obs)\ntimeseries(obs)\nobs[3] # conventional element accessing\nobs[end-2:end]\nadd!(obs, rand(995))\nmean(obs)\nstd(obs) # one-sigma error of mean (binning analysis)\nsaveobs(obs, \"myobservable.jld\")TODO: mention alloc keyword and importance of preallocation."
 },
 
 {
@@ -101,7 +101,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Memory / disk storage",
     "title": "Memory / disk storage",
     "category": "section",
-    "text": "TODO"
+    "text": "By default the full Monte Carlo time series of an observable is kept in memory. This is the most convenient option as it renders element access and error computation fast. However, one can think of at least two scenarios in which it might be preferable to track the time series on disk rather than in memory:Abrupt termination: the simulation might be computationally expensive, thus slow, and might abort abruptly (maybe due to cluster outage or time limit). In this case, one probably wants to have a restorable \"memory dump\" of the so far recorded measurements to not have to restart from scratch.\nMemory limit: the tracked observable might be large, i.e. a large complex matrix. Then, storing a long time series might make the simulation exceed a memory limit (and often stop unexpectedly). Keeping the time series memory on disk solves this problem.As we show below, MonteCarloObservable.jl allows you to handle those cases by keeping the time series on disk.note: Note\nOne can always save the full observable object (saveobs) or export the time series to disk (export_result with timeseries=true). This section is about the temporary storage of the timeseries during simulation."
+},
+
+{
+    "location": "manual/memdisk.html#Example-1",
+    "page": "Memory / disk storage",
+    "title": "Example",
+    "category": "section",
+    "text": "You can create an observable that every once in a while dumps it's time series memory to disk as follows:using MonteCarloObservable\nobs = Observable(Float64, \"myobservable\"; inmemory=false, alloc=100)\ninmemory(obs)The observable obs will record measurements in memory until the preallocated time series buffer (alloc=100) overflows in which case it will store a \"memory dump\" in a JLD file (default is outfile=\"Observables.jld\"). In the above example this will thus happen for the first time after 100 measurements.Apart from the special initialization (inmemory=false) basically everything else stays the same as for an in-memory observable. We can still get the mean via mean(obs) and access time series elements with obs[idx] etc. However, because of now necessary disk operations same functionality might be slightly slower for those \"disk observables\"."
 },
 
 {
@@ -129,11 +137,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "methods/general.html#MonteCarloObservable.Observable-Tuple{DataType,Vararg{Any,N} where N}",
+    "page": "General",
+    "title": "MonteCarloObservable.Observable",
+    "category": "Method",
+    "text": "Observable(T::DataType, name::String)\n\nCreate an observable of type T.\n\n\n\n"
+},
+
+{
     "location": "methods/general.html#MonteCarloObservable.Observable-Union{Tuple{String}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.Observable",
     "category": "Method",
-    "text": "Observable{T}(name)\n\nCreate an observable.\n\n\n\n"
+    "text": "Observable{T}(name::String)\n\nCreate an observable of type T.\n\n\n\n"
 },
 
 {
@@ -157,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "General",
     "title": "Base.getindex",
     "category": "Method",
-    "text": "getindex(obs::Observable{T}, args...)\n\nGet an element of the measurement timeseries of the observable.\n\n\n\n"
+    "text": "getindex(obs::Observable{T}, args...)\n\nGet an element of the measurement time series of the observable.\n\n\n\n"
 },
 
 {
@@ -213,7 +229,7 @@ var documenterSearchIndex = {"docs": [
     "page": "General",
     "title": "Base.view",
     "category": "Method",
-    "text": "view(obs::Observable{T}, args...)\n\nGet a view into the measurement timeseries of the observable.\n\n\n\n"
+    "text": "view(obs::Observable{T}, args...)\n\nGet a view into the measurement time series of the observable.\n\n\n\n"
 },
 
 {
@@ -269,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "General",
     "title": "MonteCarloObservable.timeseries",
     "category": "Method",
-    "text": "timeseries(obs::Observable{T})\n\nReturns the measurement timeseries of an observable.\n\nIf inmemory(obs) == false it will read the timeseries from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
+    "text": "timeseries(obs::Observable{T})\n\nReturns the measurement time series of an observable.\n\nIf inmemory(obs) == false it will read the time series from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
 },
 
 {
@@ -329,6 +345,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "methods/statistics.html#ErrorAnalysis.binning_error-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "page": "Statistics",
+    "title": "ErrorAnalysis.binning_error",
+    "category": "Method",
+    "text": "binning_error(obs::Observable{T}[; binsize=0, warnings=false])\n\nCalculates statistical one-sigma error (eff. standard deviation) for correlated data. How: Binning of data and assuming statistical independence of bins (i.e. R plateau has been reached). (Eq. 3.18 of Book basically)\n\nThe default binsize=0 indicates automatic binning.\n\n\n\n"
+},
+
+{
+    "location": "methods/statistics.html#ErrorAnalysis.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "page": "Statistics",
+    "title": "ErrorAnalysis.jackknife_error",
+    "category": "Method",
+    "text": "jackknife_error(g::Function, obs::Observable{T}; [binsize=10])\n\nComputes the jackknife standard deviation of g(<obs>) by binning the observable's time series and performing leave-one-out analysis.\n\n\n\n"
+},
+
+{
     "location": "methods/statistics.html#Documentation-1",
     "page": "Statistics",
     "title": "Documentation",
@@ -365,7 +397,7 @@ var documenterSearchIndex = {"docs": [
     "page": "IO",
     "title": "MonteCarloObservable.export_result",
     "category": "Method",
-    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full timeseries as well.\n\n\n\n"
+    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full time series as well.\n\n\n\n"
 },
 
 {
@@ -397,7 +429,7 @@ var documenterSearchIndex = {"docs": [
     "page": "IO",
     "title": "MonteCarloObservable.timeseries_frommemory",
     "category": "Method",
-    "text": "timeseries_frommemory(filename::AbstractString, group::AbstractString)\n\nLoad timeseries from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate timeseries chunks. Output will be a vector of measurements.\n\n\n\n"
+    "text": "timeseries_frommemory(filename::AbstractString, group::AbstractString)\n\nLoad time series from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate time series chunks. Output will be a vector of measurements.\n\n\n\n"
 },
 
 {
@@ -405,7 +437,7 @@ var documenterSearchIndex = {"docs": [
     "page": "IO",
     "title": "MonteCarloObservable.timeseries_frommemory_flat",
     "category": "Method",
-    "text": "timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)\n\nLoad timeseries from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate timeseries chunks. Output will be higher-dimensional array whose last dimension corresponds to Monte Carlo time.\n\n\n\n"
+    "text": "timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)\n\nLoad time series from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate time series chunks. Output will be higher-dimensional array whose last dimension corresponds to Monte Carlo time.\n\n\n\n"
 },
 
 {
