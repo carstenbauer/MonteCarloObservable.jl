@@ -1,5 +1,7 @@
 # Error estimation
 
+The automatic estimation of error bars (one-sigma confidence intervals) is outsourced in the package [ErrorAnalysis.jl](https://github.com/crstnbr/ErrorAnalysis.jl).
+
 ## Binning analysis
 
 TODO
