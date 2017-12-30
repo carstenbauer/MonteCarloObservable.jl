@@ -17,26 +17,26 @@ julia&gt; length(obs)
 julia&gt; timeseries(obs)
 5-element Array{Float64,1}:
  1.23
- 0.706231
- 0.720058
- 0.151585
- 0.782128
+ 0.638254
+ 0.615335
+ 0.979256
+ 0.502615
 
 julia&gt; obs[3] # conventional element accessing
-0.7200579832916025
+0.6153352734900248
 
 julia&gt; obs[end-2:end]
 3-element Array{Float64,1}:
- 0.720058
- 0.151585
- 0.782128
+ 0.615335
+ 0.979256
+ 0.502615
 
 julia&gt; add!(obs, rand(995))
 
 julia&gt; mean(obs)
-0.49779210284052183
+0.4929004306730794
 
 julia&gt; std(obs) # one-sigma error of mean (binning analysis)
-0.007116890932493543
+0.010638248843621577
 
 julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)</code></pre><p><strong>TODO:</strong> mention <code>alloc</code> keyword and importance of preallocation.</p><footer><hr/><a class="previous" href="../index.html"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="errorestimation.html"><span class="direction">Next</span><span class="title">Error estimation</span></a></footer></article></body></html>
