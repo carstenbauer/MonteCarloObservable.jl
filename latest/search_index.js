@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Documentation",
     "category": "section",
-    "text": "This package provides an implementation of an observable in a Markov Chain Monte Carlo simulation context (like MonteCarlo.jl).During a Markov chain Monte Carlo simulation a Markov walker (after thermalization) walks through configuration space according to the equilibrium distribution. Typically, one measures observables along the Markov path, records the results, and in the end averages the measurements. MonteCarloObservable.jl provides all the necessary tools for conveniently conducting these types of measurements, including automatic error estimation of the averages and export to file."
+    "text": "This package provides an implementation of an observable in a Markov Chain Monte Carlo simulation context (like MonteCarlo.jl).During a Markov chain Monte Carlo simulation a Markov walker (after thermalization) walks through configuration space according to the equilibrium distribution. Typically, one measures observables along the Markov path, records the results, and in the end averages the measurements. MonteCarloObservable.jl provides all the necessary tools for conveniently conducting these types of measurements, including estimation of one-sigma error bars through binning or jackknife analysis."
 },
 
 {
