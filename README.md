@@ -1,4 +1,4 @@
-# MonteCarloObservable
+# MonteCarloObservable.jl
 
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://crstnbr.github.io/MonteCarloObservable.jl/latest)
 [![travis][travis-img]](https://travis-ci.org/crstnbr/MonteCarloObservable.jl)
@@ -20,3 +20,7 @@ using MonteCarloObservable
 ```
 
 Look at the [documentation](https://crstnbr.github.io/MonteCarloObservable.jl/latest) for more information.
+
+## Authors
+
+* Carsten Bauer ([github](https://github.com/crstnbr))
