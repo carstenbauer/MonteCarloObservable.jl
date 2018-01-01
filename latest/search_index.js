@@ -353,6 +353,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "methods/statistics.html#ErrorAnalysis.plot_binning_R-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Statistics",
+    "title": "ErrorAnalysis.plot_binning_R",
+    "category": "Method",
+    "text": "plot_binning_R(obs::Observable{T}; min_nbins=32, figsize=(4,3))\n\nPlots the binning error coefficient R as a function of bin size.\n\nIdeally, this plot shows a plateau (Fig. 3.3), indicating that the bin averages have become independent. For correlated data R>≈1 and sqrt(R) quantifies how much one would have underestimated the one-sigma errorbar.\n\nReturns bin sizes and corresponding R values.\n\n\n\n"
+},
+
+{
+    "location": "methods/statistics.html#ErrorAnalysis.plot_error-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Statistics",
+    "title": "ErrorAnalysis.plot_error",
+    "category": "Method",
+    "text": "plot_error(obs::Observable{T}; binsize=0, histbins=50, figsize=(10,4), digits=3)\n\nPlots histogram of observable's time series (augmented with mean and errorbars) and autocorrelation function C(t).\n\n\n\n"
+},
+
+{
     "location": "methods/statistics.html#Documentation-1",
     "page": "Statistics",
     "title": "Documentation",
