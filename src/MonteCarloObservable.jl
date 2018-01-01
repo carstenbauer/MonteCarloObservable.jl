@@ -1,6 +1,13 @@
 module MonteCarloObservable
 
     using JLD, HDF5
+    using ErrorAnalysis
+
+    import ErrorAnalysis.binning_error
+    import ErrorAnalysis.jackknife_error
+    import ErrorAnalysis.iswithinerrorbars
+    import ErrorAnalysis.plot_error
+    import ErrorAnalysis.plot_binning_R
 
     import Base.push!
     import Base.eltype
@@ -35,6 +42,9 @@ module MonteCarloObservable
     # export integrated_autocorrelation_time
     export binning_error
     export jackknife_error
+    export iswithinerrorbars
+    export plot_error
+    export plot_binning_R
 
     # interface
     export add!
