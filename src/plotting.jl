@@ -141,3 +141,27 @@ corrplot(obs::Observable{T}; keyargs...) where T = plot_autocorrelation(obs; key
 # export plot_timeseries # === plot(obs)
 # export plot_histogram # === hist(obs)
 # export plot_binning # === plot_binning_R(obs)
+
+
+# using Plots instead of PyPlot
+
+function plot_histogram_Plots(obs::Observable{T}; errors=true, digits=3) where T
+	const ts = timeseries(obs)
+	const Xmean = mean(obs)
+	const err = std(obs)
+	const Xstd = std(ts)
+
+	histogram(ts, framestyle=:box, grid=false, normed=true, label="", color="lightgrey")
+	# ax[:hist](ts, 50, color="gray", alpha=.5, normed=1)
+	ylabel!("Frequency")
+	xlabel!(name(obs))
+	yticks!(Float64[])
+	vline!([Xmean], color="black", linewidth=2.0, label="\$ $(round.(Xmean, digits)) \$ (mean)")
+
+	if errors
+		vline!([Xmean+err, Xmean-err], color="red", linewidth=2.0, label="\$ \\pm $(round.(err, digits)) \$ (σ error)")
+		vline!([Xmean+2*err, Xmean-2*err], color="red", linewidth=2.0, label="\$ \\pm $(round.(2*err, digits)) \$ (2σ error)", alpha=.3)
+		vline!([Xmean+Xstd, Xmean-Xstd], color="green", linewidth=2.0, label="\$ \\pm $(round.(Xstd, digits)) \$ (std)", alpha=.3)
+	end
+	nothing
+end

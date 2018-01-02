@@ -2,7 +2,7 @@ using Documenter, MonteCarloObservable
 
 makedocs(
     # options
-    
+
 )
 
 makedocs(
@@ -20,7 +20,8 @@ makedocs(
             # "All" => "methods/all.md",
             "General" => "methods/general.md",
             "Statistics" => "methods/statistics.md",
-            "IO" => "methods/io.md"
+            "IO" => "methods/io.md",
+            "Plotting" => "methods/plotting.md"
         ]
     ]
 )
