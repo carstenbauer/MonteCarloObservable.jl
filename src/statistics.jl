@@ -53,23 +53,3 @@ for uncorrelated measurements.
 Corresponds to the square of [`std(obs)`](@ref). See also [`mean(obs)`](@ref).
 """
 var(obs::Observable{T}) where T = std(obs)^2
-
-"""
-	plot_binning_R(obs::Observable{T}; min_nbins=32, figsize=(4,3))
-
-Plots the binning error coefficient `R` as a function of bin size.
-
-Ideally, this plot shows a plateau (Fig. 3.3), indicating that the bin averages have become independent.
-For correlated data `R>≈1` and `sqrt(R)` quantifies how much one would have underestimated
-the one-sigma errorbar.
-
-Returns bin sizes and corresponding `R` values.
-"""
-plot_binning_R(obs::Observable{T}; keyargs...) where T = plot_binning_R(timeseries(obs); keyargs...)
-
-"""
-	plot_error(obs::Observable{T}; binsize=0, histbins=50, figsize=(10,4), digits=3)
-
-Plots histogram of observable's time series (augmented with mean and errorbars) and autocorrelation function `C(t)`.
-"""
-plot_error(obs::Observable{T}; keyargs...) where T = plot_error(timeseries(obs); keyargs...)

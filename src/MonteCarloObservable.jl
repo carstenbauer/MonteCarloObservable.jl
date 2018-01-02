@@ -1,7 +1,11 @@
 module MonteCarloObservable
 
     using JLD, HDF5
+    using StatsBase
     using ErrorAnalysis
+    using PyPlot
+
+    import PyPlot.plot
 
     import ErrorAnalysis.binning_error
     import ErrorAnalysis.jackknife_error
@@ -35,6 +39,7 @@ module MonteCarloObservable
     include("statistics.jl")
     include("interface.jl")
     include("io.jl")
+    include("plotting.jl")
 
     export Observable
 
@@ -43,8 +48,6 @@ module MonteCarloObservable
     export binning_error
     export jackknife_error
     export iswithinerrorbars
-    export plot_error
-    export plot_binning_R
 
     # interface
     export add!
@@ -61,6 +64,18 @@ module MonteCarloObservable
     export loadobs_frommemory
     export timeseries_frommemory
     export timeseries_frommemory_flat
+
+    # plotting
+    # export plot_timeseries # === plot(obs)
+    export plot
+    # export plot_histogram # === hist(obs)
+    export hist
+    # export plot_binning # === binningplot(obs)
+    export binningplot
+    # export plot_autocorrelation # === corrplot(obs)
+    export corrplot
+    # export plot_error
+    # export plot_binning_R
 
     # overwritten Base
     export clear!
