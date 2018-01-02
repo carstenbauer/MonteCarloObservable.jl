@@ -353,22 +353,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#ErrorAnalysis.plot_binning_R-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "ErrorAnalysis.plot_binning_R",
-    "category": "Method",
-    "text": "plot_binning_R(obs::Observable{T}; min_nbins=32, figsize=(4,3))\n\nPlots the binning error coefficient R as a function of bin size.\n\nIdeally, this plot shows a plateau (Fig. 3.3), indicating that the bin averages have become independent. For correlated data R>≈1 and sqrt(R) quantifies how much one would have underestimated the one-sigma errorbar.\n\nReturns bin sizes and corresponding R values.\n\n\n\n"
-},
-
-{
-    "location": "methods/statistics.html#ErrorAnalysis.plot_error-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "ErrorAnalysis.plot_error",
-    "category": "Method",
-    "text": "plot_error(obs::Observable{T}; binsize=0, histbins=50, figsize=(10,4), digits=3)\n\nPlots histogram of observable's time series (augmented with mean and errorbars) and autocorrelation function C(t).\n\n\n\n"
-},
-
-{
     "location": "methods/statistics.html#Documentation-1",
     "page": "Statistics",
     "title": "Documentation",
@@ -454,6 +438,70 @@ var documenterSearchIndex = {"docs": [
     "title": "Documentation",
     "category": "section",
     "text": "Modules = [MonteCarloObservable]\nPrivate = false\nOrder   = [:function]\nPages = [\"io.jl\"]"
+},
+
+{
+    "location": "methods/plotting.html#",
+    "page": "Plotting",
+    "title": "Plotting",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "methods/plotting.html#Methods:-Statistics-1",
+    "page": "Plotting",
+    "title": "Methods: Statistics",
+    "category": "section",
+    "text": "Below you find all plotting related exports."
+},
+
+{
+    "location": "methods/plotting.html#Index-1",
+    "page": "Plotting",
+    "title": "Index",
+    "category": "section",
+    "text": "Pages = [\"plotting.md\"]"
+},
+
+{
+    "location": "methods/plotting.html#MonteCarloObservable.binningplot-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Plotting",
+    "title": "MonteCarloObservable.binningplot",
+    "category": "Method",
+    "text": "binningplot(obs::Observable{T})\n\nCreates a plot of the binning error coefficient R as a function of bin size.\n\nThe coefficient R should (up to statistical fluctuations) show a plateau for larger bin sizes, indicating that the bin averages have become independent. For correlated data one has R>≈1 and sqrt(R) quantifies how much one would have underestimated the one-sigma errorbar.\n\nSee binning_error.\n\n\n\n"
+},
+
+{
+    "location": "methods/plotting.html#MonteCarloObservable.corrplot-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Plotting",
+    "title": "MonteCarloObservable.corrplot",
+    "category": "Method",
+    "text": "corrplot(obs::Observable{T})\n\nPlot the autocorrelation function of the observable.\n\n\n\n"
+},
+
+{
+    "location": "methods/plotting.html#MonteCarloObservable.hist-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Plotting",
+    "title": "MonteCarloObservable.hist",
+    "category": "Method",
+    "text": "hist(obs::Observable{T}[; errors=true, digits=3])\n\nPlot a histogram of the observable's time series.\n\n\n\n"
+},
+
+{
+    "location": "methods/plotting.html#PyPlot.plot-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "page": "Plotting",
+    "title": "PyPlot.plot",
+    "category": "Method",
+    "text": "plot(obs::Observable{T}[; errors=true, digits=3])\n\nPlot the observable's time series.\n\n\n\n"
+},
+
+{
+    "location": "methods/plotting.html#Documentation-1",
+    "page": "Plotting",
+    "title": "Documentation",
+    "category": "section",
+    "text": "Modules = [MonteCarloObservable, ErrorAnalysis]\nPrivate = false\nOrder   = [:function]\nPages = [\"plotting.jl\"]"
 },
 
 ]}
