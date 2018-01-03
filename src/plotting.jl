@@ -117,7 +117,7 @@ indicating that the bin averages have become independent.
 For correlated data one has `R>≈1` and `sqrt(R)` quantifies how much one would have underestimated
 the one-sigma errorbar.
 
-See [binning_error](@ref).
+See [`binning_error`](@ref).
 """
 binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs...)
 
