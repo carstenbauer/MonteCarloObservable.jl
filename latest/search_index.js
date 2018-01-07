@@ -129,23 +129,15 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.Observable-Tuple{DataType,Vararg{Any,N} where N}",
+    "location": "methods/general.html#MonteCarloObservable.Observable-Tuple{DataType,String}",
     "page": "General",
     "title": "MonteCarloObservable.Observable",
     "category": "Method",
-    "text": "Observable(T::DataType, name::String; keyargs...)\n\nCreate an observable of type T.\n\nSee Observable{T}.\n\n\n\n"
+    "text": "Observable(t, name; keyargs...)\n\nCreate an observable of type t.\n\nThe following keywords are allowed:\n\nalloc: preallocated size of time series container\noutfile: default HDF5/JLD output file for io operations\ndataset: target path within outfile\ninmemory: wether to keep the time series in memory or on disk\nmeantype: type of the mean (should be compatible with measurement type t)\n\nSee also Observable.\n\n\n\n"
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.Observable-Union{Tuple{String}, Tuple{T}} where T",
-    "page": "General",
-    "title": "MonteCarloObservable.Observable",
-    "category": "Method",
-    "text": "Observable{T}(name::String; keyargs...)\n\nCreate an observable of type T.\n\nThe following keywords are allowed:\n\nalloc: preallocated size of time series container\noutfile: default HDF5/JLD output file for io operations\ndataset: target path within outfile\ninmemory: wether to keep the time series in memory or on disk\n\nSee also Observable.\n\n\n\n"
-},
-
-{
-    "location": "methods/general.html#Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.Distributed.clear!",
     "category": "Method",
@@ -153,7 +145,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.eltype-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.eltype-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.eltype",
     "category": "Method",
@@ -161,7 +153,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.getindex",
     "category": "Method",
@@ -169,7 +161,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.isempty-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.isempty-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.isempty",
     "category": "Method",
@@ -177,7 +169,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.length-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.length-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.length",
     "category": "Method",
@@ -185,7 +177,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.ndims-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.ndims-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.ndims",
     "category": "Method",
@@ -193,7 +185,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T},AbstractArray{T,N} where N}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.push!",
     "category": "Method",
@@ -201,7 +193,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T},T}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.push!",
     "category": "Method",
@@ -209,7 +201,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.size-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.size-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.size",
     "category": "Method",
@@ -217,7 +209,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#Base.view-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "location": "methods/general.html#Base.view-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.view",
     "category": "Method",
@@ -225,7 +217,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T},AbstractArray{T,N} where N}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.add!",
     "category": "Method",
@@ -233,7 +225,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T},T}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.add!",
     "category": "Method",
@@ -241,7 +233,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.inmemory",
     "category": "Method",
@@ -249,7 +241,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.name",
     "category": "Method",
@@ -257,7 +249,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.rename-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.rename-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.rename",
     "category": "Method",
@@ -265,7 +257,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.reset!",
     "category": "Method",
@@ -273,7 +265,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/general.html#MonteCarloObservable.timeseries-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/general.html#MonteCarloObservable.timeseries-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.timeseries",
     "category": "Method",
@@ -313,7 +305,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/statistics.html#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "Base.mean",
     "category": "Method",
@@ -321,7 +313,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#Base.std-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/statistics.html#Base.std-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "Base.std",
     "category": "Method",
@@ -329,7 +321,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#Base.var-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/statistics.html#Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "Base.var",
     "category": "Method",
@@ -337,7 +329,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#ErrorAnalysis.binning_error-Union{Tuple{MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "location": "methods/statistics.html#ErrorAnalysis.binning_error-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "ErrorAnalysis.binning_error",
     "category": "Method",
@@ -345,7 +337,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#ErrorAnalysis.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T},Vararg{Any,N} where N}, Tuple{T}} where T",
+    "location": "methods/statistics.html#ErrorAnalysis.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "ErrorAnalysis.jackknife_error",
     "category": "Method",
@@ -385,7 +377,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/io.html#MonteCarloObservable.export_result-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/io.html#MonteCarloObservable.export_result-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "IO",
     "title": "MonteCarloObservable.export_result",
     "category": "Method",
@@ -409,7 +401,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/io.html#MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T},AbstractString}, Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/io.html#MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "IO",
     "title": "MonteCarloObservable.saveobs",
     "category": "Method",
@@ -465,7 +457,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/plotting.html#MonteCarloObservable.binningplot-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/plotting.html#MonteCarloObservable.binningplot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "MonteCarloObservable.binningplot",
     "category": "Method",
@@ -473,7 +465,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/plotting.html#MonteCarloObservable.corrplot-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/plotting.html#MonteCarloObservable.corrplot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "MonteCarloObservable.corrplot",
     "category": "Method",
@@ -481,7 +473,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/plotting.html#MonteCarloObservable.hist-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/plotting.html#MonteCarloObservable.hist-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "MonteCarloObservable.hist",
     "category": "Method",
@@ -489,7 +481,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/plotting.html#PyPlot.plot-Union{Tuple{MonteCarloObservable.Observable{T}}, Tuple{T}} where T",
+    "location": "methods/plotting.html#PyPlot.plot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "PyPlot.plot",
     "category": "Method",
