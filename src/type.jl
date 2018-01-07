@@ -1,5 +1,4 @@
-mutable struct Observable{T<:Union{AbstractArray, Number}}
-    # TODO: What are allowed types of observables? As a group there should be the concept of a mean. So far allow any kind of array and number.
+mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union{Array, Number}}
 
     # parameters (external)
     name::String
@@ -13,22 +12,21 @@ mutable struct Observable{T<:Union{AbstractArray, Number}}
     elsize::Tuple{Vararg{Int}}
     colons::Vector{Colon}
     n_dims::Int
-    timeseries::Vector{T}
+    timeseries::Vector{MeasurementType}
     tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for inmemory == false)
 
-    mean::T # estimate for mean
+    mean::MeanType # estimate for mean
 
     outformat::String
 
-    Observable{T}() where T = new()
+    Observable{T, MT}() where {T, MT} = new()
 end
 
-# constructors
 
 """
-    Observable{T}(name::String; keyargs...)
+    Observable(t, name; keyargs...)
 
-Create an observable of type `T`.
+Create an observable of type `t`.
 
 The following keywords are allowed:
 
@@ -36,12 +34,26 @@ The following keywords are allowed:
 * `outfile`: default HDF5/JLD output file for io operations
 * `dataset`: target path within `outfile`
 * `inmemory`: wether to keep the time series in memory or on disk
+* `meantype`: type of the mean (should be compatible with measurement type `t`)
 
 See also [`Observable`](@ref).
 """
-function Observable{T}(name::String; alloc::Int=1000, inmemory::Bool=true,
-                       outfile::String="Observables.jld", dataset::String=name) where T
-    obs = Observable{T}()
+function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=true,
+                       outfile::String="Observables.jld", dataset::String=name, meantype::DataType=Type{Union{}})
+
+    # trying to find sensible DataType for mean if not given
+    mt = meantype
+    if mt == Type{Union{}} # not set
+        if eltype(t)<:Real
+            mt = ndims(t)>0 ? Array{Float64, ndims(t)} : Float64
+        else
+            mt = ndims(t)>0 ? Array{Complex128, ndims(t)} : Complex128
+        end
+    end
+
+    @assert ndims(t)==ndims(mt)
+
+    obs = Observable{t, mt}()
     obs.name = name
     obs.alloc = alloc
     obs.inmemory = inmemory
@@ -51,15 +63,6 @@ function Observable{T}(name::String; alloc::Int=1000, inmemory::Bool=true,
     init!(obs)
     return obs
 end
-
-"""
-    Observable(T::DataType, name::String; keyargs...)
-
-Create an observable of type `T`.
-
-See [`Observable{T}`](@ref).
-"""
-Observable(T::DataType, posargs...; keyargs...) = Observable{T}(posargs...; keyargs...)
 
 """
     init!(obs)
