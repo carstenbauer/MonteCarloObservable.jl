@@ -49,6 +49,46 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "manual/meantype.html#",
+    "page": "Type of the mean",
+    "title": "Type of the mean",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "manual/meantype.html#Manual-1",
+    "page": "Type of the mean",
+    "title": "Manual",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "manual/meantype.html#Issue-1",
+    "page": "Type of the mean",
+    "title": "Issue",
+    "category": "section",
+    "text": "Let's assume you have an observable of type Int. You want to add the following measurements to your observable:x = Int[44, -70, 14, -32, 18]The mean of the observable should afterwards be mean(x) == -5.2. Note that this value, -5.2, exceeds the type Int. Explicitly we can see this if we try to convert it to Int:julia> convert(Int, mean(x))\nERROR: InexactError()\nStacktrace:\n [1] convert(::Type{Int}, ::Float64) at .\\float.jl:679This is, of course, not a particularity of the type Int but happens for many (discrete) data types."
+},
+
+{
+    "location": "manual/meantype.html#Default-1",
+    "page": "Type of the mean",
+    "title": "Default",
+    "category": "section",
+    "text": "Let us try the above example explicitly. We create an integer observable,julia> myobs = Observable(Int, \"My Observable\");and add the measurements,julia> add!(myobs, Int[44, -70, 14, -32, 18]);Let's see what we get for the meanjulia> mean(myobs)\n-5.2So apparently the package handles the above issue.How does it do it? Basically it applies a heuristic for setting a resonable type for the mean. It creates an array (or number) of the same dimensionality as a measurement and takes, depending on wether the element type is real or complex, either the type Float64 or Complex128 as element type for the mean. For the above example we can check this, typeof(mean(myobs)) == Float64."
+},
+
+{
+    "location": "manual/meantype.html#meantype-keyword-1",
+    "page": "Type of the mean",
+    "title": "meantype keyword",
+    "category": "section",
+    "text": "The above heuristic should be reasonable for most cases. However, if it isn't you can set the type of the mean explicitly via the keyword meantype. Example:julia> myobs = Observable(Int, \"My Observable\", meantype=Float32);\n\njulia> add!(myobs, Int[44, -70, 14, -32, 18]);\n\njulia> typeof(mean(myobs)) == Float32"
+},
+
+{
     "location": "manual/errorestimation.html#",
     "page": "Error estimation",
     "title": "Error estimation",
