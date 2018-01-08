@@ -13,6 +13,7 @@ makedocs(
         "Home" => "index.md",
         "Manual" => [
             "Getting started" => "manual/gettingstarted.md",
+            "Type of the mean" => "manual/meantype.md",
             "Error estimation" => "manual/errorestimation.md",
             "Memory / disk storage" => "manual/memdisk.md"
         ],
