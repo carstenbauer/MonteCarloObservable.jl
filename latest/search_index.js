@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Type of the mean",
     "title": "Issue",
     "category": "section",
-    "text": "Let's assume you have an observable of type Int. You want to add the following measurements to your observable:x = Int[44, -70, 14, -32, 18]The mean of the observable should afterwards be mean(x) == -5.2. Note that this value, -5.2, exceeds the type Int. Explicitly we can see this if we try to convert it to Int:julia> convert(Int, mean(x))\nERROR: InexactError()\nStacktrace:\n [1] convert(::Type{Int}, ::Float64) at .\\float.jl:679This is, of course, not a particularity of the type Int but happens for many (discrete) data types."
+    "text": "Let\'s assume you have an observable of type Int. You want to add the following measurements to your observable:x = Int[44, -70, 14, -32, 18]The mean of the observable should afterwards be mean(x) == -5.2. Note that this value, -5.2, exceeds the type Int. Explicitly we can see this if we try to convert it to Int:julia> convert(Int, mean(x))\nERROR: InexactError()\nStacktrace:\n [1] convert(::Type{Int}, ::Float64) at .\\float.jl:679This is, of course, not a particularity of the type Int but happens for many (discrete) data types."
 },
 
 {
@@ -77,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Type of the mean",
     "title": "Default",
     "category": "section",
-    "text": "Let us try the above example explicitly. We create an integer observable,julia> myobs = Observable(Int, \"My Observable\");and add the measurements,julia> add!(myobs, Int[44, -70, 14, -32, 18]);Let's see what we get for the meanjulia> mean(myobs)\n-5.2So apparently the package handles the above issue.How does it do it? Basically it applies a heuristic for setting a resonable type for the mean. It creates an array (or number) of the same dimensionality as a measurement and takes, depending on wether the element type is real or complex, either the type Float64 or Complex128 as element type for the mean. For the above example we can check this, typeof(mean(myobs)) == Float64."
+    "text": "Let us try the above example explicitly. We create an integer observable,julia> myobs = Observable(Int, \"My Observable\");and add the measurements,julia> add!(myobs, Int[44, -70, 14, -32, 18]);Let\'s see what we get for the meanjulia> mean(myobs)\n-5.2So apparently the package handles the above issue.How does it do it? Basically it applies a heuristic for setting a resonable type for the mean. It creates an array (or number) of the same dimensionality as a measurement and takes, depending on wether the element type is real or complex, either the type Float64 or Complex128 as element type for the mean. For the above example we can check this, typeof(mean(myobs)) == Float64."
 },
 
 {
@@ -85,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Type of the mean",
     "title": "meantype keyword",
     "category": "section",
-    "text": "The above heuristic should be reasonable for most cases. However, if it isn't you can set the type of the mean explicitly via the keyword meantype. Example:julia> myobs = Observable(Int, \"My Observable\", meantype=Float32);\n\njulia> add!(myobs, Int[44, -70, 14, -32, 18]);\n\njulia> typeof(mean(myobs)) == Float32"
+    "text": "The above heuristic should be reasonable for most cases. However, if it isn\'t you can set the type of the mean explicitly via the keyword meantype. Example:julia> myobs = Observable(Int, \"My Observable\", meantype=Float32);\n\njulia> add!(myobs, Int[44, -70, 14, -32, 18]);\n\njulia> typeof(mean(myobs)) == Float32"
 },
 
 {
@@ -141,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Memory / disk storage",
     "title": "\"Disk observables\"",
     "category": "section",
-    "text": "You can create a \"disk observable\" that every once in a while dumps it's time series memory to disk as follows:obs = Observable(Float64, \"myobservable\"; inmemory=false, alloc=100)It will record measurements in memory until the preallocated time series buffer (alloc=100) overflows in which case it will save the observables memory to JLD file (outfile). In the above example this will thus happen for the first time after 100 measurements.Apart from the special initialization (inmemory=false) basically everything else stays the same as for an in-memory observable. For example, we can still get the mean via mean(obs), access time series elements with obs[idx] and load the full time series to memory at any point via timeseries(obs). However, because of now necessary disk operations same functionality might be slightly slower for those \"disk observables\".The observable's memory dump contains meta information, like name, element type, element size etc., as well as time series memory chunks. The dumping is implemented in the not exported method MonteCarloObservable.updateondisk. Note that the observable's memory is not a full backup of the observable itself (see saveobs). Should the simulation terminate abruptly one can nonetheless restore most of the so-far recorded information using loadobs_frommemory and timeseries_frommemory. Measurements that haven't been dumped yet, because they are still lying in the preallocated buffer, are lost though. Please also note that the structure of the dump of an observable's memory might change in future versions."
+    "text": "You can create a \"disk observable\" that every once in a while dumps it\'s time series memory to disk as follows:obs = Observable(Float64, \"myobservable\"; inmemory=false, alloc=100)It will record measurements in memory until the preallocated time series buffer (alloc=100) overflows in which case it will save the observables memory to JLD file (outfile). In the above example this will thus happen for the first time after 100 measurements.Apart from the special initialization (inmemory=false) basically everything else stays the same as for an in-memory observable. For example, we can still get the mean via mean(obs), access time series elements with obs[idx] and load the full time series to memory at any point via timeseries(obs). However, because of now necessary disk operations same functionality might be slightly slower for those \"disk observables\".The observable\'s memory dump contains meta information, like name, element type, element size etc., as well as time series memory chunks. The dumping is implemented in the not exported method MonteCarloObservable.updateondisk. Note that the observable\'s memory is not a full backup of the observable itself (see saveobs). Should the simulation terminate abruptly one can nonetheless restore most of the so-far recorded information using loadobs_frommemory and timeseries_frommemory. Measurements that haven\'t been dumped yet, because they are still lying in the preallocated buffer, are lost though. Please also note that the structure of the dump of an observable\'s memory might change in future versions."
 },
 
 {
@@ -172,7 +172,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.Observable-Tuple{DataType,String}",
     "page": "General",
     "title": "MonteCarloObservable.Observable",
-    "category": "Method",
+    "category": "method",
     "text": "Observable(t, name; keyargs...)\n\nCreate an observable of type t.\n\nThe following keywords are allowed:\n\nalloc: preallocated size of time series container\noutfile: default HDF5/JLD output file for io operations\ndataset: target path within outfile\ninmemory: wether to keep the time series in memory or on disk\nmeantype: type of the mean (should be compatible with measurement type t)\n\nSee also Observable.\n\n\n\n"
 },
 
@@ -180,7 +180,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.Distributed.clear!",
-    "category": "Method",
+    "category": "method",
     "text": "clear!(obs::Observable{T})\n\nClears all measurement information in obs. Identical to init! and reset!.\n\n\n\n"
 },
 
@@ -188,7 +188,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.eltype-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.eltype",
-    "category": "Method",
+    "category": "method",
     "text": "eltype(obs::Observable{T})\n\nReturns the type T of a measurment of the observable.\n\n\n\n"
 },
 
@@ -196,7 +196,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.getindex",
-    "category": "Method",
+    "category": "method",
     "text": "getindex(obs::Observable{T}, args...)\n\nGet an element of the measurement time series of the observable.\n\n\n\n"
 },
 
@@ -204,15 +204,15 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.isempty-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.isempty",
-    "category": "Method",
-    "text": "isempty(obs::Observable{T})\n\nDetermine wether the observable hasn't been measured yet.\n\n\n\n"
+    "category": "method",
+    "text": "isempty(obs::Observable{T})\n\nDetermine wether the observable hasn\'t been measured yet.\n\n\n\n"
 },
 
 {
     "location": "methods/general.html#Base.length-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.length",
-    "category": "Method",
+    "category": "method",
     "text": "length(obs::Observable{T})\n\nNumber of measurements of the observable.\n\n\n\n"
 },
 
@@ -220,7 +220,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.ndims-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.ndims",
-    "category": "Method",
+    "category": "method",
     "text": "ndims(obs::Observable{T})\n\nNumber of dimensions of the observable (of one measurement).\n\nEquivalent to ndims(T).\n\n\n\n"
 },
 
@@ -228,23 +228,23 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.push!",
-    "category": "Method",
-    "text": "push!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false)\n\nAdd multiple measurements to observable obs. Note that because of preallocation this isn't really a push.\n\n\n\n"
+    "category": "method",
+    "text": "push!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false)\n\nAdd multiple measurements to observable obs. Note that because of preallocation this isn\'t really a push.\n\n\n\n"
 },
 
 {
     "location": "methods/general.html#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.push!",
-    "category": "Method",
-    "text": "push!(obs::Observable{T}, measurement::T; verbose=false)\n\nAdd a measurement to observable obs. Note that because of preallocation this isn't really a push.\n\n\n\n"
+    "category": "method",
+    "text": "push!(obs::Observable{T}, measurement::T; verbose=false)\n\nAdd a measurement to observable obs. Note that because of preallocation this isn\'t really a push.\n\n\n\n"
 },
 
 {
     "location": "methods/general.html#Base.size-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.size",
-    "category": "Method",
+    "category": "method",
     "text": "size(obs::Observable{T})\n\nSize of the observable (of one measurement).\n\n\n\n"
 },
 
@@ -252,7 +252,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#Base.view-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "Base.view",
-    "category": "Method",
+    "category": "method",
     "text": "view(obs::Observable{T}, args...)\n\nGet a view into the measurement time series of the observable.\n\n\n\n"
 },
 
@@ -260,7 +260,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.add!",
-    "category": "Method",
+    "category": "method",
     "text": "add!(obs::Observable{T}, measurements::AbstractArray{T}; verbose=false)\n\nAdd multiple measurements to observable obs.\n\n\n\n"
 },
 
@@ -268,7 +268,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.add!",
-    "category": "Method",
+    "category": "method",
     "text": "add!(obs::Observable{T}, measurement::T; verbose=false)\n\nAdd a measurement to observable obs.\n\n\n\n"
 },
 
@@ -276,7 +276,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.inmemory",
-    "category": "Method",
+    "category": "method",
     "text": "inmemory(obs::Observable{T})\n\nChecks wether the observable is kept in memory (vs. on disk).\n\n\n\n"
 },
 
@@ -284,7 +284,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.name",
-    "category": "Method",
+    "category": "method",
     "text": "name(obs::Observable{T})\n\nReturns the name of the observable.\n\n\n\n"
 },
 
@@ -292,7 +292,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.rename-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.rename",
-    "category": "Method",
+    "category": "method",
     "text": "rename(obs::Observable{T}, name)\n\nRenames the observable.\n\n\n\n"
 },
 
@@ -300,7 +300,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.reset!",
-    "category": "Method",
+    "category": "method",
     "text": "reset!(obs::Observable{T})\n\nResets all measurement information in obs. Identical to init! and clear!.\n\n\n\n"
 },
 
@@ -308,7 +308,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/general.html#MonteCarloObservable.timeseries-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "General",
     "title": "MonteCarloObservable.timeseries",
-    "category": "Method",
+    "category": "method",
     "text": "timeseries(obs::Observable{T})\n\nReturns the measurement time series of an observable.\n\nIf inmemory(obs) == false it will read the time series from disk and thus might take some time.\n\nSee also getindex and view.\n\n\n\n"
 },
 
@@ -348,7 +348,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/statistics.html#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "Base.mean",
-    "category": "Method",
+    "category": "method",
     "text": "mean(obs::Observable{T})\n\nEstimate of the mean of the observable.\n\n\n\n"
 },
 
@@ -356,7 +356,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/statistics.html#Base.std-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "Base.std",
-    "category": "Method",
+    "category": "method",
     "text": "std(obs::Observable{T})\n\nEstimate of the standard deviation (one-sigma error) of the mean. Respects correlations between measurements through binning analysis.\n\nNote that this is not the same as Base.std(timeseries(obs)), not even  for uncorrelated measurements.\n\nCorresponds to the square root of var(obs). See also mean(obs).\n\n\n\n"
 },
 
@@ -364,7 +364,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/statistics.html#Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "Base.var",
-    "category": "Method",
+    "category": "method",
     "text": "var(obs::Observable{T})\n\nEstimate of the variance of the mean. Respects correlations between measurements through binning analysis.\n\nNote that this is not the same as Base.var(timeseries(obs)), not even  for uncorrelated measurements.\n\nCorresponds to the square of std(obs). See also mean(obs).\n\n\n\n"
 },
 
@@ -372,7 +372,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/statistics.html#ErrorAnalysis.binning_error-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "ErrorAnalysis.binning_error",
-    "category": "Method",
+    "category": "method",
     "text": "binning_error(obs::Observable{T}[; binsize=0, warnings=false])\n\nCalculates statistical one-sigma error (eff. standard deviation) for correlated data. How: Binning of data and assuming statistical independence of bins (i.e. R plateau has been reached). (Eq. 3.18 of Book basically)\n\nThe default binsize=0 indicates automatic binning.\n\n\n\n"
 },
 
@@ -380,8 +380,8 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/statistics.html#ErrorAnalysis.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
     "page": "Statistics",
     "title": "ErrorAnalysis.jackknife_error",
-    "category": "Method",
-    "text": "jackknife_error(g::Function, obs::Observable{T}; [binsize=10])\n\nComputes the jackknife standard deviation of g(<obs>) by binning the observable's time series and performing leave-one-out analysis.\n\n\n\n"
+    "category": "method",
+    "text": "jackknife_error(g::Function, obs::Observable{T}; [binsize=10])\n\nComputes the jackknife standard deviation of g(<obs>) by binning the observable\'s time series and performing leave-one-out analysis.\n\n\n\n"
 },
 
 {
@@ -420,7 +420,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/io.html#MonteCarloObservable.export_result-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "IO",
     "title": "MonteCarloObservable.export_result",
-    "category": "Method",
+    "category": "method",
     "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full time series as well.\n\n\n\n"
 },
 
@@ -428,7 +428,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/io.html#MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}",
     "page": "IO",
     "title": "MonteCarloObservable.loadobs",
-    "category": "Method",
+    "category": "method",
     "text": "loadobs(filename::AbstractString, entryname::AbstractString)\n\nLoad complete representation of an observable from JLD file.\n\nSee also saveobs.\n\n\n\n"
 },
 
@@ -436,7 +436,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/io.html#MonteCarloObservable.loadobs_frommemory-Tuple{AbstractString,AbstractString}",
     "page": "IO",
     "title": "MonteCarloObservable.loadobs_frommemory",
-    "category": "Method",
+    "category": "method",
     "text": "loadobs_frommemory(filename::AbstractString, group::AbstractString)\n\nCreate an observable based on memory dump (inmemory==false).\n\n\n\n"
 },
 
@@ -444,7 +444,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/io.html#MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "IO",
     "title": "MonteCarloObservable.saveobs",
-    "category": "Method",
+    "category": "method",
     "text": "saveobs(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])\n\nSaves complete representation of the observable to JLD file.\n\nDefault filename is \"Observables.jld\" and default entryname is name(obs).\n\nSee also loadobs.\n\n\n\n"
 },
 
@@ -452,7 +452,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/io.html#MonteCarloObservable.timeseries_frommemory-Tuple{AbstractString,AbstractString}",
     "page": "IO",
     "title": "MonteCarloObservable.timeseries_frommemory",
-    "category": "Method",
+    "category": "method",
     "text": "timeseries_frommemory(filename::AbstractString, group::AbstractString)\n\nLoad time series from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate time series chunks. Output will be a vector of measurements.\n\n\n\n"
 },
 
@@ -460,7 +460,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/io.html#MonteCarloObservable.timeseries_frommemory_flat-Tuple{AbstractString,AbstractString}",
     "page": "IO",
     "title": "MonteCarloObservable.timeseries_frommemory_flat",
-    "category": "Method",
+    "category": "method",
     "text": "timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)\n\nLoad time series from memory dump (inmemory==false) in HDF5/JLD file.\n\nWill load and concatenate time series chunks. Output will be higher-dimensional array whose last dimension corresponds to Monte Carlo time.\n\n\n\n"
 },
 
@@ -500,7 +500,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/plotting.html#MonteCarloObservable.binningplot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "MonteCarloObservable.binningplot",
-    "category": "Method",
+    "category": "method",
     "text": "binningplot(obs::Observable{T})\n\nCreates a plot of the binning error coefficient R as a function of bin size.\n\nThe coefficient R should (up to statistical fluctuations) show a plateau for larger bin sizes, indicating that the bin averages have become independent. For correlated data one has R>≈1 and sqrt(R) quantifies how much one would have underestimated the one-sigma errorbar.\n\nSee binning_error.\n\n\n\n"
 },
 
@@ -508,7 +508,7 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/plotting.html#MonteCarloObservable.corrplot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "MonteCarloObservable.corrplot",
-    "category": "Method",
+    "category": "method",
     "text": "corrplot(obs::Observable{T})\n\nPlot the autocorrelation function of the observable.\n\n\n\n"
 },
 
@@ -516,16 +516,16 @@ var documenterSearchIndex = {"docs": [
     "location": "methods/plotting.html#MonteCarloObservable.hist-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "MonteCarloObservable.hist",
-    "category": "Method",
-    "text": "hist(obs::Observable{T}[; errors=true, digits=3])\n\nPlot a histogram of the observable's time series.\n\n\n\n"
+    "category": "method",
+    "text": "hist(obs::Observable{T}[; errors=true, digits=3])\n\nPlot a histogram of the observable\'s time series.\n\n\n\n"
 },
 
 {
     "location": "methods/plotting.html#PyPlot.plot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
     "page": "Plotting",
     "title": "PyPlot.plot",
-    "category": "Method",
-    "text": "plot(obs::Observable{T}[; errors=true, digits=3])\n\nPlot the observable's time series.\n\n\n\n"
+    "category": "method",
+    "text": "plot(obs::Observable{T}[; errors=true, digits=3])\n\nPlot the observable\'s time series.\n\n\n\n"
 },
 
 {
