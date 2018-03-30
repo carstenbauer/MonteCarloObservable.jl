@@ -19,7 +19,7 @@ function add!(obs::Observable{T}, measurement::T; verbose=false) where T
 
     # add to time series
     verbose && println("Adding measurment to time series [chunk].")
-    obs.timeseries[obs.tsidx] = measurement
+    obs.timeseries[obs.tsidx] = copy(measurement)
     obs.tsidx += 1
     
     if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow 
