@@ -2,7 +2,7 @@
     # inmemory
     1) saveobs, loadobs: saving a restorable version of the Observable{T} object
     2) exportobs: export results of obs (name, n_meas, time series) to file (Maybe: support (incomplete) import)
-    
+
     # !inmemory
     1) saveobs, loadobs: same as above
         - how to avoid same grp conflict? if inmemory dump to trg/obsname if !inmemory dump to trg/obsname/observable
@@ -73,7 +73,7 @@ end
 
 Export result for given observable nicely to JLD.
 
-Will export name, number of measurements, estimates for mean and one-sigma error (standard deviation).
+Will export name, number of measurements, estimates for mean and one-sigma error.
 Optionally (`timeseries==true`) exports the full time series as well.
 """
 function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false) where T
@@ -85,7 +85,7 @@ function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile,
         write(f, joinpath(grp, "count"), length(obs))
         timeseries && write(f, joinpath(grp, "timeseries"), MonteCarloObservable.timeseries(obs))
         write(f, joinpath(grp, "mean"), mean(obs))
-        write(f, joinpath(grp, "std"), std(obs))
+        write(f, joinpath(grp, "error"), error(obs))
     end
     nothing
 end

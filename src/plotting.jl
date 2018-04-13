@@ -1,27 +1,10 @@
-"""
-	plot_binning_R(obs::Observable{T}; min_nbins=32, figsize=(4,3))
-
-Plots the binning error coefficient `R` as a function of bin size.
-
-Ideally, this plot shows a plateau (Fig. 3.3), indicating that the bin averages have become independent.
-For correlated data `R>≈1` and `sqrt(R)` quantifies how much one would have underestimated
-the one-sigma errorbar.
-
-Returns bin sizes and corresponding `R` values.
-"""
-plot_binning_R(obs::Observable{T}; keyargs...) where T = plot_binning_R(timeseries(obs); keyargs...)
-
-"""
-	plot_error(obs::Observable{T}; binsize=0, histbins=50, figsize=(10,4), digits=3)
-
-Plots histogram of observable's time series (augmented with mean and errorbars) and autocorrelation function `C(t)`.
-"""
-plot_error(obs::Observable{T}; keyargs...) where T = plot_error(timeseries(obs); keyargs...)
-
+# --------------------------------------
+#           Time series
+# --------------------------------------
 function plot_timeseries(obs::Observable{T}; errors=true, digits=3) where T
 	const ts = timeseries(obs)
 	const Xmean = mean(obs)
-	const err = std(obs)
+	const err = error(obs)
 	const Xstd = std(ts)
 
 	fig, ax = subplots(1,1)
@@ -57,10 +40,14 @@ Plot the observable's time series.
 """
 plot(obs::Observable{T}; keyargs...) where T = plot_timeseries(obs; keyargs...)
 
+
+# --------------------------------------
+#           Histogram
+# --------------------------------------
 function plot_histogram(obs::Observable{T}; errors=true, digits=3) where T
 	const ts = timeseries(obs)
 	const Xmean = mean(obs)
-	const err = std(obs)
+	const err = error(obs)
 	const Xstd = std(ts)
 
 	fig, ax = subplots(1,1)
@@ -96,10 +83,14 @@ Plot a histogram of the observable's time series.
 """
 hist(obs::Observable{T}; keyargs...) where T = plot_histogram(obs; keyargs...)
 
-function plot_binning(obs::Observable{T}) where T
+
+# --------------------------------------
+#           	Binning
+# --------------------------------------
+function plot_binning(obs::Observable{T}; min_nbins=32) where T
 	const ts = timeseries(obs)
 
-	bss, R = ErrorAnalysis.R_function(ts, min_nbins=32)
+	bss, R = R_function(ts, min_nbins=min_nbins)
 	figure()
 	plot(bss, R, "m.-")
 	xlabel("bin size")
@@ -108,7 +99,7 @@ function plot_binning(obs::Observable{T}) where T
 	nothing
 end
 """
-	binningplot(obs::Observable{T})
+	binningplot(obs::Observable{T}[; min_nbins=32])
 
 Creates a plot of the binning error coefficient `R` as a function of bin size.
 
@@ -121,6 +112,10 @@ See [`binning_error`](@ref).
 """
 binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs...)
 
+
+# --------------------------------------
+#           Autocorrelation
+# --------------------------------------
 function plot_autocorrelation(obs::Observable{T}) where T
 	const ts = timeseries(obs)
 
@@ -128,6 +123,15 @@ function plot_autocorrelation(obs::Observable{T}) where T
 	ax[:plot](autocor(ts), "-", color="k", linewidth=2.0)
 	ax[:set_xlabel]("Monte Carlo time \$ t \$")
 	ax[:set_ylabel]("Autocorrelation of $(name(obs))")
+
+	# ax[:axvline](x=tau(obs), color="gray")
+	# ax[:axvline](x=tau(obs, Rplateaufinder(obs)[3]), color="red")
+	# ax[:axvline](x=sum(StatsBase.autocor(ts)), color="green")
+	# @show sum(StatsBase.autocor(ts))
+	# @show Rplateaufinder(obs)[3]
+	# @show tau(obs)
+	# ax[:axhline](y=exp(-1))
+
 	tight_layout()
 	nothing
 end
@@ -138,11 +142,11 @@ Plot the autocorrelation function of the observable.
 """
 corrplot(obs::Observable{T}; keyargs...) where T = plot_autocorrelation(obs; keyargs...)
 
-# export plot_timeseries # === plot(obs)
-# export plot_histogram # === hist(obs)
-# export plot_binning # === plot_binning_R(obs)
 
 
+# --------------------------------------
+#           Playground
+# --------------------------------------
 # using Plots instead of PyPlot
 
 function plot_histogram_Plots(obs::Observable{T}; errors=true, digits=3) where T

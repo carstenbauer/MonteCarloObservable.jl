@@ -65,6 +65,17 @@ function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=t
 end
 
 """
+Convenience macro for generating an Observable from a vector of measurements.
+"""
+macro obs(arg)
+    return quote
+        local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
+        add!(o, $(esc(arg)))
+        o
+    end
+end
+
+"""
     init!(obs)
 
 Initialize non-external fields of observable `obs`.
