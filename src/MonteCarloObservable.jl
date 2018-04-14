@@ -3,6 +3,7 @@ module MonteCarloObservable
     using JLD, HDF5
     using StatsBase
     using PyPlot
+    using EllipsisNotation
 
     import PyPlot.plot
 

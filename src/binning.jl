@@ -53,7 +53,7 @@ a plateau, i.e. `R(bs_p) ~ R(bs)` for `bs >= bs_p`. (Fig. 3.3)
 
 Optional keyword `min_nbins`. Only bin sizes used that lead to at least `min_nbins` bins.
 """
-function R_function(X::AbstractVector{T}; min_nbins=10) where T<:Real
+function R_function(X::AbstractVector{T}; min_nbins=32) where T<:Real
     bss = Int[]
     N = length(X)
     Xmean = mean(X)

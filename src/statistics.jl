@@ -1,22 +1,21 @@
 # define error estimation tools for Observable{T} type
 """
-    binning_error(obs::Observable{T}[; binsize=0, warnings=false])
+    jackknife_error(g::Function, obs1, ob2, ...)
 
-Calculates statistical one-sigma error (eff. standard deviation) for correlated data.
-How: Binning of data and assuming statistical independence of bins
-(i.e. R plateau has been reached). (Eq. 3.18 of Book basically)
+Computes the jackknife one sigma error of `g(<obs1>, <obs2>, ...)` by performing 
+a "leave-one-out" analysis.
 
-The default `binsize=0` indicates automatic binning.
+The function `g(x)` must take one matrix argument `x`, whose columns correspond 
+to the time series of the observables, and produce a scalar (point estimate).
+
+Example:
+
+`g(x) = @views mean(x[:,1])^2 - mean(x[:,2].^2)` followed by `jackknife_error(g, obs1, obs2)`.
+Here `x[:,1]` is basically `timeseries(obs1)` and `x[:,2]` is `timeseries(obs2)`.
 """
-binning_error(obs::Observable{T}, args...; keyws...) where T = binning_error(timeseries(obs), args...; keyws...)
+jackknife_error(g::Function, obs::Observable{T}) where T = Jackknife.error(g, timeseries(obs))
+jackknife_error(g::Function, obss::Observable{T}...) where T = Jackknife.error(g, hcat(timeseries.(obss)...))
 
-"""
-    jackknife_error(g::Function, obs::Observable{T}; [binsize=10])
-
-Computes the jackknife standard deviation of `g(<obs>)` by binning
-the observable's time series and performing leave-one-out analysis.
-"""
-jackknife_error(g::Function, obs::Observable{T}, args...; keyws...) where T = jackknife_error(g, timeseries(obs), args...; keyws...)
 
 """
     mean(obs::Observable{T})
@@ -36,15 +35,17 @@ for uncorrelated measurements.
 
 See also [`mean(obs)`](@ref).
 """
-function error(obs::Observable{T}) where T
-    # choose binsize such that we have at least 32 full bins.
-    binning_error(obs, binsize=floor(Int, length(obs)/32))
+function error(obs::Observable{T}; binsize=floor(Int, length(obs)/32)) where T
+    # if not specified, choose binsize such that we have at least 32 full bins.
+    binning_error(obs, binsize=binsize)
 end
 error(obs::Observable, Rvalue::Float64) = sqrt(Rvalue*var(obs)/length(obs))
 
 finderror(obs::Observable) = Rplateaufinder(obs)[1]
 
 function Rplateaufinder(obs::Observable)
+    length(obs)<32 && error("Too few measurements.")
+
     # find start of plateau as first maximum of R, i.e. last R value of
     # initial increase before first decrease.
     # This corresponds to estimating the error as it's first local maximum.
@@ -58,9 +59,14 @@ function Rplateaufinder(obs::Observable)
         end
         lastr = r
     end
-    return error(obs, lastr), conv, lastr
+    return error(obs, lastr), conv, lastr, length(R)
 end
-isconverged(obs::Observable) = Rplateaufinder(obs)[2]
+
+function isconverged(obs::Observable)
+  er, conv, lastr, nR = Rplateaufinder(obs)
+  nR < 3 && warn("Very low confidence level!")
+  conv
+end
 
 """
     std(obs::Observable{T})
@@ -137,3 +143,5 @@ function iswithinerrorbars(A::AbstractArray{T}, B::AbstractArray{S},
 
   return allequal
 end
+
+iswithinerrorbars(A::Observable, B::Observable, Δ, print=false) = iswithinerrorbars(timeseries(A), timeseries(B), Δ, print)

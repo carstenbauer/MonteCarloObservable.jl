@@ -25,7 +25,7 @@ obs[3] # conventional element accessing
 obs[end-2:end]
 add!(obs, rand(995))
 mean(obs)
-std(obs) # one-sigma error of mean (binning analysis)
+error(obs) # one-sigma error of mean (binning analysis)
 saveobs(obs, "myobservable.jld")
 ```
 

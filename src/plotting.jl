@@ -116,7 +116,7 @@ binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs.
 # --------------------------------------
 #           Autocorrelation
 # --------------------------------------
-function plot_autocorrelation(obs::Observable{T}) where T
+function plot_autocorrelation(obs::Observable{T}; showtau=false) where T
 	const ts = timeseries(obs)
 
 	fig, ax = subplots(1,1)
@@ -124,13 +124,19 @@ function plot_autocorrelation(obs::Observable{T}) where T
 	ax[:set_xlabel]("Monte Carlo time \$ t \$")
 	ax[:set_ylabel]("Autocorrelation of $(name(obs))")
 
-	# ax[:axvline](x=tau(obs), color="gray")
-	# ax[:axvline](x=tau(obs, Rplateaufinder(obs)[3]), color="red")
-	# ax[:axvline](x=sum(StatsBase.autocor(ts)), color="green")
-	# @show sum(StatsBase.autocor(ts))
-	# @show Rplateaufinder(obs)[3]
-	# @show tau(obs)
-	# ax[:axhline](y=exp(-1))
+	if showtau
+		t = tau(obs)
+		tfinder = tau(obs, Rplateaufinder(obs)[3])
+		tsum = sum(StatsBase.autocor(ts))
+		ax[:axvline](x=t, color="red", label="tau ≈ $(round(t,2))")
+		ax[:axvline](x=tfinder, color="orange", label="tau (finder) ≈ $(round(tfinder,2))")
+		ax[:axvline](x=tsum, color="green", label="tau (sum) ≈ $(round(tsum,2))")
+		# @show sum(StatsBase.autocor(ts))
+		# @show Rplateaufinder(obs)[3]
+		# @show tau(obs)
+		ax[:axhline](y=exp(-1), color="gray", alpha=.2, label="1/e")
+		ax[:legend]()
+	end
 
 	tight_layout()
 	nothing
