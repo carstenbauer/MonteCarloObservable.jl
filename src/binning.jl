@@ -4,79 +4,28 @@
 # for general AbstractArrays
 # specifics for Observable type in statistics.jl
 
-"""
-    binning_error(X[; binsize=0, warnings=false])
-
-Calculates statistical one-sigma error for correlated data.
-How: Binning of data and assuming statistical independence of bins
-(i.e. R plateau has been reached). (Eq. 3.18 basically)
-
-The default `binsize=0` indicates automatic binning.
-"""
-function binning_error(X::AbstractVector{T}; binsize=0, warnings=false) where T<:Real
-    # Data: real numbers
-    if binsize == 0
-        binsize = floor(Int, length(X)/32)
-        binsize = binsize==0?1:binsize
-    end
-
-    isinteger(length(X) / binsize) || !warnings ||
-        warn("Non-integer number of bins $(length(X) / binsize). " *
-             "Last bin will be smaller than all others.")
-
-    bin_means = map(mean, Iterators.partition(X, binsize))
-    return sqrt(1/length(bin_means) * var(bin_means))
-end
-function binning_error(X::AbstractVector{T}; binsize=0, warnings=false) where T<:Complex
-    # Data: complex numbers
-    sqrt(binning_error(real(X), binsize=binsize, warnings=warnings)^2 +
-        binning_error(imag(X), binsize=binsize, warnings=warnings)^2)
-end
-
-# Data: arrays
-function binning_error(X::AbstractArray{T}; binsize=0, warnings=false) where T<:Number
-    ndimsX = ndims(X)
-    mapslices(y->binning_error(y; binsize=binsize, warnings=warnings), X, ndimsX)[(Colon() for _ in 1:ndimsX-1)...,1]
-end
-function binning_error(X::AbstractVector{T}; binsize=0, warnings=false) where T<:(AbstractArray{S} where S)
-    binning_error(cat(ndims(X[1])+1, X...); binsize=binsize, warnings=warnings)
-end
-
-
 #####
 # Calculation of error coefficient (function) R. (Ch. 3.4 in QMC book)
 #####
 """
 Groups datapoints in bins of varying size `bs`.
-Returns the used binsizes `bss` and the error coefficient function `R(bss)` (Eq. 3.20) which should feature
-a plateau, i.e. `R(bs_p) ~ R(bs)` for `bs >= bs_p`. (Fig. 3.3)
+Returns the used binsizes `bss`, the error coefficient function `R(bss)` (Eq. 3.20), and 
+the averaged error coefficients `<R>(bss)`. The function should feature a plateau, 
+i.e. `R(bs_p) ~ R(bs)` for `bs >= bs_p`. (Fig. 3.3)
 
 Optional keyword `min_nbins`. Only bin sizes used that lead to at least `min_nbins` bins.
 """
-function R_function(X::AbstractVector{T}; min_nbins=32) where T<:Real
-    bss = Int[]
-    N = length(X)
-    Xmean = mean(X)
-    Xvar = var(X)
+function R_function(X::AbstractVector{T}; min_nbins=50) where T<:Real
+    max_binsize = floor(Int, length(X)/min_nbins)
+    binsizes = 1:max_binsize
 
-    for bs in 1:N # TODO: intermediate bin sizes (throw away last unfilled bin)
-        N%bs == 0 ? push!(bss, bs) : nothing
+    R = zeros(max_binsize)
+    @inbounds for bs in binsizes
+        R[bs] = R_value(X, bs)
     end
 
-    n_bins = Int.(N./bss)
-    bss = bss[n_bins .>= min_nbins] # at least min_nbins bins for every binsize
-
-    R = zeros(length(bss))
-    for (i, bs) in enumerate(bss)
-
-        blockmeans = vec(mean(reshape(X, (bs,n_bins[i])), 1))
-
-        blocksigma2 = 1/(n_bins[i]-1)*sum((blockmeans - Xmean).^2)
-
-        R[i] = bs * blocksigma2 / Xvar
-    end
-
-    return bss, R
+    means = @views mean.([R[1:i] for i in 1:max_binsize])
+    return binsizes, R, means
 end
 
 """
@@ -86,8 +35,12 @@ function R_value(X::AbstractVector{T}, binsize::Int) where T<:Real
     N = length(X)
     n_bins = div(N,binsize)
     lastbs = rem(N,binsize)
-    lastbs == 0 || (lastbs >= binsize/2 || warn("Binsize leads to last bin having less than binsize/2 elements."))
+    # if lastbs <= binsize/2
+    #     n_bins = n_bins-1 # drop last bin if less than half filled
+    # end
 
+    #     bin_means = map(mean, Iterators.partition(X, binsize))
+    # return sqrt(1/length(bin_means) * var(bin_means))
 
     blockmeans = vec(mean(reshape(X[1:n_bins*binsize], (binsize,n_bins)), 1))
     if lastbs != 0
@@ -98,3 +51,109 @@ function R_value(X::AbstractVector{T}, binsize::Int) where T<:Real
     blocksigma2 = 1/(n_bins-1)*sum((blockmeans - mean(X)).^2)
     return binsize * blocksigma2 / var(X)
 end
+
+
+#####
+# Automatic R/error estimation + convergence check
+#####
+"""
+Estimates the error coefficient `R` by considering `<R>(bss)` (averaged R values).
+
+Returns estimated start of plateau (bin size), estimate for `R`, and convergence (boolean).
+"""
+function Rplateaufinder(X::AbstractVector{T}) where T<:Real
+    bss, Rs, means = R_function(X)
+
+    conv = isconverged(X, means)
+    # R = maximum(means[(end-(lastn-1)):end])
+    R = means[end]
+    bs = findfirst(r->r>=R, Rs)
+
+    return bs, R, conv
+end
+
+"""
+  isconverged(X)
+
+Checks if the estimation of the one sigma error is converged.
+
+Returns `true` once the mean `R` value is converged up to 0.1% accuracy.
+This corresponds to convergence of the error itself up to ~3% (sqrt).
+"""
+function isconverged(X::AbstractVector{T}) where T<:Real
+  bss, Rs, means = R_function(X)
+  return isconverged(X, means)
+end
+function isconverged(X::AbstractVector{T}, means::AbstractVector) where T<:Real
+    len = length(means)
+    lastn = min(len-1, 200)
+    start = len-(lastn-1)
+    return @views maximum(abs.(diff(means[start:end])))<1e-3 # convergence condition
+end
+isconverged(X::AbstractVector{<:Complex}) = isconverged(real(X)) && isconverged(imag(X)) # check if that's really what we want here
+
+
+#####
+# Calculation of binning error (automatic plateau finder, automatic naive (last value), from given R value, for given bin size)
+#####
+"""
+    binning_error(X)
+
+Estimate of the one-sigma error of the time series's mean.
+Respects correlations between measurements through binning analysis.
+
+Note that this is not the same as `Base.std(X)`, not even
+for uncorrelated measurements.
+
+For more details, see [`MonteCarloObservable.Rplateaufinder`](@ref).
+"""
+binning_error(X::AbstractVector{<:Number}) = binning_error_with_convergence(X)[1]
+binning_error(X::AbstractArray{<:Number}) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error(xi), X, nd), nd) end
+binning_error(X::AbstractVector{<:AbstractArray}) = binning_error(cat(ndims(X[1])+1, X...))
+
+"""
+Returns one sigma error and convergence flag (boolean).
+"""
+function binning_error_with_convergence(X::AbstractVector{T}) where T<:Real
+  bs, R, conv = Rplateaufinder(X)
+  binning_error_from_R(X, R), conv
+end
+function binning_error_with_convergence(X::AbstractVector{T}) where T<:Complex
+    Xreal = real(X)
+    bsreal, Rreal, convreal = Rplateaufinder(Xreal)
+    Ximag = imag(X)
+    bsimag, Rimag, convimag = Rplateaufinder(Ximag)
+    sqrt(binning_error_from_R(Xreal, Rreal)^2 + binning_error_from_R(Xreal, Rimag)^2), convreal && convimag # check if that's really what we want here
+end
+binning_error_with_convergence(X::AbstractArray{<:Number}) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error_with_convergence(xi), X, nd), nd) end
+binning_error_with_convergence(X::AbstractVector{<:AbstractArray}) = binning_error_with_convergence(cat(ndims(X[1])+1, X...))
+
+"""
+    binning_error(X, binsize)
+
+Estimate of the one-sigma error of the time series's mean.
+Respect correlations between measurements through binning analysis, 
+using the given `binsize` (i.e. assuming independence of bins, Eq. 3.18 basically).
+"""
+binning_error(X::AbstractVector{<:Real}, binsize::Int) = binning_error_from_R(X, R_value(X, binsize))
+binning_error(X::AbstractVector{<:Complex}, binsize::Int) = sqrt(binning_error(real(X), binsize)^2 + binning_error(imag(X), binsize)^2)
+binning_error(X::AbstractArray{<:Number}, binsize::Int) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error(xi, binsize), X, nd), nd) end
+binning_error(X::AbstractVector{<:AbstractArray}, binsize::Int) = binning_error(cat(ndims(X[1])+1, X...), binsize)
+
+
+binning_error_from_R(X::AbstractVector{T}, Rvalue::Float64) where T<:Real = sqrt(Rvalue*var(X)/length(X))
+
+"""
+    binning_error_naive(X, min_nbins=50)
+
+Estimate of the one-sigma error of the observable's mean.
+Respects correlations between measurements through binning analysis.
+
+Strategy: just take largest R value considering an upper limit for bin size (min_nbins)
+"""
+function binning_error_naive(X::AbstractVector{<:Number}, min_nbins::Int=50)
+    # if not specified, choose binsize such that we have at least 50 full bins.
+    binning_error(X, floor(Int, length(X)/min_nbins))
+end
+binning_error_naive(X::AbstractArray{<:Number}, min_nbins::Int=50) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error_naive(xi, min_nbins=min_nbins), X, nd), nd) end
+binning_error_naive(X::AbstractVector{<:AbstractArray}, min_nbins::Int=50) = binning_error_naive(cat(ndims(X[1])+1, X...), min_nbins=min_nbins)

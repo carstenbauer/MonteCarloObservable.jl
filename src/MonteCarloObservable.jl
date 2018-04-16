@@ -45,8 +45,9 @@ module MonteCarloObservable
     export tau # autocorrelation time
     export iswithinerrorbars
     export error
-    export finderror # experimental
-    export isconverged # experimental
+    export error_naive
+    export error_with_convergence
+    # export isconverged # experimental
 
     export binning_error
     export jackknife_error
@@ -71,6 +72,7 @@ module MonteCarloObservable
     export plot
     export hist
     export binningplot
+    export errorplot
     export corrplot
 
     # overwritten Base

@@ -27,7 +27,7 @@ mean(obs::Observable{T}) where T = obs.mean
 """
     error(obs::Observable{T})
 
-Estimate of the standard deviation (one-sigma error) of the mean.
+Estimate of the one-sigma error of the observable's mean.
 Respects correlations between measurements through binning analysis.
 
 Note that this is not the same as `Base.std(timeseries(obs))`, not even
@@ -35,38 +35,33 @@ for uncorrelated measurements.
 
 See also [`mean(obs)`](@ref).
 """
-function error(obs::Observable{T}; binsize=floor(Int, length(obs)/32)) where T
-    # if not specified, choose binsize such that we have at least 32 full bins.
-    binning_error(obs, binsize=binsize)
-end
-error(obs::Observable, Rvalue::Float64) = sqrt(Rvalue*var(obs)/length(obs))
+error(obs::Observable) = binning_error(timeseries(obs))
+error(obs::Observable, binsize::Int) = binning_error(timeseries(obs), binsize)
 
-finderror(obs::Observable) = Rplateaufinder(obs)[1]
+"""
+Returns one sigma error and convergence flag (boolean).
+"""
+error_with_convergence(obs::Observable) = binning_error_with_convergence(timeseries(obs))
 
-function Rplateaufinder(obs::Observable)
-    length(obs)<32 && error("Too few measurements.")
+# """
+#   isconverged(obs)
 
-    # find start of plateau as first maximum of R, i.e. last R value of
-    # initial increase before first decrease.
-    # This corresponds to estimating the error as it's first local maximum.
-    bss, R = R_function(timeseries(obs), min_nbins=32)
-    lastr = R[1]
-    conv = false
-    for r in R[2:end]
-        if r < lastr # first decrease
-            conv = true
-            break
-        end
-        lastr = r
-    end
-    return error(obs, lastr), conv, lastr, length(R)
-end
+# Checks if the estimation of the one sigma error is converged.
 
-function isconverged(obs::Observable)
-  er, conv, lastr, nR = Rplateaufinder(obs)
-  nR < 3 && warn("Very low confidence level!")
-  conv
-end
+# Returns `true` once the mean `R` value is converged up to 0.1% accuracy.
+# This corresponds to convergence of the error itself up to ~3% (sqrt).
+# """
+# isconverged(obs::Observable) = isconverged(timeseries(obs))
+
+"""
+    error_naive(obs::Observable{T})
+
+Estimate of the one-sigma error of the observable's mean.
+Respects correlations between measurements through binning analysis.
+
+Strategy: just take largest R value considering an upper limit for bin size (min_nbins)
+"""
+error_naive(obs::Observable{T}) where T = binning_error_naive(timeseries(obs))
 
 """
     std(obs::Observable{T})

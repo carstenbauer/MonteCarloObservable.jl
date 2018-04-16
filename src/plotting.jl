@@ -87,14 +87,17 @@ hist(obs::Observable{T}; keyargs...) where T = plot_histogram(obs; keyargs...)
 # --------------------------------------
 #           	Binning
 # --------------------------------------
-function plot_binning(obs::Observable{T}; min_nbins=32) where T
+function plot_binning(obs::Observable{T}; min_nbins=50) where T
 	const ts = timeseries(obs)
 
-	bss, R = R_function(ts, min_nbins=min_nbins)
+	bss, R, means = R_function(ts, min_nbins=min_nbins)
+
 	figure()
-	plot(bss, R, "m.-")
+	plot(bss, R, "m.-", label="R")
+	plot(bss, means, ".-", label="R means")
+	ylabel("error coefficient")
+	legend()
 	xlabel("bin size")
-	ylabel("R");
 	tight_layout();
 	nothing
 end
@@ -112,6 +115,23 @@ See [`binning_error`](@ref).
 """
 binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs...)
 
+# TODO
+function errorplot(obs::Observable)
+	const ts = timeseries(obs)
+
+	bss, R, means = R_function(ts, min_nbins=50)
+	rawerrors = [binning_error_from_R(ts, r) for r in R]
+	meanerrors = [binning_error_from_R(ts, r) for r in means]
+
+	figure()
+	plot(bss, rawerrors, "m.-", label="raw")
+	plot(bss, meanerrors, ".-", label="means")
+	ylabel("error")
+	legend()
+	xlabel("bin size")
+	tight_layout();
+end
+
 
 # --------------------------------------
 #           Autocorrelation
@@ -126,13 +146,13 @@ function plot_autocorrelation(obs::Observable{T}; showtau=false) where T
 
 	if showtau
 		t = tau(obs)
-		tfinder = tau(obs, Rplateaufinder(obs)[3])
+		tfinder = tau(obs, Rplateaufinder(obs)[2])
 		tsum = sum(StatsBase.autocor(ts))
 		ax[:axvline](x=t, color="red", label="tau ≈ $(round(t,2))")
 		ax[:axvline](x=tfinder, color="orange", label="tau (finder) ≈ $(round(tfinder,2))")
 		ax[:axvline](x=tsum, color="green", label="tau (sum) ≈ $(round(tsum,2))")
 		# @show sum(StatsBase.autocor(ts))
-		# @show Rplateaufinder(obs)[3]
+		# @show Rplateaufinder(obs)[2]
 		# @show tau(obs)
 		ax[:axhline](y=exp(-1), color="gray", alpha=.2, label="1/e")
 		ax[:legend]()
