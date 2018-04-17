@@ -120,7 +120,7 @@ function binning_error_with_convergence(X::AbstractVector{T}) where T<:Complex
     bsimag, Rimag, convimag = Rplateaufinder(Ximag)
     sqrt(binning_error_from_R(Xreal, Rreal)^2 + binning_error_from_R(Xreal, Rimag)^2), convreal && convimag # check if that's really what we want here
 end
-binning_error_with_convergence(X::AbstractArray{<:Number}) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error_with_convergence(xi), X, nd), nd) end
+binning_error_with_convergence(X::AbstractArray{<:Number}) = begin nd = ndims(X); errconv = squeeze(mapslices(xi->binning_error_with_convergence(xi), X, nd), nd); getindex.(errconv, 1), getindex.(errconv, 2) end
 binning_error_with_convergence(X::AbstractVector{<:AbstractArray}) = binning_error_with_convergence(cat(ndims(X[1])+1, X...))
 
 """

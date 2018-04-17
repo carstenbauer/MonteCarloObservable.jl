@@ -105,7 +105,7 @@ function export_error(obs::Observable{T}, filename::AbstractString=obs.outfile, 
         !HDF5.has(f.plain, grp*"error_conv") || delete!(f, grp*"error_conv")
         err, conv = error_with_convergence(obs)
         write(f, joinpath(grp, "error"), err)
-        write(f, joinpath(grp, "error_rel"), err/mean(obs))
+        write(f, joinpath(grp, "error_rel"), err./mean(obs))
         write(f, joinpath(grp, "error_conv"), string(conv))
     end
     nothing
@@ -210,14 +210,8 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
         const last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(chunk_count)"))
 
-        obs = Observable{eval(parse(element_type))}()
-        obs.name = name
-        obs.alloc = alloc
-        obs.inmemory = false
-        obs.outfile = outfile
-        obs.HDF5_dset = dataset
+        obs = Observable(eval(parse(element_type)), name; alloc=alloc, outfile=outfile, dataset=dataset, inmemory=false)
 
-        init!(obs)
         obs.n_meas = n_meas
         obs.elsize = elsize
         obs.mean = themean
