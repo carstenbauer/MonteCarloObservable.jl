@@ -105,7 +105,7 @@ function export_error(obs::Observable{T}, filename::AbstractString=obs.outfile, 
         !HDF5.has(f.plain, grp*"error_conv") || delete!(f, grp*"error_conv")
         err, conv = error_with_convergence(obs)
         write(f, joinpath(grp, "error"), err)
-        write(f, joinpath(grp, "error_rel"), err./mean(obs))
+        write(f, joinpath(grp, "error_rel"), abs.(err./mean(obs)))
         write(f, joinpath(grp, "error_conv"), string(conv))
     end
     nothing
