@@ -35,18 +35,12 @@ function R_value(X::AbstractVector{T}, binsize::Int) where T<:Real
     N = length(X)
     n_bins = div(N,binsize)
     lastbs = rem(N,binsize)
-    # if lastbs <= binsize/2
-    #     n_bins = n_bins-1 # drop last bin if less than half filled
-    # end
-
-    #     bin_means = map(mean, Iterators.partition(X, binsize))
-    # return sqrt(1/length(bin_means) * var(bin_means))
 
     blockmeans = vec(mean(reshape(X[1:n_bins*binsize], (binsize,n_bins)), 1))
-    if lastbs != 0
-        vcat(blockmeans, mean(X[n_bins*binsize+1:end]))
-        n_bins += 1
-    end
+    # if lastbs != 0
+    #     vcat(blockmeans, mean(X[n_bins*binsize+1:end]))
+    #     n_bins += 1
+    # end
 
     blocksigma2 = 1/(n_bins-1)*sum((blockmeans - mean(X)).^2)
     return binsize * blocksigma2 / var(X)
@@ -86,7 +80,8 @@ function isconverged(X::AbstractVector{T}) where T<:Real
 end
 function isconverged(X::AbstractVector{T}, means::AbstractVector) where T<:Real
     len = length(means)
-    lastn = min(len-1, 200)
+    len < 10 && (return false)
+    lastn = min(len, 200)
     start = len-(lastn-1)
     return @views maximum(abs.(diff(means[start:end])))<1e-3 # convergence condition
 end

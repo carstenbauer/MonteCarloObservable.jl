@@ -69,7 +69,7 @@ function loadobs(filename::AbstractString, entryname::AbstractString)
 end
 
 """
-    export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])
+    export_results(obs::Observable{T}[, filename::AbstractString, group::AbstractString; timeseries::Bool=false])
 
 Export result for given observable nicely to JLD.
 
@@ -85,7 +85,28 @@ function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile,
         write(f, joinpath(grp, "count"), length(obs))
         timeseries && write(f, joinpath(grp, "timeseries"), MonteCarloObservable.timeseries(obs))
         write(f, joinpath(grp, "mean"), mean(obs))
-        write(f, joinpath(grp, "error"), error(obs))
+        err, conv = error_with_convergence(obs)
+        write(f, joinpath(grp, "error"), err)
+        write(f, joinpath(grp, "error_conv"), string(conv))
+    end
+    nothing
+end
+
+"""
+    export_error(obs::Observable{T}[, filename::AbstractString, group::AbstractString;])
+
+Export one-sigma error estimate and convergence flag.
+"""
+function export_error(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset) where T
+    const grp = endswith(group, "/")?group:group*"/"
+
+    jldopen(filename, isfile(filename)?"r+":"w") do f
+        !HDF5.has(f.plain, grp*"error") || delete!(f, grp*"error")
+        !HDF5.has(f.plain, grp*"error_conv") || delete!(f, grp*"error_conv")
+        err, conv = error_with_convergence(obs)
+        write(f, joinpath(grp, "error"), err)
+        write(f, joinpath(grp, "error_rel"), err/mean(obs))
+        write(f, joinpath(grp, "error_conv"), string(conv))
     end
     nothing
 end
@@ -117,13 +138,14 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
 
     const obsname = name(obs)
     const grp = dataset*"/"
+    const tsgrp = dataset*"/timeseries/"
     const alloc = obs.alloc
 
     if !HDF5.has(f.plain, grp)
         # initialize
         write(f, joinpath(grp,"count"), length(obs))
-        write(f, joinpath(grp,"chunk_count"), 1)
-        write(f, joinpath(grp,"ts_chunk1"), obs.timeseries)
+        write(f, joinpath(tsgrp,"chunk_count"), 1)
+        write(f, joinpath(tsgrp,"ts_chunk1"), obs.timeseries)
         write(f, joinpath(grp, "mean"), mean(obs))
 
         write(f, joinpath(grp, "name"), name(obs))
@@ -132,11 +154,11 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
         write(f, joinpath(grp, "eltype"), string(eltype(obs)))
     else
         try
-            cc = read(f, joinpath(grp, "chunk_count"))
-            write(f, joinpath(grp,"ts_chunk$(cc+1)"), obs.timeseries)
+            cc = read(f, joinpath(tsgrp, "chunk_count"))
+            write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), obs.timeseries)
 
-            delete!(f, joinpath(grp, "chunk_count"))
-            write(f, joinpath(grp,"chunk_count"), cc+1)
+            delete!(f, joinpath(tsgrp, "chunk_count"))
+            write(f, joinpath(tsgrp,"chunk_count"), cc+1)
 
             c = read(f, joinpath(grp, "count"))
             c+alloc == length(obs) || warn("length(obs) != number of measurements found on disk")
@@ -174,6 +196,7 @@ Create an observable based on memory dump (`inmemory==false`).
 """
 function loadobs_frommemory(filename::AbstractString, group::AbstractString)
     const grp = endswith(group, "/")?group:group*"/"
+    const tsgrp = grp*"timeseries/"
 
     jldopen(filename) do f
         const name = read(f, joinpath(grp, "name"))
@@ -184,8 +207,8 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         const elsize = Tuple(read(f,joinpath(grp, "elsize")))
         const element_type = read(f, joinpath(grp, "eltype"))
         const themean = read(f,joinpath(grp, "mean"))
-        const chunk_count = read(f,joinpath(grp, "chunk_count"))
-        const last_ts_chunk = read(f, joinpath(grp, "ts_chunk$(chunk_count)"))
+        const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
+        const last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(chunk_count)"))
 
         obs = Observable{eval(parse(element_type))}()
         obs.name = name
@@ -229,20 +252,21 @@ array whose last dimension corresponds to Monte Carlo time.
 """
 function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
     const grp = endswith(group, "/")?group:group*"/"
+    const tsgrp = grp*"timeseries/"
 
     jldopen(filename) do f
         const n_meas = read(f, joinpath(grp, "count"))
         const element_type = read(f, joinpath(grp, "eltype"))
-        const chunk_count = read(f,joinpath(grp, "chunk_count"))
+        const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
         const T = eval(parse(element_type))
         const colons = [Colon() for _ in 1:ndims(T)]
 
-        const firstchunk = read(f, joinpath(grp,"ts_chunk1"))
+        const firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
         chunks = Vector{typeof(firstchunk)}(chunk_count)
         chunks[1] = firstchunk
 
         for c in 2:chunk_count
-            chunks[c] = read(f, joinpath(grp,"ts_chunk$(c)"))
+            chunks[c] = read(f, joinpath(tsgrp,"ts_chunk$(c)"))
         end
 
         flat_timeseries = cat(ndims(T)+1, chunks...)

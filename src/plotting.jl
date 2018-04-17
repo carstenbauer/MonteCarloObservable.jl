@@ -115,7 +115,7 @@ See [`binning_error`](@ref).
 """
 binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs...)
 
-# TODO
+
 function errorplot(obs::Observable)
 	const ts = timeseries(obs)
 
