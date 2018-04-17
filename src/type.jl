@@ -41,6 +41,16 @@ See also [`Observable`](@ref).
 function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=true,
                        outfile::String="Observables.jld", dataset::String=name, meantype::DataType=Type{Union{}})
 
+    # load olf memory dump if !inmemory
+    oldfound = false
+    if !inmemory && isfile(outfile)
+        jldopen(outfile) do f
+            HDF5.has(f.plain, dataset) && (oldfound = true)
+        end
+    end
+    oldfound && (return loadobs_frommemory(outfile, dataset))
+    
+
     # trying to find sensible DataType for mean if not given
     mt = meantype
     if mt == Type{Union{}} # not set

@@ -87,6 +87,7 @@ function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile,
         write(f, joinpath(grp, "mean"), mean(obs))
         err, conv = error_with_convergence(obs)
         write(f, joinpath(grp, "error"), err)
+        write(f, joinpath(grp, "error_rel"), abs.(err./mean(obs)))
         write(f, joinpath(grp, "error_conv"), string(conv))
     end
     nothing
@@ -210,7 +211,16 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
         const last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(chunk_count)"))
 
-        obs = Observable(eval(parse(element_type)), name; alloc=alloc, outfile=outfile, dataset=dataset, inmemory=false)
+        T = eval(parse(element_type))
+        MT = typeof(themean)
+        obs = Observable{T, MT}()
+
+        obs.name = name
+        obs.alloc = alloc
+        obs.inmemory = false
+        obs.outfile = outfile
+        obs.HDF5_dset = dataset
+        init!(obs)
 
         obs.n_meas = n_meas
         obs.elsize = elsize
