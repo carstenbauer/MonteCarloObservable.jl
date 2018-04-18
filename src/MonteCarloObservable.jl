@@ -40,6 +40,7 @@ module MonteCarloObservable
 
     export Observable
     export @obs
+    export @diskobs
 
     # statistics
     export tau # autocorrelation time
@@ -55,6 +56,7 @@ module MonteCarloObservable
     # interface
     export add!
     export timeseries
+    export ts # === timeseries
     export reset!
     export rename
     export name

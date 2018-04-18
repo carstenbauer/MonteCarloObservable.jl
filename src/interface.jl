@@ -83,6 +83,7 @@ If `inmemory(obs) == false` it will read the time series from disk and thus migh
 See also [`getindex`](@ref) and [`view`](@ref).
 """
 timeseries(obs::Observable{T}) where T = obs[1:end]
+ts(obs::Observable) = timeseries(obs)
 
 
 # init! == clear! == reset! mappings
@@ -216,16 +217,18 @@ Checks wether the observable is kept in memory (vs. on disk).
 inmemory(obs::Observable{T}) where T = obs.inmemory
 
 
-
-
-function ==(a::Observable{T}, b::Observable{S}) where {T,S}
-    T == S || (return false)
-
-    for f in fieldnames(a)
-        f == :timeseries || getfield(a, f) == getfield(b, f) || (return false)
-        # compare only non (basically) zero part of timeseries array
-        f == :timeseries && (timeseries(a) == timeseries(b) || (return false))
-    end
-
-    return true
+function ==(a::Observable, b::Observable)
+    timeseries(a) == timeseries(b)
 end
+
+# function ==(a::Observable, b::Observable)
+#     T == S || (return false)
+
+#     for f in fieldnames(a)
+#         f == :timeseries || getfield(a, f) == getfield(b, f) || (return false)
+#         # compare only non (basically) zero part of timeseries array
+#         f == :timeseries && (timeseries(a) == timeseries(b) || (return false))
+#     end
+
+#     return true
+# end

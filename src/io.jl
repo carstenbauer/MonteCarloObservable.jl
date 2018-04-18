@@ -12,11 +12,11 @@
 =#
 
 function getindex_fromfile(obs::Observable{T}, idx::Int) where T
-    const format = obs.outformat
+    # const format = obs.outformat
     const obsname = name(obs)
     const grp = obs.HDF5_dset*"/"
 
-    if format == "jld"
+    if true # format == "jld"
         currmemchunk = ceil(Int, obs.n_meas / obs.alloc)
         chunknr = ceil(Int,idx/obs.alloc)
         chunkidx = mod1(idx, obs.alloc)
@@ -103,6 +103,7 @@ function export_error(obs::Observable{T}, filename::AbstractString=obs.outfile, 
 
     jldopen(filename, isfile(filename)?"r+":"w") do f
         !HDF5.has(f.plain, grp*"error") || delete!(f, grp*"error")
+        !HDF5.has(f.plain, grp*"error_rel") || delete!(f, grp*"error_rel")
         !HDF5.has(f.plain, grp*"error_conv") || delete!(f, grp*"error_conv")
         err, conv = error_with_convergence(obs)
         write(f, joinpath(grp, "error"), err)

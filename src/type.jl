@@ -49,7 +49,7 @@ function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=t
         end
     end
     oldfound && (return loadobs_frommemory(outfile, dataset))
-    
+
 
     # trying to find sensible DataType for mean if not given
     mt = meantype
@@ -79,7 +79,17 @@ Convenience macro for generating an Observable from a vector of measurements.
 """
 macro obs(arg)
     return quote
-        local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
+        # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
+        local o = Observable($(esc(eltype))($(esc(arg))), "observable")
+        add!(o, $(esc(arg)))
+        o
+    end
+end
+
+macro diskobs(arg)
+    return quote
+        # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
+        local o = Observable($(esc(eltype))($(esc(arg))), "observable"; inmemory=false)
         add!(o, $(esc(arg)))
         o
     end
