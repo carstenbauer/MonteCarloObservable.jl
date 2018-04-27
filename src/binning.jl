@@ -60,7 +60,7 @@ function Rplateaufinder(X::AbstractVector{T}) where T<:Real
 
     conv = isconverged(X, means)
     # R = maximum(means[(end-(lastn-1)):end])
-    R = means[end]
+    R = length(means)>0 ? means[end] : 1.0
     bs = findfirst(r->r>=R, Rs)
 
     return bs, R, conv
