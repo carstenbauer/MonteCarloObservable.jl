@@ -35,22 +35,22 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="./assets/images/favicon.png">
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-0.17.3, mkdocs-material-2.7.3">
     
     
       
-        <title>MonteCarloObservable.jl</title>
+        <title>Error estimation - MonteCarloObservable.jl</title>
       
     
     
-      <link rel="stylesheet" href="./assets/stylesheets/application.8d40d89b.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/application.8d40d89b.css">
       
-        <link rel="stylesheet" href="./assets/stylesheets/application-palette.6079476c.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.6079476c.css">
       
     
     
-      <script src="./assets/javascripts/modernizr.1aa3b519.js"></script>
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
     
     
       <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -61,7 +61,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     
     
-      <link rel="stylesheet" href="./assets/Documenter.css">
+      <link rel="stylesheet" href="../../assets/Documenter.css">
     
     
   </head>
@@ -99,7 +99,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
     
-      <a href="#introduction" tabindex="1" class="md-skip">
+      <a href="#error-estimation" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -108,7 +108,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="." title="MonteCarloObservable.jl" class="md-header-nav__button md-logo">
+        <a href="../.." title="MonteCarloObservable.jl" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -125,7 +125,7 @@
                 MonteCarloObservable.jl
               </span>
               <span class="md-header-nav__topic">
-                Introduction
+                Error estimation
               </span>
             
           
@@ -240,20 +240,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
-    
-      
-    
-    
-    <a href="." title="Introduction" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../.." title="Introduction" class="md-nav__link">
       Introduction
     </a>
-    
   </li>
 
     
@@ -263,7 +254,7 @@
 
 
   <li class="md-nav__item">
-    <a href="manual/gettingstarted/" title="Getting started" class="md-nav__link">
+    <a href="../gettingstarted/" title="Getting started" class="md-nav__link">
       Getting started
     </a>
   </li>
@@ -275,7 +266,7 @@
 
 
   <li class="md-nav__item">
-    <a href="manual/meantype/" title="Type of the mean" class="md-nav__link">
+    <a href="../meantype/" title="Type of the mean" class="md-nav__link">
       Type of the mean
     </a>
   </li>
@@ -285,11 +276,56 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="manual/errorestimation/" title="Error estimation" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="toc">
+        Error estimation
+      </label>
+    
+    <a href="./" title="Error estimation" class="md-nav__link md-nav__link--active">
       Error estimation
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#binning-analysis" title="Binning analysis" class="md-nav__link">
+    Binning analysis
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resources" title="Resources" class="md-nav__link">
+    Resources
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -299,7 +335,7 @@
 
 
   <li class="md-nav__item">
-    <a href="manual/memdisk/" title="Memory / disk storage" class="md-nav__link">
+    <a href="../memdisk/" title="Memory / disk storage" class="md-nav__link">
       Memory / disk storage
     </a>
   </li>
@@ -330,7 +366,7 @@
 
 
   <li class="md-nav__item">
-    <a href="methods/general/" title="General" class="md-nav__link">
+    <a href="../../methods/general/" title="General" class="md-nav__link">
       General
     </a>
   </li>
@@ -342,7 +378,7 @@
 
 
   <li class="md-nav__item">
-    <a href="methods/statistics/" title="Statistics" class="md-nav__link">
+    <a href="../../methods/statistics/" title="Statistics" class="md-nav__link">
       Statistics
     </a>
   </li>
@@ -354,7 +390,7 @@
 
 
   <li class="md-nav__item">
-    <a href="methods/io/" title="IO" class="md-nav__link">
+    <a href="../../methods/io/" title="IO" class="md-nav__link">
       IO
     </a>
   </li>
@@ -366,7 +402,7 @@
 
 
   <li class="md-nav__item">
-    <a href="methods/plotting/" title="Plotting" class="md-nav__link">
+    <a href="../../methods/plotting/" title="Plotting" class="md-nav__link">
       Plotting
     </a>
   </li>
@@ -394,6 +430,29 @@
     
   
   
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#binning-analysis" title="Binning analysis" class="md-nav__link">
+    Binning analysis
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resources" title="Resources" class="md-nav__link">
+    Resources
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -404,14 +463,31 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/crstnbr/MonteCarloObservable.jl/edit/master/docs/src/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/crstnbr/MonteCarloObservable.jl/edit/master/docs/src/manual/errorestimation.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <p><img alt="logo" src="./assets/logo_with_text.png" /></p>
-<p><a id='Introduction-1'></a></p>
-<h1 id="introduction">Introduction</h1>
-<p>This package provides an implementation of an observable in a Markov Chain Monte Carlo simulation context (like <a href="https://github.com/crstnbr/MonteCarlo.jl">MonteCarlo.jl</a>).</p>
-<p>During a <a href="https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo">Markov chain Monte Carlo simulation</a> a Markov walker (after thermalization) walks through configuration space according to the equilibrium distribution. Typically, one measures observables along the Markov path, records the results, and in the end averages the measurements. <code>MonteCarloObservable.jl</code> provides all the necessary tools for conveniently conducting these types of measurements, including estimation of one-sigma error bars through binning or jackknife analysis.</p>
+                <p><a id='Error-estimation-1'></a></p>
+<h1 id="error-estimation">Error estimation</h1>
+<p>The automatic estimation of error bars (one-sigma confidence intervals) is outsourced in the package <a href="https://github.com/crstnbr/ErrorAnalysis.jl">ErrorAnalysis.jl</a>.</p>
+<p><a id='Binning-analysis-1'></a></p>
+<h2 id="binning-analysis">Binning analysis</h2>
+<p>For <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> uncorrelated measurements of an observable <span><span class="MathJax_Preview">O</span><script type="math/tex">O</script></span> the statistical error <span><span class="MathJax_Preview">\sigma</span><script type="math/tex">\sigma</script></span>, the root-mean-square deviation of the time series mean from the true expectation value, falls off with the number of measurements <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> according to</p>
+<div>
+<div class="MathJax_Preview">
+\sigma = \frac{\sigma_{O}}{\sqrt{N}},
+</div>
+<script type="math/tex; mode=display">
+\sigma = \frac{\sigma_{O}}{\sqrt{N}},
+</script>
+</div>
+<p>where <span><span class="MathJax_Preview">\sigma_{O}</span><script type="math/tex">\sigma_{O}</script></span> is the standard deviation of the observable <span><span class="MathJax_Preview">O</span><script type="math/tex">O</script></span>.</p>
+<p>In a Markov chain Monte Carlo sampling, however, measurements are usually correlated due to the fact that the next step of the Markov walker depends on his current position in configuration space. One way to estimate the statistical error in this case is by binning analysis. The idea is to partition the time series into bins of a fixed size large enough such that neighboring bins are uncorrelated, that is there means are uncorrelated. For this procedure to be reliable we need both a large bin size (larger than the Markov time scale of correlations, typically called autocorrelation time) and many bins (to suppress statistical fluctuations).</p>
+<p>In principle, what one <em>should</em> do is look at the estimate for the statistical error as a function of bin size and expect a plateau (convergence of the estimate). However, finding a plateau (with fluctuations) numerically in an automated manner is difficult. Instead we simply always partition the time series into 32 bins what is generally considered a large sample by statisticians. The more data we add the larger the bin size and the better the error estimate.</p>
+<p>From this we conclude that estimates for the error only become reliable in the limit of many measurements.</p>
+<p><a id='Resources-1'></a></p>
+<h2 id="resources">Resources</h2>
+<p>J. Gubernatis, N. Kawashima, and P. Werner, <a href="https://www.cambridge.org/core/books/quantum-monte-carlo-methods/AEA92390DA497360EEDA153CF1CEC7AC">Quantum Monte Carlo Methods: Algorithms for Lattice Models</a>, Book (2016)</p>
+<p>V. Ambegaokar, and M. Troyer, <a href="http://aapt.scitation.org/doi/10.1119/1.3247985">Estimating errors reliably in Monte Carlo simulations of the Ehrenfest model</a>, American Journal of Physics <strong>78</strong>, 150 (2010)</p>
                 
                   
                 
@@ -432,14 +508,28 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
+          <a href="../meantype/" title="Type of the mean" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Type of the mean
+              </span>
+            </div>
+          </a>
         
-          <a href="manual/gettingstarted/" title="Getting started" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+        
+          <a href="../memdisk/" title="Memory / disk storage" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Getting started
+                Memory / disk storage
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -469,13 +559,13 @@
       
     </div>
     
-      <script src="./assets/javascripts/application.b438e6c5.js"></script>
+      <script src="../../assets/javascripts/application.b438e6c5.js"></script>
       
-      <script>app.initialize({version:"0.17.3",url:{base:"."}})</script>
+      <script>app.initialize({version:"0.17.3",url:{base:"../.."}})</script>
       
         <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       
-        <script src="./assets/mathjaxhelper.js"></script>
+        <script src="../../assets/mathjaxhelper.js"></script>
       
     
     
