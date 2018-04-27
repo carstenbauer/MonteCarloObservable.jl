@@ -45,7 +45,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Example",
     "category": "section",
-    "text": "This is a simple demontration of how to use the package for measuring a floating point observable:using MonteCarloObservable\nobs = Observable(Float64, \"myobservable\")\nadd!(obs, 1.23) # add measurement\nobs\npush!(obs, rand(4)) # same as add!\nlength(obs)\ntimeseries(obs)\nobs[3] # conventional element accessing\nobs[end-2:end]\nadd!(obs, rand(995))\nmean(obs)\nstd(obs) # one-sigma error of mean (binning analysis)\nsaveobs(obs, \"myobservable.jld\")TODO: mention alloc keyword and importance of preallocation."
+    "text": "This is a simple demontration of how to use the package for measuring a floating point observable:using MonteCarloObservable\nobs = Observable(Float64, \"myobservable\")\nadd!(obs, 1.23) # add measurement\nobs\npush!(obs, rand(4)) # same as add!\nlength(obs)\ntimeseries(obs)\nobs[3] # conventional element accessing\nobs[end-2:end]\nadd!(obs, rand(995))\nmean(obs)\nerror(obs) # one-sigma error of mean (binning analysis)\nsaveobs(obs, \"myobservable.jld\")TODO: mention alloc keyword and importance of preallocation."
 },
 
 {
@@ -345,46 +345,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "methods/statistics.html#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "Base.mean",
-    "category": "method",
-    "text": "mean(obs::Observable{T})\n\nEstimate of the mean of the observable.\n\n\n\n"
-},
-
-{
-    "location": "methods/statistics.html#Base.std-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "Base.std",
-    "category": "method",
-    "text": "std(obs::Observable{T})\n\nEstimate of the standard deviation (one-sigma error) of the mean. Respects correlations between measurements through binning analysis.\n\nNote that this is not the same as Base.std(timeseries(obs)), not even  for uncorrelated measurements.\n\nCorresponds to the square root of var(obs). See also mean(obs).\n\n\n\n"
-},
-
-{
-    "location": "methods/statistics.html#Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "Base.var",
-    "category": "method",
-    "text": "var(obs::Observable{T})\n\nEstimate of the variance of the mean. Respects correlations between measurements through binning analysis.\n\nNote that this is not the same as Base.var(timeseries(obs)), not even  for uncorrelated measurements.\n\nCorresponds to the square of std(obs). See also mean(obs).\n\n\n\n"
-},
-
-{
-    "location": "methods/statistics.html#ErrorAnalysis.binning_error-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "ErrorAnalysis.binning_error",
-    "category": "method",
-    "text": "binning_error(obs::Observable{T}[; binsize=0, warnings=false])\n\nCalculates statistical one-sigma error (eff. standard deviation) for correlated data. How: Binning of data and assuming statistical independence of bins (i.e. R plateau has been reached). (Eq. 3.18 of Book basically)\n\nThe default binsize=0 indicates automatic binning.\n\n\n\n"
-},
-
-{
-    "location": "methods/statistics.html#ErrorAnalysis.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T",
-    "page": "Statistics",
-    "title": "ErrorAnalysis.jackknife_error",
-    "category": "method",
-    "text": "jackknife_error(g::Function, obs::Observable{T}; [binsize=10])\n\nComputes the jackknife standard deviation of g(<obs>) by binning the observable\'s time series and performing leave-one-out analysis.\n\n\n\n"
-},
-
-{
     "location": "methods/statistics.html#Documentation-1",
     "page": "Statistics",
     "title": "Documentation",
@@ -421,7 +381,7 @@ var documenterSearchIndex = {"docs": [
     "page": "IO",
     "title": "MonteCarloObservable.export_result",
     "category": "method",
-    "text": "export_results(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString; timeseries::Bool=false])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error (standard deviation). Optionally (timeseries==true) exports the full time series as well.\n\n\n\n"
+    "text": "export_results(obs::Observable{T}[, filename::AbstractString, group::AbstractString; timeseries::Bool=false])\n\nExport result for given observable nicely to JLD.\n\nWill export name, number of measurements, estimates for mean and one-sigma error. Optionally (timeseries==true) exports the full time series as well.\n\n\n\n"
 },
 
 {
@@ -494,38 +454,6 @@ var documenterSearchIndex = {"docs": [
     "title": "Index",
     "category": "section",
     "text": "Pages = [\"plotting.md\"]"
-},
-
-{
-    "location": "methods/plotting.html#MonteCarloObservable.binningplot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Plotting",
-    "title": "MonteCarloObservable.binningplot",
-    "category": "method",
-    "text": "binningplot(obs::Observable{T})\n\nCreates a plot of the binning error coefficient R as a function of bin size.\n\nThe coefficient R should (up to statistical fluctuations) show a plateau for larger bin sizes, indicating that the bin averages have become independent. For correlated data one has R>≈1 and sqrt(R) quantifies how much one would have underestimated the one-sigma errorbar.\n\nSee binning_error.\n\n\n\n"
-},
-
-{
-    "location": "methods/plotting.html#MonteCarloObservable.corrplot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Plotting",
-    "title": "MonteCarloObservable.corrplot",
-    "category": "method",
-    "text": "corrplot(obs::Observable{T})\n\nPlot the autocorrelation function of the observable.\n\n\n\n"
-},
-
-{
-    "location": "methods/plotting.html#MonteCarloObservable.hist-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Plotting",
-    "title": "MonteCarloObservable.hist",
-    "category": "method",
-    "text": "hist(obs::Observable{T}[; errors=true, digits=3])\n\nPlot a histogram of the observable\'s time series.\n\n\n\n"
-},
-
-{
-    "location": "methods/plotting.html#PyPlot.plot-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T",
-    "page": "Plotting",
-    "title": "PyPlot.plot",
-    "category": "method",
-    "text": "plot(obs::Observable{T}[; errors=true, digits=3])\n\nPlot the observable\'s time series.\n\n\n\n"
 },
 
 {
