@@ -1,4 +1,6 @@
-# Documentation
+![logo](assets/logo_with_text.png)
+
+# Introduction
 
 This package provides an implementation of an observable in a Markov Chain Monte Carlo simulation context (like [MonteCarlo.jl](https://github.com/crstnbr/MonteCarlo.jl)).
 

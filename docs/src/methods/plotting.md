@@ -11,7 +11,7 @@ Pages = ["plotting.md"]
 ## Documentation
 
 ```@autodocs
-Modules = [MonteCarloObservable, ErrorAnalysis]
+Modules = [MonteCarloObservable]
 Private = false
 Order   = [:function]
 Pages = ["plotting.jl"]
