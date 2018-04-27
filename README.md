@@ -1,4 +1,4 @@
-# MonteCarloObservable.jl  ![](https://github.com/crstnbr/MonteCarloObservable.jl/blob/master/docs/src/assets/logo_small.svg)
+![logo](https://github.com/crstnbr/MonteCarloObservable.jl/blob/master/docs/src/assets/logo_with_text.png)
 
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://crstnbr.github.io/MonteCarloObservable.jl/latest)
 [![travis][travis-img]](https://travis-ci.org/crstnbr/MonteCarloObservable.jl)
