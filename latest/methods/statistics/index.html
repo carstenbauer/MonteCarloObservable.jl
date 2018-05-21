@@ -480,8 +480,8 @@
 <li><a href="./#Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>Base.var</code></a></li>
 <li><a href="./#MonteCarloObservable.error_naive-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>MonteCarloObservable.error_naive</code></a></li>
 <li><a href="./#MonteCarloObservable.error_with_convergence-Tuple{MonteCarloObservable.Observable}"><code>MonteCarloObservable.error_with_convergence</code></a></li>
-<li><a href="./#MonteCarloObservable.iswithinerrorbars-Union{Tuple{S}, Tuple{T,S,Real,Bool}, Tuple{T,S,Real}, Tuple{T}} where T&lt;:Number where S&lt;:Number"><code>MonteCarloObservable.iswithinerrorbars</code></a></li>
 <li><a href="./#MonteCarloObservable.iswithinerrorbars-Union{Tuple{AbstractArray{T,N} where N,AbstractArray{S,N} where N,AbstractArray{#s10,N} where N where #s10&lt;:Real,Bool}, Tuple{AbstractArray{T,N} where N,AbstractArray{S,N} where N,AbstractArray{#s11,N} where N where #s11&lt;:Real}, Tuple{S}, Tuple{T}} where T&lt;:Number where S&lt;:Number"><code>MonteCarloObservable.iswithinerrorbars</code></a></li>
+<li><a href="./#MonteCarloObservable.iswithinerrorbars-Union{Tuple{S}, Tuple{T,S,Real,Bool}, Tuple{T,S,Real}, Tuple{T}} where T&lt;:Number where S&lt;:Number"><code>MonteCarloObservable.iswithinerrorbars</code></a></li>
 <li><a href="./#MonteCarloObservable.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>MonteCarloObservable.jackknife_error</code></a></li>
 <li><a href="./#MonteCarloObservable.tau-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>MonteCarloObservable.tau</code></a></li>
 </ul>
@@ -496,7 +496,7 @@
 <p>Estimate of the one-sigma error of the observable's mean. Respects correlations between measurements through binning analysis.</p>
 <p>Note that this is not the same as <code>Base.std(timeseries(obs))</code>, not even for uncorrelated measurements.</p>
 <p>See also <a href="./#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>mean(obs)</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L27-L37' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L27-L37' class='documenter-source'>source</a><br></p>
 <p><a id='Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.mean</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>mean(obs::Observable{T})
@@ -504,7 +504,7 @@
 
 
 <p>Estimate of the mean of the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L20-L24' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L20-L24' class='documenter-source'>source</a><br></p>
 <p><a id='Base.std-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.std-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.std</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>std(obs::Observable{T})
@@ -513,7 +513,7 @@
 
 <p>Standard deviation of the time series (assuming uncorrelated data).</p>
 <p>See also <a href="./#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>mean(obs)</code></a>, <a href="./#Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>var(obs)</code></a>, and <a href="./#Base.error-Tuple{MonteCarloObservable.Observable}"><code>error(obs)</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L66-L72' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L66-L72' class='documenter-source'>source</a><br></p>
 <p><a id='Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.var-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.var</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>var(obs::Observable{T})
@@ -522,7 +522,7 @@
 
 <p>Variance of the time series (assuming uncorrelated data).</p>
 <p>See also <a href="./#Base.mean-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>mean(obs)</code></a>, <a href="./#Base.std-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>std(obs)</code></a>, and <a href="./#Base.error-Tuple{MonteCarloObservable.Observable}"><code>error(obs)</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L75-L81' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L75-L81' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.error_naive-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.error_naive-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.error_naive</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>error_naive(obs::Observable{T})
@@ -531,11 +531,11 @@
 
 <p>Estimate of the one-sigma error of the observable's mean. Respects correlations between measurements through binning analysis.</p>
 <p>Strategy: just take largest R value considering an upper limit for bin size (min_nbins)</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L56-L63' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L56-L63' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.error_with_convergence-Tuple{MonteCarloObservable.Observable}' href='#MonteCarloObservable.error_with_convergence-Tuple{MonteCarloObservable.Observable}'>#</a>
 <strong><code>MonteCarloObservable.error_with_convergence</code></strong> &mdash; <em>Method</em>.</p>
 <p>Returns one sigma error and convergence flag (boolean).</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L41-L43' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L41-L43' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.iswithinerrorbars-Union{Tuple{AbstractArray{T,N} where N,AbstractArray{S,N} where N,AbstractArray{#s10,N} where N where #s10<:Real,Bool}, Tuple{AbstractArray{T,N} where N,AbstractArray{S,N} where N,AbstractArray{#s11,N} where N where #s11<:Real}, Tuple{S}, Tuple{T}} where T<:Number where S<:Number' href='#MonteCarloObservable.iswithinerrorbars-Union{Tuple{AbstractArray{T,N} where N,AbstractArray{S,N} where N,AbstractArray{#s10,N} where N where #s10<:Real,Bool}, Tuple{AbstractArray{T,N} where N,AbstractArray{S,N} where N,AbstractArray{#s11,N} where N where #s11<:Real}, Tuple{S}, Tuple{T}} where T<:Number where S<:Number'>#</a>
 <strong><code>MonteCarloObservable.iswithinerrorbars</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>iswithinerrorbars(A::AbstractArray{T&lt;:Number}, B::AbstractArray{T&lt;:Number}, Δ::AbstractArray{&lt;:Real}[, print=false])
@@ -543,7 +543,7 @@
 
 
 <p>Elementwise check whether <code>A</code> and <code>B</code> are equal up to given real error matrix <code>Δ</code>. Will print <code>A ≈ B + K.*Δ</code> for <code>print=true</code>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L112-L117' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L112-L117' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.iswithinerrorbars-Union{Tuple{S}, Tuple{T,S,Real,Bool}, Tuple{T,S,Real}, Tuple{T}} where T<:Number where S<:Number' href='#MonteCarloObservable.iswithinerrorbars-Union{Tuple{S}, Tuple{T,S,Real,Bool}, Tuple{T,S,Real}, Tuple{T}} where T<:Number where S<:Number'>#</a>
 <strong><code>MonteCarloObservable.iswithinerrorbars</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>iswithinerrorbars(a, b, δ[, print=false])
@@ -552,7 +552,7 @@
 
 <p>Checks whether numbers <code>a</code> and <code>b</code> are equal up to given error <code>δ</code>. Will print <code>x ≈ y + k·δ</code> for <code>print=true</code>.</p>
 <p>Is equivalent to <code>isapprox(a,b,atol=δ,rtol=zero(b))</code>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L95-L102' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L95-L102' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.jackknife_error-Union{Tuple{Function,MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.jackknife_error</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>jackknife_error(g::Function, obs1, ob2, ...)
@@ -563,7 +563,7 @@
 <p>The function <code>g(x)</code> must take one matrix argument <code>x</code>, whose columns correspond  to the time series of the observables, and produce a scalar (point estimate).</p>
 <p>Example:</p>
 <p><code>g(x) = @views mean(x[:,1])^2 - mean(x[:,2].^2)</code> followed by <code>jackknife_error(g, obs1, obs2)</code>. Here <code>x[:,1]</code> is basically <code>timeseries(obs1)</code> and <code>x[:,2]</code> is <code>timeseries(obs2)</code>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L2-L15' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L2-L15' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.tau-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.tau-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.tau</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>tau(obs::Observable{T})
@@ -572,7 +572,7 @@
 
 <p>Integrated autocorrelation time (obtained by binning analysis).</p>
 <p>See also <a href="./#Base.error-Tuple{MonteCarloObservable.Observable}"><code>error(obs)</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/11041d7bafb46a3817e2529983ac9585759b7e6d/src/statistics.jl#L84-L90' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/b27c3be785ffe2bfd1ad0ef8fab4406aa06193c5/src/statistics.jl#L84-L90' class='documenter-source'>source</a><br></p>
                 
                   
                 
