@@ -14,7 +14,7 @@
 function getindex_fromfile(obs::Observable{T}, idx::Int) where T
     # const format = obs.outformat
     const obsname = name(obs)
-    const grp = obs.HDF5_dset*"/"
+    const tsgrp = obs.HDF5_dset*"/timeseries/"
 
     if true # format == "jld"
         currmemchunk = ceil(Int, obs.n_meas / obs.alloc)
@@ -25,9 +25,9 @@ function getindex_fromfile(obs::Observable{T}, idx::Int) where T
 
         if eltype(T) <: Complex
             # h5read with indices is not supported for compoud data. We could only store as separate _real _imag to make this more efficient.
-            return load(obs.outfile, joinpath(grp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
+            return load(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
         else # Real
-            return squeeze(h5read(obs.outfile, joinpath(grp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx)), obs.n_dims+1)
+            return squeeze(h5read(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx)), obs.n_dims+1)
         end
     else
         error("Bug: obs.outformat not known in getindex_fromfile! Please file a github issue.")
@@ -241,8 +241,8 @@ Will load and concatenate time series chunks. Output will be a vector of measure
 """
 function timeseries_frommemory(filename::AbstractString, group::AbstractString)
     const ts = timeseries_frommemory_flat(filename,group)
-    const colons = [Colon() for _ in 1:ndims(ts)-1]
-    return [ts[colons..., i] for i in 1:size(ts, ndims(ts))]
+    @views r = [ts[.., i] for i in 1:size(ts, ndims(ts))]
+    return r
 end
 
 timeseries_frommemory(obs::Observable{T}) where T = timeseries_frommemory(obs.outfile, obs.HDF5_dset)
@@ -260,11 +260,11 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
     const tsgrp = grp*"timeseries/"
 
     jldopen(filename) do f
-        const n_meas = read(f, joinpath(grp, "count"))
+        # const n_meas = read(f, joinpath(grp, "count"))
         const element_type = read(f, joinpath(grp, "eltype"))
         const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
         const T = eval(parse(element_type))
-        const colons = [Colon() for _ in 1:ndims(T)]
+        # const colons = [Colon() for _ in 1:ndims(T)]
 
         const firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
         chunks = Vector{typeof(firstchunk)}(chunk_count)
