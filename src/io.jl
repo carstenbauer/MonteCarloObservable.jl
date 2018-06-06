@@ -200,7 +200,9 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
     const grp = endswith(group, "/")?group:group*"/"
     const tsgrp = grp*"timeseries/"
 
+    isfile(filename) || error("File not found.")
     jldopen(filename) do f
+        HDF5.has(f.plain, grp) || error("Group not found in file.")
         const name = read(f, joinpath(grp, "name"))
         const alloc = read(f, joinpath(grp, "alloc"))
         const outfile = filename
@@ -259,7 +261,9 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
     const grp = endswith(group, "/")?group:group*"/"
     const tsgrp = grp*"timeseries/"
 
+    isfile(filename) || error("File not found.")
     jldopen(filename) do f
+        HDF5.has(f.plain, grp) || error("Group not found in file.")
         # const n_meas = read(f, joinpath(grp, "count"))
         const element_type = read(f, joinpath(grp, "eltype"))
         const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
@@ -279,3 +283,8 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
         return flat_timeseries
     end
 end
+
+timeseries_flat(filename::AbstractString, group::AbstractString) = timeseries_frommemory_flat(filename, group)
+timeseries(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)
+ts_flat(filename::AbstractString, group::AbstractString) = timeseries_frommemory_flat(filename, group)
+ts(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)

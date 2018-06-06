@@ -69,6 +69,10 @@ module MonteCarloObservable
     export loadobs_frommemory
     export timeseries_frommemory
     export timeseries_frommemory_flat
+    export timeseries_flat
+    # export timeseries
+    export ts_flat
+    # export ts
 
     # plotting
     export plot

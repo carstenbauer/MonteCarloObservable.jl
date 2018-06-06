@@ -165,7 +165,7 @@ function Base.view(obs::Observable{T}, args...) where T
     if obs.inmemory
         view(view(obs.timeseries, 1:obs.n_meas), args...)
     else
-        error("Only supported for `inmemory(obs) == true`.");
+        error("Only supported for `inmemory(obs) == true`. Alternatively, load the timeseries as an array (e.g. with timeseries_frommemory_flat) and use views into this array.");
     end
 end
 
