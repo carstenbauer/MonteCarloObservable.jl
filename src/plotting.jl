@@ -2,6 +2,7 @@
 #           Time series
 # --------------------------------------
 function plot_timeseries(obs::Observable{T}; errors=true, digits=3) where T
+	@eval using PyPlot
 	const ts = timeseries(obs)
 	const Xmean = mean(obs)
 	const err = error(obs)
@@ -45,6 +46,7 @@ plot(obs::Observable{T}; keyargs...) where T = plot_timeseries(obs; keyargs...)
 #           Histogram
 # --------------------------------------
 function plot_histogram(obs::Observable{T}; errors=true, digits=3) where T
+	@eval using PyPlot
 	const ts = timeseries(obs)
 	const Xmean = mean(obs)
 	const err = error(obs)
@@ -88,6 +90,7 @@ hist(obs::Observable{T}; keyargs...) where T = plot_histogram(obs; keyargs...)
 #           	Binning
 # --------------------------------------
 function plot_binning(obs::Observable{T}; min_nbins=50) where T
+	@eval using PyPlot
 	const ts = timeseries(obs)
 
 	bss, R, means = R_function(ts, min_nbins=min_nbins)
@@ -117,6 +120,7 @@ binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs.
 
 
 function errorplot(obs::Observable)
+	@eval using PyPlot
 	const ts = timeseries(obs)
 
 	bss, R, means = R_function(ts, min_nbins=50)
@@ -137,6 +141,7 @@ end
 #           Autocorrelation
 # --------------------------------------
 function plot_autocorrelation(obs::Observable{T}; showtau=false) where T
+	@eval using PyPlot
 	const ts = timeseries(obs)
 
 	fig, ax = subplots(1,1)

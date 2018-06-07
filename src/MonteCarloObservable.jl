@@ -2,10 +2,12 @@ module MonteCarloObservable
 
     using JLD, HDF5
     using StatsBase
-    using PyPlot
     using EllipsisNotation
 
-    import PyPlot.plot
+    try
+        using PyPlot
+        import PyPlot.plot
+    end
 
     import Base.push!
     import Base.eltype
