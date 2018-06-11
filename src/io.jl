@@ -264,23 +264,42 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
     isfile(filename) || error("File not found.")
     jldopen(filename) do f
         HDF5.has(f.plain, grp) || error("Group not found in file.")
-        # const n_meas = read(f, joinpath(grp, "count"))
-        const element_type = read(f, joinpath(grp, "eltype"))
-        const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
-        const T = eval(parse(element_type))
-        # const colons = [Colon() for _ in 1:ndims(T)]
+        if typeof(f[grp]) == JLD.JldGroup && HDF5.has(f.plain, tsgrp)
+            # const n_meas = read(f, joinpath(grp, "count"))
+            const element_type = read(f, joinpath(grp, "eltype"))
+            const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
+            const T = eval(parse(element_type))
+            # const colons = [Colon() for _ in 1:ndims(T)]
 
-        const firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
-        chunks = Vector{typeof(firstchunk)}(chunk_count)
-        chunks[1] = firstchunk
+            const firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
+            chunks = Vector{typeof(firstchunk)}(chunk_count)
+            chunks[1] = firstchunk
 
-        for c in 2:chunk_count
-            chunks[c] = read(f, joinpath(tsgrp,"ts_chunk$(c)"))
+            for c in 2:chunk_count
+                chunks[c] = read(f, joinpath(tsgrp,"ts_chunk$(c)"))
+            end
+
+            flat_timeseries = cat(ndims(T)+1, chunks...)
+
+            return flat_timeseries
+
+        else
+            if typeof(f[grp]) == JLD.JldDataset
+                return read(f, grp)
+            elseif HDF5.has(f.plain, joinpath(grp, "timeseries"))
+                println("Loading real observable (old format).")
+                flat_timeseries = read(f, joinpath(grp, "timeseries"))
+                return flat_timeseries
+
+            elseif HDF5.has(f.plain, joinpath(grp, "timeseries_real"))
+                println("Loading complex observable (old format).")
+                flat_timeseries = read(f, joinpath(grp, "timeseries_real")) + im*read(f, joinpath(grp, "timeseries_imag"))
+                return flat_timeseries
+
+            else
+                error("No timeseries/observable found.")
+            end
         end
-
-        flat_timeseries = cat(ndims(T)+1, chunks...)
-
-        return flat_timeseries
     end
 end
 
