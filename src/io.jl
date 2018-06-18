@@ -310,7 +310,7 @@ ts(filename::AbstractString, group::AbstractString) = timeseries_frommemory(file
 
 function listobs(filename::AbstractString, group::AbstractString="obs/")
     h5open(filename, "r") do f
-        for el in HDF5.names(group)
+        for el in HDF5.names(f[group])
             println(el)
         end
     end

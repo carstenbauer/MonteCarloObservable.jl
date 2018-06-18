@@ -76,6 +76,8 @@ module MonteCarloObservable
     export ts_flat
     # export ts
 
+    export listobs
+
     # plotting
     export plot
     export hist
