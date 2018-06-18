@@ -307,3 +307,11 @@ timeseries_flat(filename::AbstractString, group::AbstractString) = timeseries_fr
 timeseries(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)
 ts_flat(filename::AbstractString, group::AbstractString) = timeseries_frommemory_flat(filename, group)
 ts(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)
+
+function listobs(filename::AbstractString, group::AbstractString="obs/")
+    h5open(filename, "r") do f
+        for el in HDF5.names(group)
+            println(el)
+        end
+    end
+end
