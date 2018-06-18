@@ -36,7 +36,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-0.17.4, mkdocs-material-2.8.0">
+      <meta name="generator" content="mkdocs-0.17.4, mkdocs-material-2.9.1">
     
     
       
@@ -44,9 +44,14 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/application.e8ff00e1.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/application.ba0fd1a6.css">
       
         <link rel="stylesheet" href="../../assets/stylesheets/application-palette.6079476c.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#ef5350">
       
     
     
@@ -497,27 +502,27 @@ julia&gt; length(obs)
 julia&gt; timeseries(obs)
 5-element Array{Float64,1}:
  1.23
- 0.0318769
- 0.77404
- 0.113614
- 0.768861
+ 0.647425
+ 0.789572
+ 0.0926927
+ 0.038958
 
 julia&gt; obs[3] # conventional element accessing
-0.7740400869141768
+0.7895721716929709
 
 julia&gt; obs[end-2:end]
 3-element Array{Float64,1}:
- 0.77404
- 0.113614
- 0.768861
+ 0.789572
+ 0.0926927
+ 0.038958
 
 julia&gt; add!(obs, rand(995))
 
 julia&gt; mean(obs)
-0.4886400998345971
+0.4840142565731648
 
 julia&gt; error(obs) # one-sigma error of mean (binning analysis)
-0.009552740781955239
+0.00941530370500958
 
 julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)
 </pre></div>
