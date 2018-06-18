@@ -316,11 +316,14 @@ ts(filename::AbstractString, group::AbstractString) = timeseries_frommemory(file
 
 
 function listobs(filename::AbstractString, group::AbstractString="obs/")
+    s = Vector{String}()
     h5open(filename, "r") do f
         for el in HDF5.names(f[group])
             println(el)
+            push!(s, el)
         end
     end
+    return s
 end
 
 function rmobs(filename::AbstractString, dset::AbstractString, group::AbstractString="obs/")
