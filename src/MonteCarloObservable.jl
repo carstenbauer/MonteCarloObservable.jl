@@ -77,6 +77,7 @@ module MonteCarloObservable
     # export ts
 
     export listobs
+    export rmobs
 
     # plotting
     export plot

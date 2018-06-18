@@ -308,10 +308,23 @@ timeseries(filename::AbstractString, group::AbstractString) = timeseries_frommem
 ts_flat(filename::AbstractString, group::AbstractString) = timeseries_frommemory_flat(filename, group)
 ts(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)
 
+
+
+
+
+
+
+
 function listobs(filename::AbstractString, group::AbstractString="obs/")
     h5open(filename, "r") do f
         for el in HDF5.names(f[group])
             println(el)
         end
+    end
+end
+
+function rmobs(filename::AbstractString, dset::AbstractString, group::AbstractString="obs/")
+    h5open(filename, "r+") do f
+        HDF5.o_delete(f, joinpath(group,dset))
     end
 end
