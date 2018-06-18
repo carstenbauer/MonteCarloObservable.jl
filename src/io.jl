@@ -289,12 +289,12 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
             if typeof(f[grp]) == JLD.JldDataset
                 return read(f, grp)
             elseif HDF5.has(f.plain, joinpath(grp, "timeseries"))
-                println("Loading real observable (old format).")
+                println("Loading time series (export_result or old format).")
                 flat_timeseries = read(f, joinpath(grp, "timeseries"))
                 return flat_timeseries
 
             elseif HDF5.has(f.plain, joinpath(grp, "timeseries_real"))
-                println("Loading complex observable (old format).")
+                println("Loading complex time series (old format).")
                 flat_timeseries = read(f, joinpath(grp, "timeseries_real")) + im*read(f, joinpath(grp, "timeseries_imag"))
                 return flat_timeseries
 
