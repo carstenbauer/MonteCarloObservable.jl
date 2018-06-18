@@ -76,7 +76,7 @@ Export result for given observable nicely to JLD.
 Will export name, number of measurements, estimates for mean and one-sigma error.
 Optionally (`timeseries==true`) exports the full time series as well.
 """
-function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false) where T
+function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false, error=true) where T
     const grp = endswith(group, "/")?group:group*"/"
 
     jldopen(filename, isfile(filename)?"r+":"w") do f
@@ -85,10 +85,12 @@ function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile,
         write(f, joinpath(grp, "count"), length(obs))
         timeseries && write(f, joinpath(grp, "timeseries"), MonteCarloObservable.timeseries(obs))
         write(f, joinpath(grp, "mean"), mean(obs))
-        err, conv = error_with_convergence(obs)
-        write(f, joinpath(grp, "error"), err)
-        write(f, joinpath(grp, "error_rel"), abs.(err./mean(obs)))
-        write(f, joinpath(grp, "error_conv"), string(conv))
+        if error
+            err, conv = error_with_convergence(obs)
+            write(f, joinpath(grp, "error"), err)
+            write(f, joinpath(grp, "error_rel"), abs.(err./mean(obs)))
+            write(f, joinpath(grp, "error_conv"), string(conv))
+        end
     end
     nothing
 end
