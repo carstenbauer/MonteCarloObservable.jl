@@ -496,7 +496,7 @@
 
 <p>Export result for given observable nicely to JLD.</p>
 <p>Will export name, number of measurements, estimates for mean and one-sigma error. Optionally (<code>timeseries==true</code>) exports the full time series as well.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/f71186bee24939fe660e6787677e86863254f3a1/src/io.jl#L71-L78' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/08ccc746f2474fdc15d8eb2230fb1baef93d51ad/src/io.jl#L71-L78' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}' href='#MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}'>#</a>
 <strong><code>MonteCarloObservable.loadobs</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>loadobs(filename::AbstractString, entryname::AbstractString)
@@ -505,7 +505,7 @@
 
 <p>Load complete representation of an observable from JLD file.</p>
 <p>See also <a href="./#MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>saveobs</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/f71186bee24939fe660e6787677e86863254f3a1/src/io.jl#L59-L65' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/08ccc746f2474fdc15d8eb2230fb1baef93d51ad/src/io.jl#L59-L65' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.loadobs_frommemory-Tuple{AbstractString,AbstractString}' href='#MonteCarloObservable.loadobs_frommemory-Tuple{AbstractString,AbstractString}'>#</a>
 <strong><code>MonteCarloObservable.loadobs_frommemory</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>loadobs_frommemory(filename::AbstractString, group::AbstractString)
@@ -513,7 +513,7 @@
 
 
 <p>Create an observable based on memory dump (<code>inmemory==false</code>).</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/f71186bee24939fe660e6787677e86863254f3a1/src/io.jl#L196-L200' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/08ccc746f2474fdc15d8eb2230fb1baef93d51ad/src/io.jl#L196-L200' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.saveobs-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString,AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.saveobs</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>saveobs(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])
@@ -523,7 +523,7 @@
 <p>Saves complete representation of the observable to JLD file.</p>
 <p>Default filename is "Observables.jld" and default entryname is <code>name(obs)</code>.</p>
 <p>See also <a href="./#MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}"><code>loadobs</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/f71186bee24939fe660e6787677e86863254f3a1/src/io.jl#L37-L45' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/08ccc746f2474fdc15d8eb2230fb1baef93d51ad/src/io.jl#L37-L45' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.timeseries_frommemory-Tuple{AbstractString,AbstractString}' href='#MonteCarloObservable.timeseries_frommemory-Tuple{AbstractString,AbstractString}'>#</a>
 <strong><code>MonteCarloObservable.timeseries_frommemory</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>timeseries_frommemory(filename::AbstractString, group::AbstractString)
@@ -532,7 +532,7 @@
 
 <p>Load time series from memory dump (<code>inmemory==false</code>) in HDF5/JLD file.</p>
 <p>Will load and concatenate time series chunks. Output will be a vector of measurements.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/f71186bee24939fe660e6787677e86863254f3a1/src/io.jl#L239-L245' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/08ccc746f2474fdc15d8eb2230fb1baef93d51ad/src/io.jl#L239-L245' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.timeseries_frommemory_flat-Tuple{AbstractString,AbstractString}' href='#MonteCarloObservable.timeseries_frommemory_flat-Tuple{AbstractString,AbstractString}'>#</a>
 <strong><code>MonteCarloObservable.timeseries_frommemory_flat</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
@@ -541,7 +541,7 @@
 
 <p>Load time series from memory dump (<code>inmemory==false</code>) in HDF5/JLD file.</p>
 <p>Will load and concatenate time series chunks. Output will be higher-dimensional array whose last dimension corresponds to Monte Carlo time.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/f71186bee24939fe660e6787677e86863254f3a1/src/io.jl#L254-L261' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/08ccc746f2474fdc15d8eb2230fb1baef93d51ad/src/io.jl#L254-L261' class='documenter-source'>source</a><br></p>
                 
                   
                 
