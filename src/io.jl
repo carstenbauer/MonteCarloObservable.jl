@@ -266,7 +266,7 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
     isfile(filename) || error("File not found.")
     jldopen(filename) do f
         HDF5.has(f.plain, grp) || error("Group not found in file.")
-        if typeof(f[grp]) == JLD.JldGroup && HDF5.has(f.plain, tsgrp)
+        if typeof(f[grp]) == JLD.JldGroup && HDF5.has(f.plain, tsgrp) && typeof(f[tsgrp]) == JLD.JldGroup
             # const n_meas = read(f, joinpath(grp, "count"))
             const element_type = read(f, joinpath(grp, "eltype"))
             const chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
