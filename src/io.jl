@@ -243,13 +243,13 @@ Load time series from memory dump (`inmemory==false`) in HDF5/JLD file.
 
 Will load and concatenate time series chunks. Output will be a vector of measurements.
 """
-function timeseries_frommemory(filename::AbstractString, group::AbstractString)
-    const ts = timeseries_frommemory_flat(filename,group)
+function timeseries_frommemory(filename::AbstractString, group::AbstractString; kw...)
+    const ts = timeseries_frommemory_flat(filename, group; kw...)
     @views r = [ts[.., i] for i in 1:size(ts, ndims(ts))]
     return r
 end
 
-timeseries_frommemory(obs::Observable{T}) where T = timeseries_frommemory(obs.outfile, obs.HDF5_dset)
+timeseries_frommemory(obs::Observable{T}; kw...) where T = timeseries_frommemory(obs.outfile, obs.HDF5_dset; kw...)
 
 """
     timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
@@ -259,7 +259,7 @@ Load time series from memory dump (`inmemory==false`) in HDF5/JLD file.
 Will load and concatenate time series chunks. Output will be higher-dimensional
 array whose last dimension corresponds to Monte Carlo time.
 """
-function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString)
+function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString; verbose=false)
     const grp = endswith(group, "/")?group:group*"/"
     const tsgrp = grp*"timeseries/"
 
@@ -289,12 +289,12 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
             if typeof(f[grp]) == JLD.JldDataset
                 return read(f, grp)
             elseif HDF5.has(f.plain, joinpath(grp, "timeseries"))
-                println("Loading time series (export_result or old format).")
+                verbose && println("Loading time series (export_result or old format).")
                 flat_timeseries = read(f, joinpath(grp, "timeseries"))
                 return flat_timeseries
 
             elseif HDF5.has(f.plain, joinpath(grp, "timeseries_real"))
-                println("Loading complex time series (old format).")
+                verbose && println("Loading complex time series (old format).")
                 flat_timeseries = read(f, joinpath(grp, "timeseries_real")) + im*read(f, joinpath(grp, "timeseries_imag"))
                 return flat_timeseries
 
@@ -305,10 +305,10 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
     end
 end
 
-timeseries_flat(filename::AbstractString, group::AbstractString) = timeseries_frommemory_flat(filename, group)
-timeseries(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)
-ts_flat(filename::AbstractString, group::AbstractString) = timeseries_frommemory_flat(filename, group)
-ts(filename::AbstractString, group::AbstractString) = timeseries_frommemory(filename, group)
+timeseries_flat(filename::AbstractString, group::AbstractString; kw...) = timeseries_frommemory_flat(filename, group; kw...)
+timeseries(filename::AbstractString, group::AbstractString; kw...) = timeseries_frommemory(filename, group; kw...)
+ts_flat(filename::AbstractString, group::AbstractString; kw...) = timeseries_frommemory_flat(filename, group; kw...)
+ts(filename::AbstractString, group::AbstractString; kw...) = timeseries_frommemory(filename, group; kw...)
 
 
 
