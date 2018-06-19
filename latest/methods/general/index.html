@@ -516,7 +516,7 @@
 <li><code>meantype</code>: type of the mean (should be compatible with measurement type <code>t</code>)</li>
 </ul>
 <p>See also <a href="./#MonteCarloObservable.Observable-Tuple{DataType,String}"><code>Observable</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/type.jl#L26-L40' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/type.jl#L26-L40' class='documenter-source'>source</a><br></p>
 <p><a id='Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.Distributed.clear!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>clear!(obs::Observable{T})
@@ -524,7 +524,7 @@
 
 
 <p>Clears all measurement information in <code>obs</code>. Identical to <a href="../@ref"><code>init!</code></a> and <a href="./#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>reset!</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L90-L95' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L90-L95' class='documenter-source'>source</a><br></p>
 <p><a id='Base.eltype-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.eltype-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.eltype</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>eltype(obs::Observable{T})
@@ -532,7 +532,7 @@
 
 
 <p>Returns the type <code>T</code> of a measurment of the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L108-L112' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L108-L112' class='documenter-source'>source</a><br></p>
 <p><a id='Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T' href='#Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T'>#</a>
 <strong><code>Base.getindex</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>getindex(obs::Observable{T}, args...)
@@ -540,7 +540,7 @@
 
 
 <p>Get an element of the measurement time series of the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L139-L143' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L139-L143' class='documenter-source'>source</a><br></p>
 <p><a id='Base.isempty-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.isempty-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.isempty</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>isempty(obs::Observable{T})
@@ -548,7 +548,7 @@
 
 
 <p>Determine wether the observable hasn't been measured yet.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L172-L176' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L172-L176' class='documenter-source'>source</a><br></p>
 <p><a id='Base.length-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.length-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.length</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>length(obs::Observable{T})
@@ -556,7 +556,7 @@
 
 
 <p>Number of measurements of the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L115-L119' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L115-L119' class='documenter-source'>source</a><br></p>
 <p><a id='Base.ndims-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.ndims-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.ndims</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>ndims(obs::Observable{T})
@@ -565,7 +565,7 @@
 
 <p>Number of dimensions of the observable (of one measurement).</p>
 <p>Equivalent to <code>ndims(T)</code>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L130-L136' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L130-L136' class='documenter-source'>source</a><br></p>
 <p><a id='Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T' href='#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T'>#</a>
 <strong><code>Base.push!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">push</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurements</span><span class="p">::</span><span class="nd">AbstractArray</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
@@ -573,7 +573,7 @@
 
 
 <p>Add multiple <code>measurements</code> to observable <code>obs</code>. Note that because of preallocation this isn't really a push.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L57-L62' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L57-L62' class='documenter-source'>source</a><br></p>
 <p><a id='Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T' href='#Base.push!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T'>#</a>
 <strong><code>Base.push!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">push</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurement</span><span class="p">::</span><span class="nd">T</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
@@ -581,7 +581,7 @@
 
 
 <p>Add a <code>measurement</code> to observable <code>obs</code>. Note that because of preallocation this isn't really a push.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L66-L71' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L66-L71' class='documenter-source'>source</a><br></p>
 <p><a id='Base.size-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#Base.size-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>Base.size</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>size(obs::Observable{T})
@@ -589,7 +589,7 @@
 
 
 <p>Size of the observable (of one measurement).</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L123-L127' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L123-L127' class='documenter-source'>source</a><br></p>
 <p><a id='Base.view-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T' href='#Base.view-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T'>#</a>
 <strong><code>Base.view</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>view(obs::Observable{T}, args...)
@@ -597,7 +597,7 @@
 
 
 <p>Get a view into the measurement time series of the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L159-L163' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L159-L163' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T' href='#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractArray{T,N} where N}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.add!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">add</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurements</span><span class="p">::</span><span class="nd">AbstractArray</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
@@ -605,7 +605,7 @@
 
 
 <p>Add multiple <code>measurements</code> to observable <code>obs</code>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L44-L48' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L44-L48' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T' href='#MonteCarloObservable.add!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},T}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.add!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">add</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurement</span><span class="p">::</span><span class="nd">T</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
@@ -613,7 +613,7 @@
 
 
 <p>Add a <code>measurement</code> to observable <code>obs</code>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L2-L6' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L2-L6' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.inmemory-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.inmemory</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>inmemory(obs::Observable{T})
@@ -621,7 +621,7 @@
 
 
 <p>Checks wether the observable is kept in memory (vs. on disk).</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L212-L216' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L212-L216' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.name-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.name</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>name(obs::Observable{T})
@@ -629,7 +629,7 @@
 
 
 <p>Returns the name of the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L205-L209' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L205-L209' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.rename-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{T}} where T' href='#MonteCarloObservable.rename-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number},AbstractString}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.rename</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>rename(obs::Observable{T}, name)
@@ -637,7 +637,7 @@
 
 
 <p>Renames the observable.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L198-L202' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L198-L202' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.reset!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.reset!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>reset!(obs::Observable{T})
@@ -645,7 +645,7 @@
 
 
 <p>Resets all measurement information in <code>obs</code>. Identical to <a href="../@ref"><code>init!</code></a> and <a href="./#Base.Distributed.clear!-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number}}, Tuple{T}} where T"><code>clear!</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L98-L103' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L98-L103' class='documenter-source'>source</a><br></p>
 <p><a id='MonteCarloObservable.timeseries-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T' href='#MonteCarloObservable.timeseries-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType<:Union{Array, Number}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.timeseries</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>timeseries(obs::Observable{T})
@@ -655,7 +655,7 @@
 <p>Returns the measurement time series of an observable.</p>
 <p>If <code>inmemory(obs) == false</code> it will read the time series from disk and thus might take some time.</p>
 <p>See also <a href="./#Base.getindex-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T"><code>getindex</code></a> and <a href="./#Base.view-Union{Tuple{MonteCarloObservable.Observable{T,MeanType} where MeanType&lt;:Union{Array, Number},Vararg{Any,N} where N}, Tuple{T}} where T"><code>view</code></a>.</p>
-<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/8d808a5a7f31854b58eae8c4194bd6315f49b300/src/interface.jl#L76-L84' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/crstnbr/MonteCarloObservable.jl/blob/ad1a007d0f4c388848ec90d12ca985b48e675d4b/src/interface.jl#L76-L84' class='documenter-source'>source</a><br></p>
                 
                   
                 
