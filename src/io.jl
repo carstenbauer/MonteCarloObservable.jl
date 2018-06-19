@@ -321,7 +321,7 @@ function listobs(filename::AbstractString, group::AbstractString="obs/")
     s = Vector{String}()
     h5open(filename, "r") do f
         for el in HDF5.names(f[group])
-            println(el)
+            # println(el)
             push!(s, el)
         end
     end
