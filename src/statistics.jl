@@ -89,8 +89,9 @@ Integrated autocorrelation time (obtained by binning analysis).
 See also [`error(obs)`](@ref).
 """
 tau(obs::Observable{T}) where T = 0.5*(error(obs)^2 * length(obs) / var(obs) - 1)
-tau(obs::Observable{T}, Rvalue::Float64) where T = (Rvalue - 1)/2
-
+tau(obs::Observable{T}, Rvalue::Float64) where T = tau(Rvalue)
+tau(Rvalue::Float64) = (Rvalue - 1)/2
+tau(ts::AbstractArray) = 0.5*(binning_error(ts)^2 * length(ts) / var(ts) - 1)
 
 """
     iswithinerrorbars(a, b, δ[, print=false])
@@ -104,7 +105,7 @@ function iswithinerrorbars(a::T, b::S, δ::Real, print::Bool=false) where T<:Num
   equal = isapprox(a,b,atol=δ,rtol=zero(δ))
   if print && !equal
     out = a>b ? abs(a-(b+δ))/δ : -abs(a-(b-δ))/δ
-    println("x ≈ y + ",round(out,4),"·δ")
+    println("x ≈ y + ",round(out, digits=4),"·δ")
   end
   return equal
 end
@@ -127,12 +128,12 @@ function iswithinerrorbars(A::AbstractArray{T}, B::AbstractArray{S},
       O = similar(A, promote_type(T,S))
       for i in eachindex(O)
         a = A[i]; b = B[i]; δ = Δ[i]
-        O[i] = R[i] ? 0.0 : round(a>b ? abs(a-(b+δ))/δ : -abs(a-(b-δ))/δ,4)
+        O[i] = R[i] ? 0.0 : round(a>b ? abs(a-(b+δ))/δ : -abs(a-(b-δ))/δ, digits=4)
       end
       println("A ≈ B + K.*Δ, where K is:")
       display(O)
     else
-      warn("Unfortunately print=true is only supported for real input.")
+      @warn "Unfortunately print=true is only supported for real input."
     end
   end
 

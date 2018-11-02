@@ -10,6 +10,7 @@
 module Jackknife
 
 using EllipsisNotation
+import Statistics: mean, var
 
 # https://github.com/ararslan/Jackknife.jl was a useful resource
 
@@ -59,12 +60,12 @@ var(g::Function, x::AbstractMatrix{<:Number}) = var(g,x,leaveoneout(g, x))
 var(g::Function, x::AbstractVector{<:Number}) = var(g, reshape(x, (:,1)))
 function var(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Real})
     n = size(x,1)
-    return Base.var(gis) * (n - 1)^2 / n # Eq. (3.35) in QMC Methods book
+    return var(gis) * (n - 1)^2 / n # Eq. (3.35) in QMC Methods book
 end
 var(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Complex}) = var(g,x,real(gis)) + var(g,x,imag(gis))
 
 
-import Base.error
+# import Base.error
 """
     error(g::Function, x::AbstractMatrix)
 
@@ -74,10 +75,10 @@ are time series of the random variables.
 
 For more details, see also [`leaveoneout](@ref).
 """
-error(g::Function, x::AbstractMatrix{<:Number}) = error(g,x,leaveoneout(g,x))
-error(g::Function, x::AbstractVector{<:Number}) = error(g, reshape(x, (:,1)))
-error(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Real}) = sqrt(var(g,x, gis))
-error(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Complex}) = sqrt(error(g,x,real(gis))^2 + error(g,x,imag(gis))^2)
+Base.error(g::Function, x::AbstractMatrix{<:Number}) = error(g,x,leaveoneout(g,x))
+Base.error(g::Function, x::AbstractVector{<:Number}) = error(g, reshape(x, (:,1)))
+Base.error(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Real}) = sqrt(var(g,x, gis))
+Base.error(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Complex}) = sqrt(error(g,x,real(gis))^2 + error(g,x,imag(gis))^2)
 
 
 """

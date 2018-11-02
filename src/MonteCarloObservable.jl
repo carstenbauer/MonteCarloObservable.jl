@@ -4,9 +4,13 @@ module MonteCarloObservable
     using StatsBase
     using EllipsisNotation
 
+    # stdlibs
+    using Statistics
+
     try
         using PyPlot
         import PyPlot.plot
+    catch
     end
 
     import Base.push!
@@ -16,16 +20,11 @@ module MonteCarloObservable
     import Base.endof
     import Base.view
     import Base.isempty
-    import Base.mean
-    import Base.std
-    import Base.var
-    import Base.clear!
+    import Statistics: mean, std, var
+    import Distributed: clear!
     import Base.ndims
     import Base.size
-    import Base.start
-    import Base.next
-    import Base.done
-    import Base.show
+    import Base.iterate
     import Base.summary
     import Base.error
     # import Base.similar
@@ -85,26 +84,4 @@ module MonteCarloObservable
     export binningplot
     export errorplot
     export corrplot
-
-    # overwritten Base
-    export clear!
-    export mean
-    export push!
-    export eltype
-    export length
-    export getindex
-    export endof
-    export view
-    export isempty
-    export mean
-    export std
-    export var
-    export clear!
-    export ndims
-    export size
-    export start
-    export next
-    export done
-    export show
-    export summary
 end

@@ -27,7 +27,7 @@ function add!(obs::Observable{T}, measurement::T; verbose=false) where T
         if obs.inmemory
             verbose && println("Increasing time series size.")
             tslength = length(obs.timeseries)
-            new_timeseries = Vector{T}(tslength + obs.alloc)
+            new_timeseries = Vector{T}(undef, tslength + obs.alloc)
             new_timeseries[1:tslength] = obs.timeseries
             obs.timeseries = new_timeseries
         else
@@ -118,7 +118,7 @@ Base.eltype(obs::Observable{T}) where T = T
 Number of measurements of the observable.
 """
 Base.length(obs::Observable{T}) where T = obs.n_meas
-Base.endof(obs::Observable{T}) where T = length(obs)
+Base.lastindex(obs::Observable{T}) where T = length(obs)
 
 """
     size(obs::Observable{T})
@@ -149,7 +149,7 @@ function Base.getindex(obs::Observable{T}, args...) where T
             vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[args...]
             # TODO: Load only necessary chunks to improve speed here.
         else
-            const idx = args[1]
+            idx = args[1]
             idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
             return getindex_fromfile(obs, idx)
         end
@@ -178,14 +178,12 @@ Base.isempty(obs::Observable{T}) where T = obs.n_meas == 0
 
 # iteration interface implementation
 # TODO: load timeseries in start (in case it is loaded from disk)
-Base.start(obs::Observable) = 1
-Base.done(obs::Observable, state::Int) = state == length(obs)+1
-Base.next(obs::Observable, state::Int) = obs[state], state + 1
+Base.iterate(obs::Observable, state::Int=0) = state+1 <= length(obs) ? (obs[state+1], state+1) : nothing
 
 
 # display, show, print magic
 # Base.summary(obs::Observable{T}) where T = "Observable{$(isempty(obs.elsize) ? "" : string(join(size(obs), "x")*" "))$(T)}"
-Base.summary(obs::Observable{T}) where T = "Observable \"$(obs.name)\" of type $((obs.elsize == (-1,)) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs)!=1?"s":"")"
+Base.summary(obs::Observable{T}) where T = "Observable \"$(obs.name)\" of type $((obs.elsize == (-1,)) ? "" : string(join(size(obs), "x")*" "))$(T) with $(length(obs)) measurement$(length(obs) != 1 ? "s" : "")"
 Base.show(io::IO, obs::Observable{T}) where T = print(io, summary(obs))
 Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = print(io, summary(obs))
 # Base.show(io::IO, obs::Observable{T}) where T = (println(io, summary(obs));Base.showarray(io, obs.timeseries[1:obs.n_meas], true; header=false))

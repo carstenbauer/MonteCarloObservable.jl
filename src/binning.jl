@@ -36,13 +36,13 @@ function R_value(X::AbstractVector{T}, binsize::Int) where T<:Real
     n_bins = div(N,binsize)
     lastbs = rem(N,binsize)
 
-    blockmeans = vec(mean(reshape(X[1:n_bins*binsize], (binsize,n_bins)), 1))
+    blockmeans = vec(mean(reshape(X[1:n_bins*binsize], (binsize,n_bins)), dims=1))
     # if lastbs != 0
     #     vcat(blockmeans, mean(X[n_bins*binsize+1:end]))
     #     n_bins += 1
     # end
 
-    blocksigma2 = 1/(n_bins-1)*sum((blockmeans - mean(X)).^2)
+    blocksigma2 = 1/(n_bins-1)*sum((blockmeans .- mean(X)).^2)
     return binsize * blocksigma2 / var(X)
 end
 

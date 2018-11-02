@@ -35,7 +35,7 @@ julia> mean(myobs)
 ```
 So apparently the package handles the above issue.
 
-How does it do it? Basically it applies a heuristic for setting a resonable type for the mean. It creates an array (or number) of the same dimensionality as a measurement and takes, depending on wether the element type is real or complex, either the type `Float64` or `Complex128` as element type for the mean. For the above example we can check this, `typeof(mean(myobs)) == Float64`.
+How does it do it? Basically it applies a heuristic for setting a resonable type for the mean. It creates an array (or number) of the same dimensionality as a measurement and takes, depending on wether the element type is real or complex, either the type `Float64` or `ComplexF64` as element type for the mean. For the above example we can check this, `typeof(mean(myobs)) == Float64`.
 
 ## `meantype` keyword
 

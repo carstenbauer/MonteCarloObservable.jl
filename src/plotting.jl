@@ -3,26 +3,26 @@
 # --------------------------------------
 function plot_timeseries(obs::Observable{T}; errors=true, digits=3) where T
 	@eval using PyPlot
-	const ts = timeseries(obs)
-	const Xmean = mean(obs)
-	const err = error(obs)
-	const Xstd = std(ts)
+	ts = timeseries(obs)
+	Xmean = mean(obs)
+	err = error(obs)
+	Xstd = std(ts)
 
 	fig, ax = subplots(1,1)
 	ax[:plot](ts, ".-")
 	ax[:set_ylabel](name(obs))
 	ax[:set_xlabel]("Monte Carlo time \$ t \$")
 	# ax[:set_yticks]([])
-	ax[:axhline](Xmean, color="black", label="\$ $(round.(Xmean, digits)) \$ (mean)", linewidth=2.0)
+	ax[:axhline](Xmean, color="black", label="\$ $(round.(Xmean, digits=digits)) \$ (mean)", linewidth=2.0)
 
 	if errors
-		ax[:axhline](Xmean+err, color="r", label="\$ \\pm $(round.(err, digits)) \$ (σ error)", linewidth=2.0)
+		ax[:axhline](Xmean+err, color="r", label="\$ \\pm $(round.(err, digits=digits)) \$ (σ error)", linewidth=2.0)
 		ax[:axhline](Xmean-err, color="r", linewidth=2.0)
 
-		ax[:axhline](Xmean+2*err, color="r", alpha=.3, label="\$ \\pm $(round.(2*err, digits)) \$ (2σ error)", linewidth=2.0)
+		ax[:axhline](Xmean+2*err, color="r", alpha=.3, label="\$ \\pm $(round.(2*err, digits=digits)) \$ (2σ error)", linewidth=2.0)
 		ax[:axhline](Xmean-2*err, color="r", alpha=.3, linewidth=2.0)
 
-		ax[:axhline](Xmean+Xstd, color="g", label="\$ \\pm $(round.(Xstd, digits)) \$ (std)", linewidth=2.0)
+		ax[:axhline](Xmean+Xstd, color="g", label="\$ \\pm $(round.(Xstd, digits=digits)) \$ (std)", linewidth=2.0)
 		ax[:axhline](Xmean-Xstd, color="g", linewidth=2.0)
 	end
 
@@ -47,26 +47,26 @@ plot(obs::Observable{T}; keyargs...) where T = plot_timeseries(obs; keyargs...)
 # --------------------------------------
 function plot_histogram(obs::Observable{T}; errors=true, digits=3) where T
 	@eval using PyPlot
-	const ts = timeseries(obs)
-	const Xmean = mean(obs)
-	const err = error(obs)
-	const Xstd = std(ts)
+	ts = timeseries(obs)
+	Xmean = mean(obs)
+	err = error(obs)
+	Xstd = std(ts)
 
 	fig, ax = subplots(1,1)
-	ax[:hist](ts, 50, color="gray", alpha=.5, normed=1)
+	ax[:hist](ts, 50, color="gray", alpha=.5, density=1)
 	ax[:set_ylabel]("Frequency")
 	ax[:set_xlabel](name(obs))
 	ax[:set_yticks]([])
-	ax[:axvline](Xmean, color="black", label="\$ $(round.(Xmean, digits)) \$ (mean)", linewidth=2.0)
+	ax[:axvline](Xmean, color="black", label="\$ $(round.(Xmean, digits=digits)) \$ (mean)", linewidth=2.0)
 
 	if errors
-		ax[:axvline](Xmean+err, color="r", label="\$ \\pm $(round.(err, digits)) \$ (σ error)", linewidth=2.0)
+		ax[:axvline](Xmean+err, color="r", label="\$ \\pm $(round.(err, digits=digits)) \$ (σ error)", linewidth=2.0)
 		ax[:axvline](Xmean-err, color="r", linewidth=2.0)
 
-		ax[:axvline](Xmean+2*err, color="r", alpha=.3, label="\$ \\pm $(round.(2*err, digits)) \$ (2σ error)", linewidth=2.0)
+		ax[:axvline](Xmean+2*err, color="r", alpha=.3, label="\$ \\pm $(round.(2*err, digits=digits)) \$ (2σ error)", linewidth=2.0)
 		ax[:axvline](Xmean-2*err, color="r", alpha=.3, linewidth=2.0)
 
-		ax[:axvline](Xmean+Xstd, color="g", label="\$ \\pm $(round.(Xstd, digits)) \$ (std)", linewidth=2.0)
+		ax[:axvline](Xmean+Xstd, color="g", label="\$ \\pm $(round.(Xstd, digits=digits)) \$ (std)", linewidth=2.0)
 		ax[:axvline](Xmean-Xstd, color="g", linewidth=2.0)
 	end
 
@@ -91,7 +91,7 @@ hist(obs::Observable{T}; keyargs...) where T = plot_histogram(obs; keyargs...)
 # --------------------------------------
 function plot_binning(obs::Observable{T}; min_nbins=50) where T
 	@eval using PyPlot
-	const ts = timeseries(obs)
+	ts = timeseries(obs)
 
 	bss, R, means = R_function(ts, min_nbins=min_nbins)
 
@@ -121,7 +121,7 @@ binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs.
 
 function errorplot(obs::Observable)
 	@eval using PyPlot
-	const ts = timeseries(obs)
+	ts = timeseries(obs)
 
 	bss, R, means = R_function(ts, min_nbins=50)
 	rawerrors = [binning_error_from_R(ts, r) for r in R]
@@ -142,7 +142,7 @@ end
 # --------------------------------------
 function plot_autocorrelation(obs::Observable{T}; showtau=false) where T
 	@eval using PyPlot
-	const ts = timeseries(obs)
+	ts = timeseries(obs)
 
 	fig, ax = subplots(1,1)
 	ax[:plot](autocor(ts), "-", color="k", linewidth=2.0)
@@ -181,22 +181,22 @@ corrplot(obs::Observable{T}; keyargs...) where T = plot_autocorrelation(obs; key
 # using Plots instead of PyPlot
 
 function plot_histogram_Plots(obs::Observable{T}; errors=true, digits=3) where T
-	const ts = timeseries(obs)
-	const Xmean = mean(obs)
-	const err = std(obs)
-	const Xstd = std(ts)
+	ts = timeseries(obs)
+	Xmean = mean(obs)
+	err = std(obs)
+	Xstd = std(ts)
 
 	histogram(ts, framestyle=:box, grid=false, normed=true, label="", color="lightgrey")
 	# ax[:hist](ts, 50, color="gray", alpha=.5, normed=1)
 	ylabel!("Frequency")
 	xlabel!(name(obs))
 	yticks!(Float64[])
-	vline!([Xmean], color="black", linewidth=2.0, label="\$ $(round.(Xmean, digits)) \$ (mean)")
+	vline!([Xmean], color="black", linewidth=2.0, label="\$ $(round.(Xmean, digits=digits)) \$ (mean)")
 
 	if errors
-		vline!([Xmean+err, Xmean-err], color="red", linewidth=2.0, label="\$ \\pm $(round.(err, digits)) \$ (σ error)")
-		vline!([Xmean+2*err, Xmean-2*err], color="red", linewidth=2.0, label="\$ \\pm $(round.(2*err, digits)) \$ (2σ error)", alpha=.3)
-		vline!([Xmean+Xstd, Xmean-Xstd], color="green", linewidth=2.0, label="\$ \\pm $(round.(Xstd, digits)) \$ (std)", alpha=.3)
+		vline!([Xmean+err, Xmean-err], color="red", linewidth=2.0, label="\$ \\pm $(round.(err, digits=digits)) \$ (σ error)")
+		vline!([Xmean+2*err, Xmean-2*err], color="red", linewidth=2.0, label="\$ \\pm $(round.(2*err, digits=digits)) \$ (2σ error)", alpha=.3)
+		vline!([Xmean+Xstd, Xmean-Xstd], color="green", linewidth=2.0, label="\$ \\pm $(round.(Xstd, digits=digits)) \$ (std)", alpha=.3)
 	end
 	nothing
 end

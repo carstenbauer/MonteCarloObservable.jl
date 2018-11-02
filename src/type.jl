@@ -57,7 +57,7 @@ function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=t
         if eltype(t)<:Real
             mt = ndims(t)>0 ? Array{Float64, ndims(t)} : Float64
         else
-            mt = ndims(t)>0 ? Array{Complex128, ndims(t)} : Complex128
+            mt = ndims(t)>0 ? Array{ComplexF64, ndims(t)} : ComplexF64
         end
     end
 
@@ -108,7 +108,7 @@ function init!(obs::Observable{T}) where T
     obs.n_dims = ndims(T)
 
     obs.tsidx = 1
-    obs.timeseries = Vector{T}(obs.alloc) # init with Missing values in Julia 1.0
+    obs.timeseries = Vector{T}(undef, obs.alloc) # init with Missing values in Julia 1.0
 
     if ndims(T) == 0
         obs.mean = convert(T, zero(eltype(T)))
@@ -122,6 +122,7 @@ function init!(obs::Observable{T}) where T
         ext = fileext(obs.outfile)
         ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")
         obs.outformat = ext
+    catch
     end
     nothing
 end
