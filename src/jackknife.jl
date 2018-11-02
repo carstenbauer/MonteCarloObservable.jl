@@ -27,7 +27,7 @@ function jackknife(g::Function, x::AbstractMatrix{<:Number})
     return estimate(g,x,gis), error(g,x,gis)
 end
 jackknife(g::Function, x::AbstractVector{<:Number}) = jackknife(g, reshape(x, (:,1)))
-
+export jackknife
 
 """
     leaveoneout(g::Function, x::AbstractMatrix)
