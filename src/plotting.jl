@@ -45,7 +45,7 @@ plot(obs::Observable{T}; keyargs...) where T = plot_timeseries(obs; keyargs...)
 # --------------------------------------
 #           Histogram
 # --------------------------------------
-function plot_histogram(obs::Observable{T}; errors=true, digits=3) where T
+function plot_histogram(obs::Observable{T}; errors=true, digits=3, customtitle="") where T
 	@eval using PyPlot
 	const ts = timeseries(obs)
 	const Xmean = mean(obs)
@@ -71,6 +71,10 @@ function plot_histogram(obs::Observable{T}; errors=true, digits=3) where T
 	end
 
 	ax[:legend](frameon=true, loc="best")
+
+	if customtitle != ""
+		title(customtitle)
+	end
 
 	tight_layout()
 	# histogram(x, framestyle=:box, grid=false, normed=true)
@@ -119,7 +123,7 @@ See [`binning_error`](@ref).
 binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs...)
 
 
-function errorplot(obs::Observable)
+function errorplot(obs::Observable; customtitle::String="")
 	@eval using PyPlot
 	const ts = timeseries(obs)
 
@@ -133,6 +137,9 @@ function errorplot(obs::Observable)
 	ylabel("error")
 	legend()
 	xlabel("bin size")
+	if customtitle != ""
+		title(customtitle)
+	end
 	tight_layout();
 end
 
