@@ -104,7 +104,7 @@ For more details, see [`MonteCarloObservable.Rplateaufinder`](@ref).
 """
 binning_error(X::AbstractVector{<:Number}) = binning_error_with_convergence(X)[1]
 binning_error(X::AbstractArray{<:Number}) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error(xi), X, nd), nd) end
-binning_error(X::AbstractVector{<:AbstractArray}) = binning_error(cat(ndims(X[1])+1, X...))
+binning_error(X::AbstractVector{<:AbstractArray}) = binning_error(cat(X..., dims=ndims(X[1])+1))
 
 """
 Returns one sigma error and convergence flag (boolean).
@@ -121,7 +121,7 @@ function binning_error_with_convergence(X::AbstractVector{T}) where T<:Complex
     sqrt(binning_error_from_R(Xreal, Rreal)^2 + binning_error_from_R(Xreal, Rimag)^2), convreal && convimag # check if that's really what we want here
 end
 binning_error_with_convergence(X::AbstractArray{<:Number}) = begin nd = ndims(X); errconv = squeeze(mapslices(xi->binning_error_with_convergence(xi), X, nd), nd); getindex.(errconv, 1), getindex.(errconv, 2) end
-binning_error_with_convergence(X::AbstractVector{<:AbstractArray}) = binning_error_with_convergence(cat(ndims(X[1])+1, X...))
+binning_error_with_convergence(X::AbstractVector{<:AbstractArray}) = binning_error_with_convergence(cat(X..., dims=ndims(X[1])+1))
 
 """
     binning_error(X, binsize)
@@ -133,7 +133,7 @@ using the given `binsize` (i.e. assuming independence of bins, Eq. 3.18 basicall
 binning_error(X::AbstractVector{<:Real}, binsize::Int) = binning_error_from_R(X, R_value(X, binsize))
 binning_error(X::AbstractVector{<:Complex}, binsize::Int) = sqrt(binning_error(real(X), binsize)^2 + binning_error(imag(X), binsize)^2)
 binning_error(X::AbstractArray{<:Number}, binsize::Int) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error(xi, binsize), X, nd), nd) end
-binning_error(X::AbstractVector{<:AbstractArray}, binsize::Int) = binning_error(cat(ndims(X[1])+1, X...), binsize)
+binning_error(X::AbstractVector{<:AbstractArray}, binsize::Int) = binning_error(cat(X..., dims=ndims(X[1])+1), binsize)
 
 
 binning_error_from_R(X::AbstractVector{T}, Rvalue::Float64) where T<:Real = sqrt(Rvalue*var(X)/length(X))
@@ -151,4 +151,4 @@ function binning_error_naive(X::AbstractVector{<:Number}, min_nbins::Int=50)
     binning_error(X, floor(Int, length(X)/min_nbins))
 end
 binning_error_naive(X::AbstractArray{<:Number}, min_nbins::Int=50) = begin nd = ndims(X); squeeze(mapslices(xi->binning_error_naive(xi, min_nbins=min_nbins), X, nd), nd) end
-binning_error_naive(X::AbstractVector{<:AbstractArray}, min_nbins::Int=50) = binning_error_naive(cat(ndims(X[1])+1, X...), min_nbins=min_nbins)
+binning_error_naive(X::AbstractVector{<:AbstractArray}, min_nbins::Int=50) = binning_error_naive(cat(X..., dims=ndims(X[1])+1), min_nbins=min_nbins)
