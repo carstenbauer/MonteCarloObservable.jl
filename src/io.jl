@@ -217,7 +217,7 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
         last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(chunk_count)"))
 
-        T = eval(parse(element_type))
+        T = eval(Meta.parse(element_type))
         MT = typeof(themean)
         obs = Observable{T, MT}()
 
