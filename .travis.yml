@@ -5,6 +5,7 @@ julia:
   - 0.7
   - 1.0
   - nightly
+
 addons:
   apt:
     packages:
@@ -12,32 +13,26 @@ addons:
 
 notifications:
   email: false
-git:
-  depth: 99999999
 
 matrix:
   allow_failures:
     - julia: nightly
 
+# code coverage
 # after_success:
   # push coverage results to Coveralls
   # - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # push coverage results to Codecov
   # - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
 
+# generate docs
 jobs:
   include:
     - stage: "Documentation"
       julia: 1.0
       os: linux
       script:
-        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
-                                    Pkg.develop(PackageSpec(path=pwd()))'
-        - julia --project=docs/ docs/make.jl
+        - julia --project=docs/ --color=yes -e 'using Pkg; Pkg.instantiate();
+                                    Pkg.add(PackageSpec(path=pwd()))'
+        - julia --project=docs/ --color=yes docs/make.jl
       after_success: skip
-
-
-# before_install:
-  # - sudo apt-get -qq update
-  # - sudo apt-get install -y hdf5-tools python-numpy python-scipy python-matplotlib
-  # - julia -e 'Pkg.add("HDF5"); Pkg.add("JLD"); Pkg.add("PyPlot"); Pkg.add("EllipsisNotation"); Pkg.add("StatsBase");'
