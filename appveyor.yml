@@ -1,8 +1,11 @@
 environment:
   matrix:
   - julia_version: 0.7
+    PYTHON: "Conda"
   - julia_version: 1
+    PYTHON: "Conda"
   - julia_version: nightly
+    PYTHON: "Conda"
 
 platform:
   - x86 # 32-bit
@@ -36,6 +39,6 @@ test_script:
 
 # Uncomment to support code coverage upload. Should only be enabled for packages
 # which would have coverage gaps without running on Windows
-on_success:
-  - echo "%JL_CODECOV_SCRIPT%"
-  - C:\julia\bin\julia -e "%JL_CODECOV_SCRIPT%"
+# on_success:
+#   - echo "%JL_CODECOV_SCRIPT%"
+#   - C:\julia\bin\julia -e "%JL_CODECOV_SCRIPT%"

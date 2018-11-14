@@ -1,11 +1,15 @@
 language: julia
 os:
   - linux
-  - osx
 julia:
   - 0.7
   - 1.0
   - nightly
+addons:
+  apt:
+    packages:
+      - python3-matplotlib
+
 notifications:
   email: false
 git:
@@ -14,18 +18,12 @@ git:
 matrix:
   allow_failures:
     - julia: nightly
-# before_install:
-  # - sudo apt-get -qq update
-  # - sudo apt-get install -y hdf5-tools python-numpy python-scipy python-matplotlib
-  # - julia -e 'Pkg.add("HDF5"); Pkg.add("JLD"); Pkg.add("PyPlot"); Pkg.add("EllipsisNotation"); Pkg.add("StatsBase");'
-after_success:
+
+# after_success:
   # push coverage results to Coveralls
-  - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  # - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-  # Documenter
-  # - julia -e 'Pkg.add("Documenter")'
-  # - julia -e 'cd(Pkg.dir("MonteCarloObservable")); include(joinpath("docs", "make.jl"))'
+  # - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
 
 jobs:
   include:
@@ -37,3 +35,9 @@ jobs:
                                     Pkg.develop(PackageSpec(path=pwd()))'
         - julia --project=docs/ docs/make.jl
       after_success: skip
+
+
+# before_install:
+  # - sudo apt-get -qq update
+  # - sudo apt-get install -y hdf5-tools python-numpy python-scipy python-matplotlib
+  # - julia -e 'Pkg.add("HDF5"); Pkg.add("JLD"); Pkg.add("PyPlot"); Pkg.add("EllipsisNotation"); Pkg.add("StatsBase");'
