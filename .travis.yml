@@ -1,30 +1,39 @@
-# Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
 os:
   - linux
-#  - osx
+  - osx
 julia:
-  - release
+  - 0.7
+  - 1.0
   - nightly
+notifications:
+  email: false
+git:
+  depth: 99999999
+
 matrix:
   allow_failures:
     - julia: nightly
-#    - os: osx
-notifications:
-  email: false
-# uncomment the following lines to override the default test script
-#script:
-#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#  - julia -e 'Pkg.clone(pwd()); Pkg.build("MonteCarloObservable"); Pkg.test("MonteCarloObservable"; coverage=true)'
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y hdf5-tools python-numpy python-scipy python-matplotlib
-  - julia -e 'Pkg.add("HDF5"); Pkg.add("JLD"); Pkg.add("PyPlot"); Pkg.add("EllipsisNotation"); Pkg.add("StatsBase");'
+  # - julia -e 'Pkg.add("HDF5"); Pkg.add("JLD"); Pkg.add("PyPlot"); Pkg.add("EllipsisNotation"); Pkg.add("StatsBase");'
 after_success:
   # push coverage results to Coveralls
-  - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia -e 'cd(Pkg.dir("PeriodicTable")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("MonteCarloObservable")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'cd(Pkg.dir("PeriodicTable")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
   # Documenter
-  - julia -e 'Pkg.add("Documenter")'
-  - julia -e 'cd(Pkg.dir("MonteCarloObservable")); include(joinpath("docs", "make.jl"))'
+  # - julia -e 'Pkg.add("Documenter")'
+  # - julia -e 'cd(Pkg.dir("MonteCarloObservable")); include(joinpath("docs", "make.jl"))'
+
+jobs:
+  include:
+    - stage: "Documentation"
+      julia: 1.0
+      os: linux
+      script:
+        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
+                                    Pkg.develop(PackageSpec(path=pwd()))'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip
