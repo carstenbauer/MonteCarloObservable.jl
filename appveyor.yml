@@ -1,15 +1,15 @@
 environment:
   matrix:
-  - julia_version: 0.7
-    PYTHON: "Conda"
+  #- julia_version: 0.7
+  #  PYTHON: "Conda"
   - julia_version: 1
     PYTHON: "Conda"
   - julia_version: nightly
     PYTHON: "Conda"
 
 platform:
-  - x86 # 32-bit
   - x64 # 64-bit
+  #- x86 # 32-bit
 
 matrix:
   allow_failures:
