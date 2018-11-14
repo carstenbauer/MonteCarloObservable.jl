@@ -32,4 +32,4 @@ Look at the [documentation](https://crstnbr.github.io/MonteCarloObservable.jl/la
 
 ## Authors
 
-* Carsten Bauer ([github](https://github.com/crstnbr))
+* [Carsten Bauer](https://github.com/crstnbr)
