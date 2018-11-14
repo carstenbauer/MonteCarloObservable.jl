@@ -5,7 +5,7 @@
 [![appveyor][appveyor-img]](https://ci.appveyor.com/project/crstnbr/montecarloobservable-jl/branch/master)
 [![codecov][codecov-img]](http://codecov.io/github/crstnbr/MonteCarloObservable.jl?branch=master)
 
-[travis-img]: https://travis-ci.org/crstnbr/MonteCarloObservable.jl.svg?branch=master&label=Linux
+[travis-img]: https://img.shields.io/travis/crstnbr/MonteCarloObservable.jl/master.svg?label=Linux
 [appveyor-img]: https://img.shields.io/appveyor/ci/crstnbr/montecarloobservable-jl/master.svg?label=Windows
 [codecov-img]: https://img.shields.io/codecov/c/github/crstnbr/MonteCarloObservable.jl/master.svg?label=codecov
 
