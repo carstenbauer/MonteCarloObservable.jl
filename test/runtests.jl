@@ -83,7 +83,7 @@ end
 
     # details
     @test MonteCarloObservable.R_value(ots, 2) == 0.10121963870000192
-    @test typeof(MonteCarloObservable.R_function(ots)) == Tuple{UnitRange{Int64},Array{Float64,1},Array{Float64,1}}
+    @test typeof(MonteCarloObservable.R_function(ots)) == Tuple{UnitRange{Int},Array{Float64,1},Array{Float64,1}}
 
     # jackknife
     @test jackknife_error(x->mean(x), obs) == 0.10834619757501414
