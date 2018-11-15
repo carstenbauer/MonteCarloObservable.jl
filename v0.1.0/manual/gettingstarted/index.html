@@ -502,19 +502,19 @@ julia&gt; length(obs)
 julia&gt; timeseries(obs)
 5-element Array{Float64,1}:
  1.23
- 0.25539279353579536
- 0.9704226108153904
- 0.6064656469921517
- 0.20548587168558297
+ 0.5683559842542825
+ 0.6855533174531325
+ 0.8226295733189746
+ 0.8709986159628533
 
 julia&gt; obs[3] # conventional element accessing
-0.9704226108153904
+0.6855533174531325
 
 julia&gt; obs[end-2:end]
 3-element Array{Float64,1}:
- 0.9704226108153904
- 0.6064656469921517
- 0.20548587168558297
+ 0.6855533174531325
+ 0.8226295733189746
+ 0.8709986159628533
 
 julia&gt; add!(obs, rand(995))
 
@@ -522,7 +522,7 @@ julia&gt; mean(obs)
 ERROR: UndefVarError: mean not defined
 
 julia&gt; error(obs) # one-sigma error of mean (binning analysis)
-0.009561471827906594
+0.009252033988336924
 
 julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)
 </pre></div>
