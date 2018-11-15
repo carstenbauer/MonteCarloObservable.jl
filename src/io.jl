@@ -191,7 +191,7 @@ end
 
 # end
 
-JLD.writeas(x::Vector{T}) where T<:AbstractArray = cat(ndims(T)+1, x...)
+JLD.writeas(x::Vector{T}) where T<:AbstractArray = cat(x..., dims=ndims(T)+1)
 # JLD.readas()
 
 """
