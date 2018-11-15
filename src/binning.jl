@@ -103,7 +103,7 @@ for uncorrelated measurements.
 For more details, see [`MonteCarloObservable.Rplateaufinder`](@ref).
 """
 binning_error(X::AbstractVector{<:Number}) = binning_error_with_convergence(X)[1]
-binning_error(X::AbstractArray{<:Number}) = begin nd = ndims(X); dropdims(mapslices(xi->binning_error(xi), X, nd), dims=nd) end
+binning_error(X::AbstractArray{<:Number}) = begin nd = ndims(X); dropdims(mapslices(xi->binning_error(xi), X, dims=nd), dims=nd) end
 binning_error(X::AbstractVector{<:AbstractArray}) = binning_error(cat(X..., dims=ndims(X[1])+1))
 
 """
@@ -120,7 +120,7 @@ function binning_error_with_convergence(X::AbstractVector{T}) where T<:Complex
     bsimag, Rimag, convimag = Rplateaufinder(Ximag)
     sqrt(binning_error_from_R(Xreal, Rreal)^2 + binning_error_from_R(Xreal, Rimag)^2), convreal && convimag # check if that's really what we want here
 end
-binning_error_with_convergence(X::AbstractArray{<:Number}) = begin nd = ndims(X); errconv = dropdims(mapslices(xi->binning_error_with_convergence(xi), X, nd), dims=nd); getindex.(errconv, 1), getindex.(errconv, 2) end
+binning_error_with_convergence(X::AbstractArray{<:Number}) = begin nd = ndims(X); errconv = dropdims(mapslices(xi->binning_error_with_convergence(xi), X, dims=nd), dims=nd); getindex.(errconv, 1), getindex.(errconv, 2) end
 binning_error_with_convergence(X::AbstractVector{<:AbstractArray}) = binning_error_with_convergence(cat(X..., dims=ndims(X[1])+1))
 
 """
@@ -132,7 +132,7 @@ using the given `binsize` (i.e. assuming independence of bins, Eq. 3.18 basicall
 """
 binning_error(X::AbstractVector{<:Real}, binsize::Int) = binning_error_from_R(X, R_value(X, binsize))
 binning_error(X::AbstractVector{<:Complex}, binsize::Int) = sqrt(binning_error(real(X), binsize)^2 + binning_error(imag(X), binsize)^2)
-binning_error(X::AbstractArray{<:Number}, binsize::Int) = begin nd = ndims(X); dropdims(mapslices(xi->binning_error(xi, binsize), X, nd), dims=nd) end
+binning_error(X::AbstractArray{<:Number}, binsize::Int) = begin nd = ndims(X); dropdims(mapslices(xi->binning_error(xi, binsize), X, dims=nd), dims=nd) end
 binning_error(X::AbstractVector{<:AbstractArray}, binsize::Int) = binning_error(cat(X..., dims=ndims(X[1])+1), binsize)
 
 
@@ -150,5 +150,5 @@ function binning_error_naive(X::AbstractVector{<:Number}, min_nbins::Int=50)
     # if not specified, choose binsize such that we have at least 50 full bins.
     binning_error(X, floor(Int, length(X)/min_nbins))
 end
-binning_error_naive(X::AbstractArray{<:Number}, min_nbins::Int=50) = begin nd = ndims(X); dropdims(mapslices(xi->binning_error_naive(xi, min_nbins=min_nbins), X, dims=nd), nd) end
+binning_error_naive(X::AbstractArray{<:Number}, min_nbins::Int=50) = begin nd = ndims(X); dropdims(mapslices(xi->binning_error_naive(xi, min_nbins=min_nbins), X, dims=nd), dims=nd) end
 binning_error_naive(X::AbstractVector{<:AbstractArray}, min_nbins::Int=50) = binning_error_naive(cat(X..., dims=ndims(X[1])+1), min_nbins=min_nbins)
