@@ -88,10 +88,10 @@ Integrated autocorrelation time (obtained by binning analysis).
 
 See also [`error(obs)`](@ref).
 """
-tau(obs::Observable{T}) where T = 0.5*(error(obs)^2 * length(obs) / var(obs) - 1)
+tau(obs::Observable{T}) where T = 0.5*(error(obs)^2 * length(obs) / var(obs) .- 1)
 tau(obs::Observable{T}, Rvalue::Float64) where T = tau(Rvalue)
 tau(Rvalue::Float64) = (Rvalue - 1)/2
-tau(ts::AbstractArray) = 0.5*(binning_error(ts)^2 * length(ts) / var(ts) - 1)
+tau(ts::AbstractArray) = 0.5*(binning_error(ts)^2 * length(ts) / var(ts) .- 1)
 
 """
     iswithinerrorbars(a, b, δ[, print=false])

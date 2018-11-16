@@ -80,7 +80,6 @@ Base.error(g::Function, x::AbstractVector{<:Number}) = error(g, reshape(x, (:,1)
 Base.error(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Real}) = sqrt(var(g,x, gis))
 Base.error(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Complex}) = sqrt(error(g,x,real(gis))^2 + error(g,x,imag(gis))^2)
 
-
 """
     bias(g::Function, x::AbstractMatrix)
 
