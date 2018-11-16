@@ -13,6 +13,6 @@ Pages = ["general.md"]
 ```@autodocs
 Modules = [MonteCarloObservable]
 Private = false
-Order   = [:function, :type]
+Order   = [:function, :type, :macro, :module]
 Pages = ["type.jl", "interface.jl"]
 ```

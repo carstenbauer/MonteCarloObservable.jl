@@ -86,12 +86,12 @@ timeseries(obs::Observable{T}) where T = obs[1:end]
 ts(obs::Observable) = timeseries(obs)
 
 
-# init! == clear! == reset! mappings
+# clear! == reset! mappings
 """
     clear!(obs::Observable{T})
 
 Clears all measurement information in `obs`.
-Identical to [`init!`](@ref) and [`reset!`](@ref).
+Identical to [`reset!`](@ref).
 """
 clear!(obs::Observable{T}) where T = init!(obs)
 
@@ -99,7 +99,7 @@ clear!(obs::Observable{T}) where T = init!(obs)
     reset!(obs::Observable{T})
 
 Resets all measurement information in `obs`.
-Identical to [`init!`](@ref) and [`clear!`](@ref).
+Identical to [`clear!`](@ref).
 """
 reset!(obs::Observable{T}) where T = init!(obs)
 

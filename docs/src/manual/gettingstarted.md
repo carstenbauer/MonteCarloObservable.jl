@@ -1,17 +1,10 @@
-# Manual
+# Getting started
 
-## Installation / Updating
+Sometimes an example says more than a thousand words. So let's start with one.
 
-To install the package execute the following command in the REPL:
-```julia
-Pkg.clone("https://github.com/crstnbr/MonteCarloObservable.jl")
-```
+## Simple Example
 
-To obtain the latest version of the package just do `Pkg.update()` or specifically `Pkg.update("MonteCarloObservable")`.
-
-## Example
-
-This is a simple demontration of how to use the package for measuring a floating point observable:
+This is a basic demontration of how to use the package:
 
 ```@repl
 using MonteCarloObservable
@@ -29,4 +22,10 @@ error(obs) # one-sigma error of mean (binning analysis)
 saveobs(obs, "myobservable.jld")
 ```
 
+## Creating `Observable`s
+
+
+
+**TODO:** mention all important keywords
 **TODO:** mention `alloc` keyword and importance of preallocation.
+**TODO:** mention `@obs` and `@diskobs` macros

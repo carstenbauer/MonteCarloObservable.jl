@@ -13,21 +13,10 @@ module MonteCarloObservable
     catch
     end
 
-    import Base.push!
-    import Base.eltype
-    import Base.length
-    import Base.getindex
-    import Base.view
-    import Base.isempty
+    import Base: push!, eltype, length, getindex, view, isempty, ndims, size, iterate, summary, error
+    import Base.==
     import Statistics: mean, std, var
     import Distributed: clear!
-    import Base.ndims
-    import Base.size
-    import Base.iterate
-    import Base.summary
-    import Base.error
-    # import Base.similar
-    import Base.==
 
     include("type.jl")
     include("helpers.jl")
@@ -39,48 +28,28 @@ module MonteCarloObservable
     include("plotting.jl")
 
     export Observable
-    export @obs
-    export @diskobs
+    export @obs, @diskobs
 
     # statistics
-    export tau # autocorrelation time
-    export iswithinerrorbars
-    export error
-    export error_naive
-    export error_with_convergence
+    export tau, iswithinerrorbars
+    export error, error_naive, error_with_convergence
+    export binning_error, jackknife_error
     # export isconverged # experimental
-
-    export binning_error
-    export jackknife_error
+    export mean, var, std
 
     # interface
-    export add!
-    export timeseries
-    export ts # === timeseries
-    export reset!
-    export rename
-    export name
-    export inmemory
+    export add!, push!, reset!, clear!
+    export timeseries, ts
+    export rename, name
+    export inmemory, length, eltype, getindex, view, isempty, ndims, size, iterate
 
     # io
-    export saveobs
-    export loadobs
-    export export_result
+    export saveobs, loadobs, listobs, rmobs
+    export export_result, export_error
     export loadobs_frommemory
-    export timeseries_frommemory
-    export timeseries_frommemory_flat
-    export timeseries_flat
-    # export timeseries
-    export ts_flat
-    # export ts
-
-    export listobs
-    export rmobs
+    export timeseries_frommemory, timeseries_frommemory_flat
+    export timeseries_flat, ts_flat
 
     # plotting
-    export plot
-    export hist
-    export binningplot
-    export errorplot
-    export corrplot
+    export plot, hist, binningplot, errorplot, corrplot
 end

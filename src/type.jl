@@ -86,6 +86,9 @@ macro obs(arg)
     end
 end
 
+"""
+Convenience macro for generating a "disk observable" (`inmemory=false`) from a vector of measurements.
+"""
 macro diskobs(arg)
     return quote
         # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))

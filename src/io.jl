@@ -317,7 +317,9 @@ ts(filename::AbstractString, group::AbstractString; kw...) = timeseries_frommemo
 
 
 
-
+"""
+List all observables in a given file and HDF5 group.
+"""
 function listobs(filename::AbstractString, group::AbstractString="obs/")
     s = Vector{String}()
     h5open(filename, "r") do f
@@ -331,6 +333,9 @@ function listobs(filename::AbstractString, group::AbstractString="obs/")
     return s
 end
 
+"""
+Remove an observable.
+"""
 function rmobs(filename::AbstractString, dset::AbstractString, group::AbstractString="obs/")
     h5open(filename, "r+") do f
         HDF5.o_delete(f, joinpath(group,dset))

@@ -122,7 +122,16 @@ See [`binning_error`](@ref).
 """
 binningplot(obs::Observable{T}; keyargs...) where T = plot_binning(obs; keyargs...)
 
+"""
+	errorplot(obs::Observable{T})
 
+Creates a plot of the statistical standard error as a function of bin size.
+
+The standard error should (up to statistical fluctuations) show a plateau for larger bin sizes,
+indicating that the bin averages have become independent.
+
+See [`binning_error`](@ref), [`error`](@ref).
+"""
 function errorplot(obs::Observable; customtitle::String="")
 	@eval using PyPlot
 	ts = timeseries(obs)
