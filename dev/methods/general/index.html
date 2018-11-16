@@ -271,18 +271,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../manual/meantype/" title="Type of the mean" class="md-nav__link">
-      Type of the mean
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../manual/errorestimation/" title="Error estimation" class="md-nav__link">
       Error estimation
     </a>
@@ -310,13 +298,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Methods
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Methods
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -480,6 +468,16 @@
 <h2 id="index">Index</h2>
 <ul>
 <li><a href="./#MonteCarloObservable.Observable-Tuple{DataType,String}"><code>MonteCarloObservable.Observable</code></a></li>
+<li><a href="./#Base.eltype-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>Base.eltype</code></a></li>
+<li><a href="./#Base.getindex-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},Vararg{Any,N} where N}} where T"><code>Base.getindex</code></a></li>
+<li><a href="./#Base.isempty-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>Base.isempty</code></a></li>
+<li><a href="./#Base.length-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>Base.length</code></a></li>
+<li><a href="./#Base.ndims-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>Base.ndims</code></a></li>
+<li><a href="./#Base.push!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractArray{T,N} where N}} where T"><code>Base.push!</code></a></li>
+<li><a href="./#Base.push!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},T}} where T"><code>Base.push!</code></a></li>
+<li><a href="./#Base.size-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>Base.size</code></a></li>
+<li><a href="./#Base.view-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},Vararg{Any,N} where N}} where T"><code>Base.view</code></a></li>
+<li><a href="./#Distributed.clear!-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>Distributed.clear!</code></a></li>
 <li><a href="./#MonteCarloObservable.add!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractArray{T,N} where N}} where T"><code>MonteCarloObservable.add!</code></a></li>
 <li><a href="./#MonteCarloObservable.add!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},T}} where T"><code>MonteCarloObservable.add!</code></a></li>
 <li><a href="./#MonteCarloObservable.inmemory-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>MonteCarloObservable.inmemory</code></a></li>
@@ -487,6 +485,8 @@
 <li><a href="./#MonteCarloObservable.rename-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}} where T"><code>MonteCarloObservable.rename</code></a></li>
 <li><a href="./#MonteCarloObservable.reset!-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>MonteCarloObservable.reset!</code></a></li>
 <li><a href="./#MonteCarloObservable.timeseries-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>MonteCarloObservable.timeseries</code></a></li>
+<li><a href="./#MonteCarloObservable.@diskobs-Tuple{Any}"><code>MonteCarloObservable.@diskobs</code></a></li>
+<li><a href="./#MonteCarloObservable.@obs-Tuple{Any}"><code>MonteCarloObservable.@obs</code></a></li>
 </ul>
 <p><a id='Documentation-1'></a></p>
 <h2 id="documentation">Documentation</h2>
@@ -506,6 +506,83 @@
 <li><code>meantype</code>: type of the mean (should be compatible with measurement type <code>t</code>)</li>
 </ul>
 <p>See also <a href="./#MonteCarloObservable.Observable-Tuple{DataType,String}"><code>Observable</code></a>.</p>
+<p><a id='MonteCarloObservable.@diskobs-Tuple{Any}' href='#MonteCarloObservable.@diskobs-Tuple{Any}'>#</a>
+<strong><code>MonteCarloObservable.@diskobs</code></strong> &mdash; <em>Macro</em>.</p>
+<p>Convenience macro for generating a "disk observable" (<code>inmemory=false</code>) from a vector of measurements.</p>
+<p><a id='MonteCarloObservable.@obs-Tuple{Any}' href='#MonteCarloObservable.@obs-Tuple{Any}'>#</a>
+<strong><code>MonteCarloObservable.@obs</code></strong> &mdash; <em>Macro</em>.</p>
+<p>Convenience macro for generating an Observable from a vector of measurements.</p>
+<p><a id='Base.eltype-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#Base.eltype-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
+<strong><code>Base.eltype</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>eltype(obs::Observable{T})
+</pre></div>
+
+
+<p>Returns the type <code>T</code> of a measurment of the observable.</p>
+<p><a id='Base.getindex-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},Vararg{Any,N} where N}} where T' href='#Base.getindex-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},Vararg{Any,N} where N}} where T'>#</a>
+<strong><code>Base.getindex</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>getindex(obs::Observable{T}, args...)
+</pre></div>
+
+
+<p>Get an element of the measurement time series of the observable.</p>
+<p><a id='Base.isempty-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#Base.isempty-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
+<strong><code>Base.isempty</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>isempty(obs::Observable{T})
+</pre></div>
+
+
+<p>Determine wether the observable hasn't been measured yet.</p>
+<p><a id='Base.length-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#Base.length-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
+<strong><code>Base.length</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>length(obs::Observable{T})
+</pre></div>
+
+
+<p>Number of measurements of the observable.</p>
+<p><a id='Base.ndims-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#Base.ndims-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
+<strong><code>Base.ndims</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>ndims(obs::Observable{T})
+</pre></div>
+
+
+<p>Number of dimensions of the observable (of one measurement).</p>
+<p>Equivalent to <code>ndims(T)</code>.</p>
+<p><a id='Base.push!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractArray{T,N} where N}} where T' href='#Base.push!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractArray{T,N} where N}} where T'>#</a>
+<strong><code>Base.push!</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span><span class="nt">push</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurements</span><span class="p">::</span><span class="nd">AbstractArray</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
+</pre></div>
+
+
+<p>Add multiple <code>measurements</code> to observable <code>obs</code>. Note that because of preallocation this isn't really a push.</p>
+<p><a id='Base.push!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},T}} where T' href='#Base.push!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},T}} where T'>#</a>
+<strong><code>Base.push!</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span><span class="nt">push</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurement</span><span class="p">::</span><span class="nd">T</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
+</pre></div>
+
+
+<p>Add a <code>measurement</code> to observable <code>obs</code>. Note that because of preallocation this isn't really a push.</p>
+<p><a id='Base.size-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#Base.size-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
+<strong><code>Base.size</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>size(obs::Observable{T})
+</pre></div>
+
+
+<p>Size of the observable (of one measurement).</p>
+<p><a id='Base.view-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},Vararg{Any,N} where N}} where T' href='#Base.view-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},Vararg{Any,N} where N}} where T'>#</a>
+<strong><code>Base.view</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>view(obs::Observable{T}, args...)
+</pre></div>
+
+
+<p>Get a view into the measurement time series of the observable.</p>
+<p><a id='Distributed.clear!-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#Distributed.clear!-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
+<strong><code>Distributed.clear!</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span>clear!(obs::Observable{T})
+</pre></div>
+
+
+<p>Clears all measurement information in <code>obs</code>. Identical to <a href="./#MonteCarloObservable.reset!-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>reset!</code></a>.</p>
 <p><a id='MonteCarloObservable.add!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractArray{T,N} where N}} where T' href='#MonteCarloObservable.add!-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractArray{T,N} where N}} where T'>#</a>
 <strong><code>MonteCarloObservable.add!</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">add</span><span class="o">!(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">,</span> <span class="nt">measurements</span><span class="p">::</span><span class="nd">AbstractArray</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="o">;</span> <span class="nt">verbose</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
@@ -547,7 +624,7 @@
 </pre></div>
 
 
-<p>Resets all measurement information in <code>obs</code>. Identical to <a href="../@ref"><code>init!</code></a> and <a href="../@ref"><code>clear!</code></a>.</p>
+<p>Resets all measurement information in <code>obs</code>. Identical to <a href="./#Distributed.clear!-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>clear!</code></a>.</p>
 <p><a id='MonteCarloObservable.timeseries-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#MonteCarloObservable.timeseries-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
 <strong><code>MonteCarloObservable.timeseries</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>timeseries(obs::Observable{T})
@@ -556,7 +633,7 @@
 
 <p>Returns the measurement time series of an observable.</p>
 <p>If <code>inmemory(obs) == false</code> it will read the time series from disk and thus might take some time.</p>
-<p>See also <a href="../@ref"><code>getindex</code></a> and <a href="../@ref"><code>view</code></a>.</p>
+<p>See also <a href="./#Base.getindex-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},Vararg{Any,N} where N}} where T"><code>getindex</code></a> and <a href="./#Base.view-Union{Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},Vararg{Any,N} where N}} where T"><code>view</code></a>.</p>
                 
                   
                 

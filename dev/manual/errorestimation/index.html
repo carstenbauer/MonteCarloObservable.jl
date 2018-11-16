@@ -269,18 +269,6 @@
       
       
 
-
-  <li class="md-nav__item">
-    <a href="../meantype/" title="Type of the mean" class="md-nav__link">
-      Type of the mean
-    </a>
-  </li>
-
-    
-      
-      
-      
-
   
 
 
@@ -314,11 +302,24 @@
     Binning analysis
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#references" title="References" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#resources" title="Resources" class="md-nav__link">
-    Resources
+  <a href="#jackknife-analysis" title="Jackknife analysis" class="md-nav__link">
+    Jackknife analysis
   </a>
   
 </li>
@@ -353,13 +354,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Methods
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Methods
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -443,11 +444,24 @@
     Binning analysis
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#references" title="References" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#resources" title="Resources" class="md-nav__link">
-    Resources
+  <a href="#jackknife-analysis" title="Jackknife analysis" class="md-nav__link">
+    Jackknife analysis
   </a>
   
 </li>
@@ -473,10 +487,18 @@
                 
                 <p><a id='Error-estimation-1'></a></p>
 <h1 id="error-estimation">Error estimation</h1>
-<p>The automatic estimation of error bars (one-sigma confidence intervals) is outsourced in the package <a href="https://github.com/crstnbr/ErrorAnalysis.jl">ErrorAnalysis.jl</a>.</p>
+<p>Automatic estimation of the <a href="https://en.wikipedia.org/wiki/Standard_error">standard error of the mean</a> (one-sigma error bars) is based on a binning analysis.</p>
+<div class="admonition warning">
+<p class="admonition-title">Standard error versus standard deviation</p>
+<p>Be careful not to confuse the terms "standard error (of the mean)" and "standard deviation". Quoting <a href="https://en.wikipedia.org/w/index.php?title=Standard_error&amp;section=8#Standard_error_of_mean_versus_standard_deviation">Wikipedia</a> on this:</p>
+<blockquote>
+<p>Put simply, the <strong>standard error</strong> of the sample mean is an estimate of how far the sample mean is likely to be from the population mean, whereas the <strong>standard deviation</strong> of the sample is the degree to which individuals within the sample differ from the sample mean. If the population <strong>standard deviation</strong> is finite, the <strong>standard error</strong> of the mean of the sample will tend to zero with increasing sample size, because the estimate of the population mean will improve, while the <strong>standard deviation</strong> of the sample will tend to approximate the population <strong>standard deviation</strong> as the sample size increases.</p>
+</blockquote>
+<p>The standard error of an observable can be obtained by <code>error(obs)</code> and the standard deviation by <code>std(obs)</code>.</p>
+</div>
 <p><a id='Binning-analysis-1'></a></p>
 <h2 id="binning-analysis">Binning analysis</h2>
-<p>For <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> uncorrelated measurements of an observable <span><span class="MathJax_Preview">O</span><script type="math/tex">O</script></span> the statistical error <span><span class="MathJax_Preview">\sigma</span><script type="math/tex">\sigma</script></span>, the root-mean-square deviation of the time series mean from the true expectation value, falls off with the number of measurements <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> according to</p>
+<p>For <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> uncorrelated measurements of an observable <span><span class="MathJax_Preview">O</span><script type="math/tex">O</script></span> the statistical standard error <span><span class="MathJax_Preview">\sigma</span><script type="math/tex">\sigma</script></span>, the root-mean-square deviation of the time series mean from the true mean, falls off with the number of measurements <span><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> according to</p>
 <div>
 <div class="MathJax_Preview">
 \sigma = \frac{\sigma_{O}}{\sqrt{N}},
@@ -487,12 +509,15 @@
 </div>
 <p>where <span><span class="MathJax_Preview">\sigma_{O}</span><script type="math/tex">\sigma_{O}</script></span> is the standard deviation of the observable <span><span class="MathJax_Preview">O</span><script type="math/tex">O</script></span>.</p>
 <p>In a Markov chain Monte Carlo sampling, however, measurements are usually correlated due to the fact that the next step of the Markov walker depends on his current position in configuration space. One way to estimate the statistical error in this case is by binning analysis. The idea is to partition the time series into bins of a fixed size large enough such that neighboring bins are uncorrelated, that is there means are uncorrelated. For this procedure to be reliable we need both a large bin size (larger than the Markov time scale of correlations, typically called autocorrelation time) and many bins (to suppress statistical fluctuations).</p>
-<p>In principle, what one <em>should</em> do is look at the estimate for the statistical error as a function of bin size and expect a plateau (convergence of the estimate). However, finding a plateau (with fluctuations) numerically in an automated manner is difficult. Instead we simply always partition the time series into 32 bins what is generally considered a large sample by statisticians. The more data we add the larger the bin size and the better the error estimate.</p>
-<p>From this we conclude that estimates for the error only become reliable in the limit of many measurements.</p>
-<p><a id='Resources-1'></a></p>
-<h2 id="resources">Resources</h2>
+<p>The typical procedure is to look at the estimate for the statistical error as a function of bin size and expect a plateau (convergence of the estimate). You can do this manually using <code>errorplot(obs)</code>. Automatically, the package uses a plateau-finder algorithm to check wether convergence has been reached. Note, however, that finding a plateau (with expected fluctuations) numerically in an automated manner isn't trivial. Hence, the algorithm is somewhat heuristic as it is in other software like <a href="http://alps.comp-phys.org/mediawiki/index.php/Main_Page">ALPS</a> and shouldn't be trusted without further manual checking. It is conservative though in the sense that it tends to be rather false-negative than false-positive.</p>
+<p>From this we conclude that estimates for the error really only become reliable in the limit of many measurements.</p>
+<p><a id='References-1'></a></p>
+<h3 id="references">References</h3>
 <p>J. Gubernatis, N. Kawashima, and P. Werner, <a href="https://www.cambridge.org/core/books/quantum-monte-carlo-methods/AEA92390DA497360EEDA153CF1CEC7AC">Quantum Monte Carlo Methods: Algorithms for Lattice Models</a>, Book (2016)</p>
 <p>V. Ambegaokar, and M. Troyer, <a href="http://aapt.scitation.org/doi/10.1119/1.3247985">Estimating errors reliably in Monte Carlo simulations of the Ehrenfest model</a>, American Journal of Physics <strong>78</strong>, 150 (2010)</p>
+<p><a id='Jackknife-analysis-1'></a></p>
+<h2 id="jackknife-analysis">Jackknife analysis</h2>
+<p>See for example the corresponding <a href="https://en.wikipedia.org/wiki/Jackknife_resampling">Wikipedia article</a>.</p>
                 
                   
                 
@@ -513,7 +538,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../meantype/" title="Type of the mean" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../gettingstarted/" title="Getting started" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -522,7 +547,7 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Type of the mean
+                Getting started
               </span>
             </div>
           </a>
