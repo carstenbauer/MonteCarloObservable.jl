@@ -57,6 +57,22 @@ import HDF5
     reset!(obs)
     @test length(obs) == 0
     @test isempty(obs)
+
+    # meantype
+    obs = Observable(Int8, "MyObs"; meantype=Float32)
+    push!(obs, Int8[1,2,3])
+    @test typeof(mean(obs)) == Float32
+
+    # iterator interface
+    ots = [1,4,5,2]
+    obs = @obs ots
+    f = o -> begin
+        for (idx, val) in enumerate(obs)
+            ots[idx] == val || (return false)
+        end
+        return true
+    end
+    @test f(obs)
 end
 
 
@@ -90,11 +106,18 @@ end
         @test jackknife_error(x->mean(x), obs) == 0.10834619757501414
         @test jackknife_error(x->mean(1 ./ x), obs) == 79.76537738034833
         @test Jackknife.estimate(x->mean(x), ts(obs)) == 0.45486176300000025
+        obs2 = @obs [0.606857, 0.0227746, 0.805997, 0.978731, 0.0853112, 0.311463, 0.628918, 0.0190664, 0.515998, 0.0223728]
+        g(x) = @views mean(x[:,1])^2 - mean(x[:,2].^2)
+        @test jackknife_error(g, obs, obs2) == 0.14501699232741938
 
         # scalar
         @test !iswithinerrorbars(3.123,3.12,0.001)
+        @test !iswithinerrorbars(3.123,3.12,0.001, true) # print=true
         @test iswithinerrorbars(3.123,3.12,0.004)
         @test iswithinerrorbars(0.0,-0.1,0.1)
+        # TODO: fix method first (make it reasonable)
+        # obs2 = @obs ots .+ 0.02
+        # @test iswithinerrorbars(obs, obs2, 0.03)
     end
 
     @testset "Complex Observables" begin
@@ -155,6 +178,15 @@ end
         # @test jackknife_error(x->mean(x), obs)
         # @test jackknife_error(x->mean(1 ./ x), obs)
         # @test Jackknife.estimate(x->mean(x), ts(obs))
+
+        A = rand(2,2)
+        B = A .+ 0.02
+        @test iswithinerrorbars(A,B,fill(0.1, 2,2))
+        @test !iswithinerrorbars(A,B,fill(0.01, 2,2))
+        @test !iswithinerrorbars(A,B,fill(0.01, 2,2), true)
+        A = rand(ComplexF64, 2,2)
+        B = A .+ 0.02
+        @test_logs (:warn, "Unfortunately print=true is only supported for real input.") !iswithinerrorbars(A,B,fill(0.01, 2,2), true)
     end
 end
 
@@ -204,6 +236,7 @@ end
         cd(d) do
             obs = @obs rand(10)
             saveobs(obs, "myobs.jld", "myobservables/obs")
+            saveobs(obs, "myobs.jld", "myobservables/obs_again") # test writing to already existing file
             x = loadobs("myobs.jld", "myobservables/obs")
             @test x == obs
             @test "obs" in listobs("myobs.jld", "myobservables/")
