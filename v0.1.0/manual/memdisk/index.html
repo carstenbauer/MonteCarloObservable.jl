@@ -271,18 +271,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../meantype/" title="Type of the mean" class="md-nav__link">
-      Type of the mean
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../errorestimation/" title="Error estimation" class="md-nav__link">
       Error estimation
     </a>
@@ -346,13 +334,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Methods
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Methods
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -459,26 +447,24 @@
                 
                 <p><a id='Memory-/-disk-storage-1'></a></p>
 <h1 id="memory-disk-storage">Memory / disk storage</h1>
-<p>By default the full Monte Carlo time series of an observable is kept in memory. This is the most convenient option as it renders element access and error computation fast. However, one can think of at least two scenarios in which it might be preferable to track the time series on disk rather than in memory:</p>
+<p>By default the full time series of an observable is kept in memory. This is the most convenient option as it renders element access and error computation fast. However, sometimes it is preferable to track the time series on disk rather than completely in memory:</p>
 <ul>
 <li>Abrupt termination: the simulation might be computationally expensive, thus slow, and might abort abruptly (maybe due to cluster outage or time limit). In this case, one probably wants to have a restorable "memory dump" of the so far recorded measurements to not have to restart from scratch.</li>
 <li>Memory limit: the tracked observable might be large, i.e. a large complex matrix. Then, storing a long time series might make the simulation exceed a memory limit (and often stop unexpectedly). Keeping the time series memory on disk solves this problem.</li>
 </ul>
-<p>As we show below, <code>MonteCarloObservable.jl</code> allows you to handle those cases by keeping the time series on disk.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>One can always save the full observable object (<a href="../../methods/io/#MonteCarloObservable.saveobs-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString,AbstractString}} where T"><code>saveobs</code></a>) or export the time series to disk (<a href="../../methods/io/#MonteCarloObservable.export_result-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString,AbstractString}} where T"><code>export_result</code></a> with <code>timeseries=true</code>). This section is about the (internal) temporary storage of the time series during simulation. If you will, you can think of in-memory observables (default) and "disk observables" (this section).</p>
-</div>
 <p><a id='"Disk-observables"-1'></a></p>
 <h2 id="disk-observables">"Disk observables"</h2>
-<p>You can create a "disk observable" that every once in a while dumps it's time series memory to disk as follows:</p>
+<p>A "disk observable" is an <code>Observable</code> that every once in a while dumps it's time series memory to disk and only keeps the latest data points in memory. You can create a "disk observable" as</p>
 <div class="codehilite"><pre><span></span><span class="n">obs</span> <span class="o">=</span> <span class="n">Observable</span><span class="p">(</span><span class="kt">Float64</span><span class="p">,</span> <span class="s">&quot;myobservable&quot;</span><span class="p">;</span> <span class="n">inmemory</span><span class="o">=</span><span class="kc">false</span><span class="p">,</span> <span class="n">alloc</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 
 
-<p>It will record measurements in memory until the preallocated time series buffer (<code>alloc=100</code>) overflows in which case it will save the observables memory to JLD file (<code>outfile</code>). In the above example this will thus happen for the first time after 100 measurements.</p>
-<p>Apart from the special initialization (<code>inmemory=false</code>) basically everything else stays the same as for an in-memory observable. For example, we can still get the mean via <code>mean(obs)</code>, access time series elements with <code>obs[idx]</code> and load the full time series to memory at any point via <code>timeseries(obs)</code>. However, because of now necessary disk operations same functionality might be slightly slower for those "disk observables".</p>
-<p>The observable's memory dump contains meta information, like name, element type, element size etc., as well as time series memory chunks. The dumping is implemented in the not exported method <a href="../@ref">MonteCarloObservable.updateondisk</a>. Note that the observable's memory is <strong>not</strong> a full backup of the observable itself (see <a href="../@ref">saveobs</a>). Should the simulation terminate abruptly one can nonetheless restore most of the so-far recorded information using <a href="../@ref">loadobs_frommemory</a> and <a href="../@ref">timeseries_frommemory</a>. Measurements that haven't been dumped yet, because they are still lying in the preallocated buffer, are lost though. Please also note that the structure of the dump of an observable's memory might change in future versions.</p>
+<p>It will record measurements in memory until the preallocated time series buffer (<code>alloc=100</code>) overflows in which case it saves it's time series memory to disk (<code>outfile</code>). In the above example this will happen after 100 measurements.</p>
+<p>Apart from the special construction (<code>inmemory=false</code>) everything else stays the same as for default in-memory observables. For example, we can still get the mean via <code>mean(obs)</code>, access time series elements with <code>obs[idx]</code> and load the full time series to memory at any point through <code>timeseries(obs)</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The observable's memory dump contains meta information, like name, element type, element size etc., as well as time series memory chunks. The dumping is implemented in the not exported method <code>MonteCarloObservable.updateondisk</code>. Note that the observable's memory is <strong>not</strong> a full backup of the observable itself (see <a href="../../methods/io/#MonteCarloObservable.saveobs-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString,AbstractString}} where T"><code>saveobs</code></a>). Should the simulation terminate abruptly one can nonetheless restore most of the so-far recorded information using <a href="../../methods/io/#MonteCarloObservable.loadobs_frommemory-Tuple{AbstractString,AbstractString}"><code>loadobs_frommemory</code></a> and <a href="../../methods/io/#MonteCarloObservable.timeseries_frommemory-Tuple{AbstractString,AbstractString}"><code>timeseries_frommemory</code></a>. Measurements that hadn't been dumped yet, because they were still in the preallocated buffer, are lost though.</p>
+</div>
                 
                   
                 

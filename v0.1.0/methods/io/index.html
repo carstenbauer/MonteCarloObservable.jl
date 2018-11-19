@@ -271,18 +271,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../manual/meantype/" title="Type of the mean" class="md-nav__link">
-      Type of the mean
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="../../manual/errorestimation/" title="Error estimation" class="md-nav__link">
       Error estimation
     </a>
@@ -310,13 +298,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
-    <label class="md-nav__link" for="nav-6">
+    <label class="md-nav__link" for="nav-5">
       Methods
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
-      <label class="md-nav__title" for="nav-6">
+      <label class="md-nav__title" for="nav-5">
         Methods
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -479,15 +467,25 @@
 <p><a id='Index-1'></a></p>
 <h2 id="index">Index</h2>
 <ul>
+<li><a href="./#MonteCarloObservable.export_error-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString,AbstractString}} where T"><code>MonteCarloObservable.export_error</code></a></li>
 <li><a href="./#MonteCarloObservable.export_result-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString,AbstractString}} where T"><code>MonteCarloObservable.export_result</code></a></li>
+<li><a href="./#MonteCarloObservable.listobs"><code>MonteCarloObservable.listobs</code></a></li>
 <li><a href="./#MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}"><code>MonteCarloObservable.loadobs</code></a></li>
 <li><a href="./#MonteCarloObservable.loadobs_frommemory-Tuple{AbstractString,AbstractString}"><code>MonteCarloObservable.loadobs_frommemory</code></a></li>
+<li><a href="./#MonteCarloObservable.rmobs"><code>MonteCarloObservable.rmobs</code></a></li>
 <li><a href="./#MonteCarloObservable.saveobs-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array},AbstractString,AbstractString}} where T"><code>MonteCarloObservable.saveobs</code></a></li>
 <li><a href="./#MonteCarloObservable.timeseries_frommemory-Tuple{AbstractString,AbstractString}"><code>MonteCarloObservable.timeseries_frommemory</code></a></li>
 <li><a href="./#MonteCarloObservable.timeseries_frommemory_flat-Tuple{AbstractString,AbstractString}"><code>MonteCarloObservable.timeseries_frommemory_flat</code></a></li>
 </ul>
 <p><a id='Documentation-1'></a></p>
 <h2 id="documentation">Documentation</h2>
+<p><a id='MonteCarloObservable.export_error-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString,AbstractString}} where T' href='#MonteCarloObservable.export_error-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString,AbstractString}} where T'>#</a>
+<strong><code>MonteCarloObservable.export_error</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span><span class="nt">export_error</span><span class="o">(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="cp">[</span><span class="p">,</span> <span class="nx">filename</span><span class="nl">::AbstractString</span><span class="p">,</span> <span class="k">group</span><span class="nl">::AbstractString</span><span class="p">;</span><span class="cp">]</span><span class="o">)</span>
+</pre></div>
+
+
+<p>Export one-sigma error estimate and convergence flag.</p>
 <p><a id='MonteCarloObservable.export_result-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString,AbstractString}} where T' href='#MonteCarloObservable.export_result-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString,AbstractString}} where T'>#</a>
 <strong><code>MonteCarloObservable.export_result</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">export_results</span><span class="o">(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="cp">[</span><span class="p">,</span> <span class="nx">filename</span><span class="nl">::AbstractString</span><span class="p">,</span> <span class="k">group</span><span class="nl">::AbstractString</span><span class="p">;</span> <span class="n">timeseries</span><span class="nl">::Bool</span><span class="o">=</span><span class="kc">false</span><span class="cp">]</span><span class="o">)</span>
@@ -496,6 +494,9 @@
 
 <p>Export result for given observable nicely to JLD.</p>
 <p>Will export name, number of measurements, estimates for mean and one-sigma error. Optionally (<code>timeseries==true</code>) exports the full time series as well.</p>
+<p><a id='MonteCarloObservable.listobs' href='#MonteCarloObservable.listobs'>#</a>
+<strong><code>MonteCarloObservable.listobs</code></strong> &mdash; <em>Function</em>.</p>
+<p>List all observables in a given file and HDF5 group.</p>
 <p><a id='MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}' href='#MonteCarloObservable.loadobs-Tuple{AbstractString,AbstractString}'>#</a>
 <strong><code>MonteCarloObservable.loadobs</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>loadobs(filename::AbstractString, entryname::AbstractString)
@@ -511,6 +512,9 @@
 
 
 <p>Create an observable based on memory dump (<code>inmemory==false</code>).</p>
+<p><a id='MonteCarloObservable.rmobs' href='#MonteCarloObservable.rmobs'>#</a>
+<strong><code>MonteCarloObservable.rmobs</code></strong> &mdash; <em>Function</em>.</p>
+<p>Remove an observable.</p>
 <p><a id='MonteCarloObservable.saveobs-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString,AbstractString}} where T' href='#MonteCarloObservable.saveobs-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString}, Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array},AbstractString,AbstractString}} where T'>#</a>
 <strong><code>MonteCarloObservable.saveobs</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>saveobs(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])
