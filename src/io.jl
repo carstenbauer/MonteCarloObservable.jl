@@ -25,11 +25,11 @@ end
 
 
 function getindexrange_fromfile(obs::Observable{T}, rng::UnitRange{Int})::Vector{T} where T
-    # alloc = 5
+
     getchunknr = i -> fld1(i, obs.alloc)
-    # getchunknr.(1:11)
     chunknr_start = getchunknr(rng.start)
     chunknr_stop = getchunknr(rng.stop)
+    
     chunkidx_first_start = mod1(rng.start, obs.alloc)
     chunkidx_first_stop = chunknr_start * obs.alloc
     chunkidx_last_start = 1
