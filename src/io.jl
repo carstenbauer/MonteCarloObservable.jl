@@ -298,7 +298,7 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
         last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(chunk_count)"))
 
-        T = eval(Meta.parse(element_type))
+        T = jltype(element_type)
         MT = typeof(themean)
         obs = Observable{T, MT}()
 
@@ -352,7 +352,7 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
             # n_meas = read(f, joinpath(grp, "count"))
             element_type = read(f, joinpath(grp, "eltype"))
             chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
-            T = eval(Meta.parse(element_type))
+            T = jltype(element_type)
             # colons = [Colon() for _ in 1:ndims(T)]
 
             firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
@@ -420,5 +420,63 @@ Remove an observable.
 function rmobs(filename::AbstractString, dset::AbstractString, group::AbstractString="obs/")
     h5open(filename, "r+") do f
         HDF5.o_delete(f, joinpath(group,dset))
+    end
+end
+
+
+const types = Dict(
+    "Bool"                        => Bool,
+    "Int64"                       => Int64,
+    "Float64"                     => Float64,
+    "ComplexF64"                  => ComplexF64,
+    "Complex{Float64}"            => Complex{Float64},
+    "Int32"                       => Int32,
+    "Float32"                     => Float32,
+    "ComplexF32"                  => ComplexF32,
+    "Vector{Bool}"                => Array{Bool,1},
+    "Matrix{Bool}"                => Array{Bool,2},
+    "Array{Bool,1}"               => Array{Bool,1},
+    "Array{Bool,2}"               => Array{Bool,2},
+    "Array{Bool,3}"               => Array{Bool,3},
+    "Array{Bool,4}"               => Array{Bool,4},
+    "Array{Bool,5}"               => Array{Bool,5},
+    "Vector{Int}"                 => Array{Int,1},
+    "Matrix{Int}"                 => Array{Int,2},
+    "Array{Int,1}"                => Array{Int,1},
+    "Array{Int,2}"                => Array{Int,2},
+    "Array{Int,3}"                => Array{Int,3},
+    "Array{Int,4}"                => Array{Int,4},
+    "Array{Int,5}"                => Array{Int,5},
+    "Vector{Int64}"               => Array{Int64,1},
+    "Matrix{Int64}"               => Array{Int64,2},
+    "Array{Int64,1}"              => Array{Int64,1},
+    "Array{Int64,2}"              => Array{Int64,2},
+    "Array{Int64,3}"              => Array{Int64,3},
+    "Array{Int64,4}"              => Array{Int64,4},
+    "Array{Int64,5}"              => Array{Int64,5},
+    "Vector{Float64}"             => Array{Float64,1},
+    "Matrix{Float64}"             => Array{Float64,2},
+    "Array{Float64,1}"            => Array{Float64,1},
+    "Array{Float64,2}"            => Array{Float64,2},
+    "Array{Float64,3}"            => Array{Float64,3},
+    "Array{Float64,4}"            => Array{Float64,4},
+    "Array{Float64,5}"            => Array{Float64,5},
+    "Vector{Complex{Float64}}"    => Array{Complex{Float64},1},
+    "Matrix{Complex{Float64}}"    => Array{Complex{Float64},2},
+    "Array{Complex{Float64},1}"   => Array{Complex{Float64},1},
+    "Array{Complex{Float64},2}"   => Array{Complex{Float64},2},
+    "Array{Complex{Float64},3}"   => Array{Complex{Float64},3},
+    "Array{Complex{Float64},4}"   => Array{Complex{Float64},4},
+    "Array{Complex{Float64},5}"   => Array{Complex{Float64},5}
+)
+
+"""
+Basically a limited but much more secure version of `eval(Meta.parse(s))`.
+"""
+function jltype(s::AbstractString)
+    try
+        return types[s]
+    catch KeyError
+        error("Unknown observable eltype \"$(s)\".")
     end
 end
