@@ -172,7 +172,7 @@ function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile,
         !HDF5.has(f.plain, grp) || delete!(f, grp)
         write(f, joinpath(grp, "name"), name(obs))
         write(f, joinpath(grp, "count"), length(obs))
-        timeseries && write(f, joinpath(grp, "timeseries"), MonteCarloObservable.timeseries(obs))
+        timeseries && write(f, joinpath(grp, "timeseries"), TimeSeriesSerializer(MonteCarloObservable.timeseries(obs)))
         write(f, joinpath(grp, "mean"), mean(obs))
         if error
             err, conv = error_with_convergence(obs)
@@ -238,7 +238,7 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
         # initialize
         write(f, joinpath(grp,"count"), length(obs))
         write(f, joinpath(tsgrp,"chunk_count"), 1)
-        write(f, joinpath(tsgrp,"ts_chunk1"), obs.timeseries)
+        write(f, joinpath(tsgrp,"ts_chunk1"), TimeSeriesSerializer(obs.timeseries))
         write(f, joinpath(grp, "mean"), mean(obs))
 
         write(f, joinpath(grp, "name"), name(obs))
@@ -248,7 +248,7 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
     else
         try
             cc = read(f, joinpath(tsgrp, "chunk_count"))
-            write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), obs.timeseries)
+            write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries))
 
             delete!(f, joinpath(tsgrp, "chunk_count"))
             write(f, joinpath(tsgrp,"chunk_count"), cc+1)
@@ -267,20 +267,16 @@ function updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractStrin
     nothing
 end
 
+"""
+Thin wrapper type used in `JLD.writeas` to dump the contained vector as a higher-dimensional matrix.
+"""
+struct TimeSeriesSerializer{T}
+    v::Vector{T}
+end
+@inline JLD.writeas(x::TimeSeriesSerializer{T}) where T<:AbstractArray = cat(x.v..., dims=ndims(T)+1)
+@inline JLD.writeas(x::TimeSeriesSerializer{T}) where T<:Number = x.v
 
-# """
-#     writeobs(obs::Observable{T}[, timeseries=false])
 
-# Write estimate for mean and one-sigma error (standard deviation) to file.
-
-# Measurement time series will be dumped as well if `timeseries = true` .
-# """
-# function writeobs(obs::Observable{T}, filename::AbstractString="Observables.jld" timeseries::Bool=false) where T
-
-# end
-
-JLD.writeas(x::Vector{T}) where T<:AbstractArray = cat(x..., dims=ndims(T)+1)
-# JLD.readas()
 
 """
     loadobs_frommemory(filename::AbstractString, group::AbstractString)
