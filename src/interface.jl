@@ -141,33 +141,51 @@ Base.ndims(obs::Observable{T}) where T = ndims(T)
 
 Get an element of the measurement time series of the observable.
 """
-function Base.getindex(obs::Observable{T}, args...) where T
+function Base.getindex(obs::Observable{T}, idx::Int) where T
+    1 <= idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
     if obs.inmemory
-        return getindex(view(obs.timeseries, 1:obs.n_meas), args...)
+        return getindex(obs.timeseries, idx)
     else
-        if typeof(args[1]) != Int # args is probably a range
-            vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[args...]
-            # TODO: Load only necessary chunks to improve speed here.
-        else
-            idx = args[1]
-            idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
-            return getindex_fromfile(obs, idx)
-        end
+        return getindex_fromfile(obs, idx)
     end
 end
+
+function Base.getindex(obs::Observable{T}, rng::UnitRange{Int}) where T
+    rng.start >= 1 && rng.stop <= length(obs) || throw(BoundsError(typeof(obs), rng))
+    if obs.inmemory
+        return getindex(obs.timeseries, rng)
+    else
+        vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[rng]
+        # TODO: Load only necessary chunks to improve speed here.
+    end
+end
+
+Base.getindex(obs::Observable, c::Colon) = getindex(obs, 1:length(obs))
 
 """
     view(obs::Observable{T}, args...)
 
 Get a view into the measurement time series of the observable.
 """
-function Base.view(obs::Observable{T}, args...) where T
+function Base.view(obs::Observable{T}, idx::Int) where T
+    1 <= idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
     if obs.inmemory
-        view(view(obs.timeseries, 1:obs.n_meas), args...)
+        view(obs.timeseries, idx)
     else
         error("Only supported for `inmemory(obs) == true`. Alternatively, load the timeseries as an array (e.g. with timeseries_frommemory_flat) and use views into this array.");
     end
 end
+
+function Base.view(obs::Observable{T}, rng::UnitRange{Int}) where T
+    rng.start >= 1 && rng.stop <= length(obs) || throw(BoundsError(typeof(obs), rng))
+    if obs.inmemory
+        view(obs.timeseries, rng)
+    else
+        error("Only supported for `inmemory(obs) == true`. Alternatively, load the timeseries as an array (e.g. with timeseries_frommemory_flat) and use views into this array.");
+    end
+end
+
+Base.view(obs::Observable, c::Colon) = view(obs, 1:length(obs))
 
 """
     isempty(obs::Observable{T})

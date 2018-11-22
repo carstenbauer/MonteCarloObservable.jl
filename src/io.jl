@@ -12,26 +12,22 @@
 =#
 
 function getindex_fromfile(obs::Observable{T}, idx::Int)::T where T
-    # format = obs.outformat
-    obsname = name(obs)
     tsgrp = obs.HDF5_dset*"/timeseries/"
 
-    if true # format == "jld"
-        currmemchunk = ceil(Int, obs.n_meas / obs.alloc)
-        chunknr = ceil(Int,idx/obs.alloc)
-        chunkidx = mod1(idx, obs.alloc)
+    currmemchunk = ceil(Int, obs.n_meas / obs.alloc)
+    chunknr = ceil(Int,idx / obs.alloc)
+    chunkidx = mod1(idx, obs.alloc)
 
-        chunknr != currmemchunk || (return obs.timeseries[chunkidx]) # chunk not stored to file yet
+    chunknr != currmemchunk || (return obs.timeseries[chunkidx]) # chunk not stored to file yet
 
-        if eltype(T) <: Complex
-            # h5read with indices is not supported for compoud data. We could only store as separate _real _imag to make this more efficient.
-            return load(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
-        else # Real
-            res = dropdims(h5read(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx)), dims=obs.n_dims+1)
-            return ndims(T) == 0 ? res[1] : res
-        end
-    else
-        error("Bug: obs.outformat not known in getindex_fromfile! Please file a github issue.")
+    if eltype(T) <: Complex
+        # h5read with indices is not supported for compoud data. We could only store as separate _real _imag to make this more efficient.
+        return load(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
+    else # Real
+        # hyperslab
+        dset = h5read(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx))
+        res = dropdims(dset, dims=obs.n_dims+1)
+        return ndims(T) == 0 ? res[1] : res
     end
 end
 
