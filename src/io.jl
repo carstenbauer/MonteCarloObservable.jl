@@ -11,7 +11,7 @@
     3) loadobsmemory
 =#
 
-function getindex_fromfile(obs::Observable{T}, idx::Int) where T
+function getindex_fromfile(obs::Observable{T}, idx::Int)::T where T
     # format = obs.outformat
     obsname = name(obs)
     tsgrp = obs.HDF5_dset*"/timeseries/"
@@ -28,7 +28,7 @@ function getindex_fromfile(obs::Observable{T}, idx::Int) where T
             return load(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
         else # Real
             res = dropdims(h5read(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx)), dims=obs.n_dims+1)
-            return ndims(res) == 0 ? res[1] : res
+            return ndims(T) == 0 ? res[1] : res
         end
     else
         error("Bug: obs.outformat not known in getindex_fromfile! Please file a github issue.")
