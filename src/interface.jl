@@ -110,22 +110,22 @@ reset!(obs::Observable{T}) where T = init!(obs)
 
 Returns the type `T` of a measurment of the observable.
 """
-Base.eltype(obs::Observable{T}) where T = T
+@inline Base.eltype(obs::Observable{T}) where T = T
 
 """
     length(obs::Observable{T})
 
 Number of measurements of the observable.
 """
-Base.length(obs::Observable{T}) where T = obs.n_meas
-Base.lastindex(obs::Observable{T}) where T = length(obs)
+@inline Base.length(obs::Observable{T}) where T = obs.n_meas
+@inline Base.lastindex(obs::Observable{T}) where T = length(obs)
 
 """
     size(obs::Observable{T})
 
 Size of the observable (of one measurement).
 """
-Base.size(obs::Observable{T}) where T = obs.elsize
+@inline Base.size(obs::Observable{T}) where T = obs.elsize
 
 """
     ndims(obs::Observable{T})
@@ -134,7 +134,7 @@ Number of dimensions of the observable (of one measurement).
 
 Equivalent to `ndims(T)`.
 """
-Base.ndims(obs::Observable{T}) where T = ndims(T)
+@inline Base.ndims(obs::Observable{T}) where T = ndims(T)
 
 """
     getindex(obs::Observable{T}, args...)
@@ -155,8 +155,7 @@ function Base.getindex(obs::Observable{T}, rng::UnitRange{Int}) where T
     if obs.inmemory
         return getindex(obs.timeseries, rng)
     else
-        vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[rng]
-        # TODO: Load only necessary chunks to improve speed here.
+        return getindexrange_fromfile(obs, rng)
     end
 end
 

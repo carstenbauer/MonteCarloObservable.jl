@@ -12,24 +12,116 @@
 =#
 
 function getindex_fromfile(obs::Observable{T}, idx::Int)::T where T
-    tsgrp = obs.HDF5_dset*"/timeseries/"
+    tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
 
     currmemchunk = ceil(Int, obs.n_meas / obs.alloc)
     chunknr = ceil(Int,idx / obs.alloc)
-    chunkidx = mod1(idx, obs.alloc)
+    idx_in_chunk = mod1(idx, obs.alloc)
 
-    chunknr != currmemchunk || (return obs.timeseries[chunkidx]) # chunk not stored to file yet
+    chunknr != currmemchunk || (return obs.timeseries[idx_in_chunk]) # chunk not stored to file yet
+    
+    return _getindex_ts_chunk(obs, chunknr, idx_in_chunk)
+end
 
-    if eltype(T) <: Complex
-        # h5read with indices is not supported for compoud data. We could only store as separate _real _imag to make this more efficient.
-        return load(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"))[obs.colons..., chunkidx]
-    else # Real
-        # hyperslab
-        dset = h5read(obs.outfile, joinpath(tsgrp, "ts_chunk$(chunknr)"), (obs.colons..., chunkidx))
-        res = dropdims(dset, dims=obs.n_dims+1)
+function getindexrange_fromfile_old(obs::Observable{T}, rng::UnitRange{Int})::Vector{T} where T
+    vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[rng]
+end
+
+function getindexrange_fromfile(obs::Observable{T}, rng::UnitRange{Int})::Vector{T} where T
+    # alloc = 5
+    getchunknr = i -> fld1(i, obs.alloc)
+    # getchunknr.(1:11)
+    chunknr_start = getchunknr(rng.start)
+    chunknr_stop = getchunknr(rng.stop)
+    chunkidx_first_start = mod1(rng.start, obs.alloc)
+    chunkidx_first_stop = chunknr_start * obs.alloc
+    chunkidx_last_start = 1
+    chunkidx_last_stop = mod1(rng.stop, obs.alloc)
+
+    if chunknr_start == chunknr_stop # all in one chunk
+        startidx = mod1(rng.start, obs.alloc)
+        stopidx = mod1(rng.stop, obs.alloc)
+        return _getindex_ts_chunk(obs, chunknr_start, startidx:stopidx)
+    else
+        # fallback: load full time series and extract range
+        return vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[rng]
+
+        # While the following is cheaper on memory, it is much(!) slower. TODO: bring it up to speed
+        # v = Vector{T}(undef, length(rng))
+        # i = 1 # pointer to first free slot in v
+        # @indbounds for c in chunknr_start:chunknr_stop
+        #     if c == chunknr_start
+        #         r = chunkidx_first_start:chunkidx_first_stop
+
+        #         _getindex_ts_chunk!(v[1:length(r)], obs, c, r)
+        #         i += length(r)
+
+        #     elseif c == chunknr_stop
+        #         r = chunkidx_last_start:chunkidx_last_stop
+        #         _getindex_ts_chunk!(v[i:lastindex(v)], obs, c, r)
+        #     else
+        #         _getindex_ts_chunk!(v[i:(i+obs.alloc-1)], obs, c, Colon())
+        #         i += obs.alloc
+        #     end
+        # end
+
+        # return v
+
+    end
+end
+
+
+
+function _getindex_ts_chunk(obs::Observable{T}, chunknr::Int, idx_in_chunk::Int)::T where T
+    tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+
+    # Use hyperslab to only read the requested element from disk
+    return jldopen(obs.outfile, "r") do f
+        val = f[joinpath(tsgrp, "ts_chunk$(chunknr)")][obs.colons..., idx_in_chunk]
+        res = dropdims(val, dims=obs.n_dims+1)
         return ndims(T) == 0 ? res[1] : res
     end
 end
+
+function _getindex_ts_chunk(obs::Observable{T}, chunknr::Int, rng::UnitRange{Int})::Vector{T} where T
+    tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+
+    # Use hyperslab to only read the requested elements from disk
+    return jldopen(obs.outfile, "r") do f
+        val = f[joinpath(tsgrp, "ts_chunk$(chunknr)")][obs.colons..., rng]
+        return [val[.., i] for i in 1:size(val, ndims(val))]
+    end
+end
+
+function _getindex_ts_chunk(obs::Observable{T}, chunknr::Int, c::Colon)::Vector{T} where T
+    _getindex_ts_chunk(obs, chunknr, 1:obs.alloc)
+end
+
+
+
+
+# function _getindex_ts_chunk!(out::AbstractVector{T}, obs::Observable{T}, chunknr::Int, rng::UnitRange{Int})::Nothing where T
+#     @assert length(out) == length(rng)
+#     tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+
+#     # Use hyperslab to only read the requested elements from disk
+#     jldopen(obs.outfile, "r") do f
+#         val = f[joinpath(tsgrp, "ts_chunk$(chunknr)")][obs.colons..., rng]
+#         # return [val[.., i] for i in 1:size(val, ndims(val))]
+
+#         for i in 1:size(val, ndims(val))
+#             out[i] = val[.., i]
+#         end
+#     end
+#     nothing
+# end
+
+# function _getindex_ts_chunk!(out::AbstractVector{T}, obs::Observable{T}, chunknr::Int, c::Colon)::Nothing where T
+#     _getindex_ts_chunk!(out, obs, chunknr, 1:obs.alloc)
+#     nothing
+# end
+
+
 
 """
     saveobs(obs::Observable{T}[, filename::AbstractString, entryname::AbstractString])

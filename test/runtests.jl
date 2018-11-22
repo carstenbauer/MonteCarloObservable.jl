@@ -84,7 +84,7 @@ import HDF5
 
 
     @testset "Statistics" begin
-        @testset "Scalar Observables" begin
+        @testset "Real Observables" begin
             ots = [0.00124803, 0.643089, 0.183268, 0.799899, 0.0857666, 0.955348, 0.165763, 0.765998, 0.63942, 0.308818]
             obs = @obs ots
             @test mean(ots) == mean(obs)
@@ -199,43 +199,114 @@ import HDF5
 
 
     @testset "Disk observables" begin
-        mktempdir() do d
-            cd(d) do
-                # constructor
-                obs = Observable(Float64, "myobs"; inmemory=false, alloc=10)
-                @test !inmemory(obs)
+        @testset "Real Observables" begin
+            mktempdir() do d
+                cd(d) do
+                    # constructor
+                    obs = Observable(Float64, "myobs"; inmemory=false, alloc=10)
+                    @test !inmemory(obs)
 
-                # macro
-                @test !inmemory(@diskobs rand(10))
+                    # macro
+                    @test !inmemory(@diskobs rand(5))
 
-                mktempdir() do d
-                    cd(d) do
-                        add!(obs, 1.0:9.0)
-                        @test !isfile(obs.outfile)
-                        add!(obs, 10.0)
-                        @test isfile(obs.outfile)
+                    add!(obs, 1.0:9.0)
+                    @test !isfile(obs.outfile)
+                    add!(obs, 10.0)
+                    @test isfile(obs.outfile)
 
-                        @test timeseries_frommemory("Observables.jld", "myobs") == 1.0:10.0
-                        @test timeseries_frommemory_flat("Observables.jld", "myobs") == 1.0:10.0
-                        @test timeseries("Observables.jld", "myobs") == 1.0:10.0
-                        @test timeseries_flat("Observables.jld", "myobs") == 1.0:10.0
-                        @test ts("Observables.jld", "myobs") == 1.0:10.0
-                        @test ts_flat("Observables.jld", "myobs") == 1.0:10.0
-                        @test loadobs_frommemory("Observables.jld", "myobs") == obs
+                    @test timeseries_frommemory("Observables.jld", "myobs") == 1.0:10.0
+                    @test timeseries_frommemory_flat("Observables.jld", "myobs") == 1.0:10.0
+                    @test timeseries("Observables.jld", "myobs") == 1.0:10.0
+                    @test timeseries_flat("Observables.jld", "myobs") == 1.0:10.0
+                    @test ts("Observables.jld", "myobs") == 1.0:10.0
+                    @test ts_flat("Observables.jld", "myobs") == 1.0:10.0
+                    @test loadobs_frommemory("Observables.jld", "myobs") == obs
 
-                        add!(obs, 11.0:20.0)
-                        @test ts(obs) == 1.0:20.0
-                        @test obs[1:3] == 1.0:3.0
-                        @test obs[18:end] == 18.0:20.0
-                        @test obs[3] == 3.0
-                        @test obs[:] == timeseries(obs)
-                        @test_throws BoundsError obs[length(obs)+1]
+                    add!(obs, 11.0:20.0)
+                    @test ts(obs) == 1.0:20.0
+                    @test obs[1:3] == 1.0:3.0 # slice within chunk
+                    @test obs[9:13] == 9.0:13.0 # slice spanning multiple chunks
+                    @test obs[18:end] == 18.0:20.0
+                    @test obs[3] == 3.0
+                    @test obs[:] == timeseries(obs)
+                    @test_throws BoundsError obs[length(obs)+1]
+                    @test_throws BoundsError obs[1:length(obs)+1]
+                    @test_throws BoundsError obs[-1:2]
 
-                        @test_throws ErrorException view(obs, 1:3) # views not yet supported for diskobs
-                        @test_throws ErrorException view(obs, 1) # views not yet supported for diskobs
-                        @test_throws ErrorException view(obs, :) # views not yet supported for diskobs
+                    @test_throws ErrorException view(obs, 1:3) # views not yet supported for diskobs
+                    @test_throws ErrorException view(obs, 1) # views not yet supported for diskobs
+                    @test_throws ErrorException view(obs, :) # views not yet supported for diskobs
+                end
+            end
+        end
 
-                    end
+        @testset "Complex Observables" begin
+            mktempdir() do d
+                cd(d) do
+                    # constructor
+                    obs = Observable(ComplexF64, "myobs"; inmemory=false, alloc=10)
+                    @test !inmemory(obs)
+
+                    # macro
+                    @test !inmemory(@diskobs rand(ComplexF64, 10))
+
+                    data = Complex{Float64}[0.589744+0.252428im, 0.737068+0.154224im, 0.65847+0.546091im, 0.536648+0.989492im, 0.365943+0.401982im, 0.679054+0.65316im, 0.517828+0.259064im, 0.452195+0.0356182im, 0.771914+0.392988im, 0.11461+0.23768im, 0.800796+0.584551im, 0.100475+0.400542im, 0.196098+0.325246im, 0.616814+0.480603im, 0.402191+0.400236im, 0.835151+0.981177im, 0.981963+0.554879im, 0.97145+0.854191im, 0.0723336+0.390246im, 0.831044+0.446365im]
+                    add!(obs, data[1:9])
+                    @test !isfile(obs.outfile)
+                    add!(obs, data[10])
+                    @test isfile(obs.outfile)
+
+                    @test timeseries_frommemory("Observables.jld", "myobs") == data[1:10]
+                    @test timeseries_frommemory_flat("Observables.jld", "myobs") == data[1:10]
+                    @test timeseries("Observables.jld", "myobs") == data[1:10]
+                    @test timeseries_flat("Observables.jld", "myobs") == data[1:10]
+                    @test ts("Observables.jld", "myobs") == data[1:10]
+                    @test ts_flat("Observables.jld", "myobs") == data[1:10]
+                    @test loadobs_frommemory("Observables.jld", "myobs") == obs
+
+                    add!(obs, data[11:20])
+                    @test ts(obs) == data[1:20]
+                    @test obs[1:3] == data[1:3] # slice within chunk
+                    @test obs[9:13] == data[9:13] # slice spanning multiple chunks
+                    @test obs[18:end] == data[18:20]
+                    @test obs[3] == data[3]
+                    @test obs[:] == timeseries(obs)
+                end
+            end
+        end
+
+        @testset "Matrix Observables" begin
+            mktempdir() do d
+                cd(d) do
+                    # constructor
+                    obs = Observable(Matrix{ComplexF64}, "myobs"; inmemory=false, alloc=2)
+                    @test !inmemory(obs)
+
+                    # macro
+                    @test !inmemory(@diskobs [rand(ComplexF64, 2,3) for _ in 1:2])
+
+                    data = Array{Complex{Float64},2}[[0.497019+0.161613im 0.142061+0.205009im; 0.0387687+0.602916im 0.131416+0.641818im], [0.958829+0.250432im 0.82005+0.0678016im; 0.428906+0.40505im 0.323868+0.657073im], [0.267133+0.794451im 0.289949+0.363709im; 0.124168+0.541679im 0.519768+0.82765im], [0.932745+0.157519im 0.314411+0.0119721im; 0.266742+0.0445631im 0.756244+0.158147im]]
+                    add!(obs, data[1])
+                    @test !isfile(obs.outfile)
+                    add!(obs, data[2])
+                    @test isfile(obs.outfile)
+
+                    data_flat = cat(data..., dims=3)
+                    @test timeseries_frommemory("Observables.jld", "myobs") == data[1:2]
+                    @test timeseries_frommemory_flat("Observables.jld", "myobs") == data_flat[:,:,1:2]
+                    @test timeseries("Observables.jld", "myobs") == data[1:2]
+                    @test timeseries_flat("Observables.jld", "myobs") == data_flat[:,:,1:2]
+                    @test ts("Observables.jld", "myobs") == data[1:2]
+                    @test ts_flat("Observables.jld", "myobs") == data_flat[:,:,1:2]
+                    @test loadobs_frommemory("Observables.jld", "myobs") == obs
+
+                    add!(obs, data[3:4])
+                    @test ts(obs) == data[1:4]
+                    @test obs[1:2] == data[1:2] # slice within chunk
+                    @test obs[2:3] == data[2:3] # slice spanning multiple chunks
+                    @test obs[2:end] == data[2:end]
+                    @test obs[3] == data[3]
+                    @test obs[:] == timeseries(obs)
                 end
             end
         end
