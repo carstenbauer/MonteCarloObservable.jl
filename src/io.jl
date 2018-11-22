@@ -23,9 +23,6 @@ function getindex_fromfile(obs::Observable{T}, idx::Int)::T where T
     return _getindex_ts_chunk(obs, chunknr, idx_in_chunk)
 end
 
-function getindexrange_fromfile_old(obs::Observable{T}, rng::UnitRange{Int})::Vector{T} where T
-    vcat(timeseries_frommemory(obs), obs.timeseries[1:obs.tsidx-1])[rng]
-end
 
 function getindexrange_fromfile(obs::Observable{T}, rng::UnitRange{Int})::Vector{T} where T
     # alloc = 5
