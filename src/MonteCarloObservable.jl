@@ -50,8 +50,9 @@ module MonteCarloObservable
     export saveobs, loadobs, listobs, rmobs
     export export_result, export_error
     export loadobs_frommemory
-    export timeseries_frommemory, timeseries_frommemory_flat
+    export timeseries_frommemory, timeseries_frommemory_flat, mean_frommemory, error_frommemory
     export timeseries_flat, ts_flat
+    export getfrom
 
     # plotting
     export plot, hist, binningplot, errorplot, corrplot

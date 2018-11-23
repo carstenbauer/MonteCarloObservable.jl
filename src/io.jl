@@ -395,6 +395,30 @@ ts(filename::AbstractString, group::AbstractString; kw...) = timeseries_frommemo
 
 
 
+mean_frommemory(filename::AbstractString, group::AbstractString) = _frommemory(filename, group, "mean")
+error_frommemory(filename::AbstractString, group::AbstractString) = _frommemory(filename, group, "error")
+function _frommemory(filename::AbstractString, group::AbstractString, field::AbstractString)
+    grp = endswith(group, "/") ? group : group*"/"
+    d = joinpath(grp, field)
+    return jldopen(filename) do f
+        return read(f[d])
+    end
+end
+
+# personal wrapper
+function getfrom(filename::AbstractString, obs::AbstractString, what::AbstractString)
+    if !(what in ["ts", "ts_flat", "timeseries", "timeseries_flat"])
+        d = joinpath("obs/", obs, what)
+        return jldopen(filename) do f
+            return read(f[d])
+        end
+    else
+        grp = joinpath("obs/", obs)
+        return occursin("flat", what) ? ts_flat(filename, grp) : ts(filename, grp)
+    end
+end
+
+
 
 
 
