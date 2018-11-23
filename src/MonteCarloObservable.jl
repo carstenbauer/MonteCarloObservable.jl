@@ -1,3 +1,8 @@
+"""
+A package for handling observables in a Markov Chain Monte Carlo simulation.
+
+See http://github.com/crstnbr/MonteCarloObservable.jl for more information.
+"""
 module MonteCarloObservable
 
     using JLD, HDF5
@@ -16,14 +21,12 @@ module MonteCarloObservable
     import Base: push!, eltype, length, getindex, view, isempty, ndims, size, iterate, summary, error
     import Base.==
     import Statistics: mean, std, var
-    import Distributed: clear!
 
-    include("type.jl")
     include("helpers.jl")
+    include("observable.jl")
+
     include("binning.jl")
     include("jackknife.jl")
-    include("statistics.jl")
-    include("interface.jl")
     include("io.jl")
     include("plotting.jl")
 
@@ -38,10 +41,10 @@ module MonteCarloObservable
     export mean, var, std
 
     # interface
-    export add!, push!, reset!, clear!
+    export add!, push!, reset!
     export timeseries, ts
     export rename, name
-    export inmemory, length, eltype, getindex, view, isempty, ndims, size, iterate
+    export inmemory, isinmemory, length, eltype, getindex, view, isempty, ndims, size, iterate
 
     # io
     export saveobs, loadobs, listobs, rmobs

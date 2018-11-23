@@ -38,14 +38,15 @@ import HDF5
         # adding and reading
         obs = Observable(Float64, "myobs")
         @test inmemory(obs)
-        add!(obs, 1.0)
+        @test isinmemory(obs)
+        @test add!(obs, 1.0) == nothing
         @test obs[1] == 1.0
         @test length(obs) == 1
-        add!(obs, 2.0:4.0)
+        @test add!(obs, 2.0:4.0) == nothing
         @test length(obs) == 4
-        push!(obs, 5.0:9.0)
+        @test push!(obs, 5.0:9.0) == nothing
         @test length(obs) == 9
-        push!(obs, 10.0)
+        @test push!(obs, 10.0) == nothing
         @test length(obs) == 10
         @test timeseries(obs) == 1.0:10.0
         @test obs[3] == 3.0
@@ -59,6 +60,30 @@ import HDF5
         @test typeof(view(obs, 1:3)) <: SubArray
         @test !isempty(obs)
         @test obs == (@obs 1.0:10.0)
+
+        # adding matrix observables
+        ots = Array{Complex{Float64},2}[[0.756093+0.842213im 0.229536+0.982145im; 0.996734+0.104368im 0.198649+0.601362im], [0.66988+0.916039im 0.804259+0.976707im; 0.554345+0.249875im 0.369942+0.297061im], [0.714291+0.158981im 0.220397+0.845512im; 0.0493697+0.543434im 0.0556234+0.993021im], [0.319155+0.733874im 0.998182+0.729351im; 0.263825+0.568651im 0.848669+0.694285im]]
+        obs = Observable(Matrix{ComplexF64}, "mcxobs")
+        @test add!(obs, ots[1]) == nothing
+        @test push!(obs, ots[1]) == nothing
+        @test add!(obs, ots[2:3]) == nothing
+        @test push!(obs, ots[2:3]) == nothing
+        @test add!(obs, rand(ComplexF64, 2,2,3)) == nothing
+        @test_throws TypeError add!(obs, rand(["a", "b"], 2,2,3))
+        @test_throws DimensionMismatch add!(obs, rand(ComplexF64, 2,2,3,4))
+        @test_throws ErrorException add!(obs, rand(ComplexF64, 3,4,3))
+
+        # adding vector observables
+        ots = Array{Complex{Float64},1}[[0.256218+0.421853im, 0.233299+0.525431im], [0.551768+0.0536659im, 0.0137919+0.656025im], [0.467164+0.0565131im, 0.720137+0.486299im], [0.953352+0.694809im, 0.334231+0.56174im], [0.634737+0.88592im, 0.308682+0.944125im]]
+        obs = Observable(Vector{ComplexF64}, "vcxobs")
+        @test add!(obs, ots[1]) == nothing
+        @test push!(obs, ots[1]) == nothing
+        @test add!(obs, ots[2:3]) == nothing
+        @test push!(obs, ots[2:3]) == nothing
+        @test add!(obs, rand(ComplexF64, 2,3)) == nothing
+        @test_throws TypeError add!(obs, rand(["a", "b"], 2,3))
+        @test_throws DimensionMismatch add!(obs, rand(ComplexF64, 2,3,4))
+        @test_throws ErrorException add!(obs, rand(ComplexF64, 3,3))
 
         # reset
         reset!(obs)

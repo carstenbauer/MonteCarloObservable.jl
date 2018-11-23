@@ -307,7 +307,7 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         obs.inmemory = false
         obs.outfile = outfile
         obs.HDF5_dset = dataset
-        init!(obs)
+        _init!(obs)
 
         obs.n_meas = n_meas
         obs.elsize = elsize
