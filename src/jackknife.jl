@@ -1,18 +1,12 @@
-# --------------------------------------
-#           Jackknife analysis
-# --------------------------------------
-# for general AbstractArrays
-# specifics for Observable type in statistics.jl
-
 """
 **Jackknife** errors for (non-linear) functions of uncertain data, i.e. g(<a>,<b>,...)
+
+Based on https://github.com/ararslan/Jackknife.jl.
 """
 module Jackknife
 
 using EllipsisNotation
 import Statistics: mean, var
-
-# https://github.com/ararslan/Jackknife.jl was a useful resource
 
 """
     jackknife(g::Function, x::AbstractMatrix)
@@ -65,7 +59,6 @@ end
 var(g::Function, x::AbstractMatrix{<:Number}, gis::AbstractVector{<:Complex}) = var(g,x,real(gis)) + var(g,x,imag(gis))
 
 
-# import Base.error
 """
     error(g::Function, x::AbstractMatrix)
 
@@ -110,8 +103,6 @@ estimate(g::Function, x::AbstractVector{<:Number}) = estimate(g, reshape(x, (:,1
 
 
 end # module
-
-export Jackknife
 
 
 # TODO: Prebinning (before jackknife)

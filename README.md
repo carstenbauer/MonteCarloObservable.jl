@@ -13,23 +13,19 @@ An implementation of an observable for Markov Chain Monte Carlo simulations (lik
 
 During a [Markov chain Monte Carlo simulation](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) a Markov walker (after thermalization) walks through configuration space according to the equilibrium distribution. Typically, one measures observables along the Markov path, records the results, and in the end averages the measurements. `MonteCarloObservable.jl` provides all the necessary tools for conveniently conducting these types of measurements, including estimation of one-sigma error bars through binning or jackknife analysis.
 
-# Installation
+### Installation
 
 In the REPL, switch to pkg mode (by pressing `]`) and enter
 ```julia
-add https://github.com/crstnbr/MonteCarloObservable.jl
+add MonteCarloObservable
 ```
 
 Alternatively, you can install the package per
 ```julia
 using Pkg
-Pkg.add("https://github.com/crstnbr/MonteCarloObservable.jl")
+Pkg.add("MonteCarloObservable")
 ```
 
-# Documentation
+### Documentation
 
 Look at the [documentation](https://crstnbr.github.io/MonteCarloObservable.jl/latest) for more information.
-
-## Authors
-
-* [Carsten Bauer](https://github.com/crstnbr)

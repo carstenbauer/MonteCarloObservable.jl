@@ -5,18 +5,9 @@ See http://github.com/crstnbr/MonteCarloObservable.jl for more information.
 """
 module MonteCarloObservable
 
-    using JLD, HDF5
-    using StatsBase
-    using EllipsisNotation
-
-    # stdlibs
     using Statistics
-
-    try
-        using PyPlot
-        import PyPlot.plot
-    catch
-    end
+    using JLD, EllipsisNotation
+    import HDF5
 
     import Base: push!, eltype, length, getindex, view, isempty, ndims, size, iterate, summary, error
     import Base.==
@@ -26,10 +17,12 @@ module MonteCarloObservable
     include("observable.jl")
 
     include("binning.jl")
-    include("jackknife.jl")
-    include("io.jl")
-    include("plotting.jl")
 
+    # Jackknife
+    include("Jackknife.jl")
+    export Jackknife
+
+    # general
     export Observable
     export @obs, @diskobs
 
@@ -55,5 +48,5 @@ module MonteCarloObservable
     export getfrom
 
     # plotting
-    export plot, hist, binningplot, errorplot, corrplot
+    # export plot, hist, binningplot, errorplot, corrplot
 end

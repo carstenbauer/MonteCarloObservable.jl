@@ -2,5 +2,3 @@ julia 0.7
 EllipsisNotation
 JLD
 HDF5
-PyPlot
-StatsBase
