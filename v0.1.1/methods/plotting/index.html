@@ -466,54 +466,8 @@
 <p>Below you find all plotting related exports.</p>
 <p><a id='Index-1'></a></p>
 <h2 id="index">Index</h2>
-<ul>
-<li><a href="./#MonteCarloObservable.binningplot-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>MonteCarloObservable.binningplot</code></a></li>
-<li><a href="./#MonteCarloObservable.corrplot-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>MonteCarloObservable.corrplot</code></a></li>
-<li><a href="./#MonteCarloObservable.errorplot-Tuple{Observable}"><code>MonteCarloObservable.errorplot</code></a></li>
-<li><a href="./#MonteCarloObservable.hist-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>MonteCarloObservable.hist</code></a></li>
-<li><a href="./#PyPlot.plot-Union{Tuple{Observable{T,MeanType} where MeanType&lt;:Union{Number, Array}}, Tuple{T}} where T"><code>PyPlot.plot</code></a></li>
-</ul>
 <p><a id='Documentation-1'></a></p>
 <h2 id="documentation">Documentation</h2>
-<p><a id='MonteCarloObservable.binningplot-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#MonteCarloObservable.binningplot-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
-<strong><code>MonteCarloObservable.binningplot</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span><span class="nt">binningplot</span><span class="o">(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="cp">[</span><span class="p">;</span> <span class="n">min_nbins</span><span class="o">=</span><span class="mi">32</span><span class="cp">]</span><span class="o">)</span>
-</pre></div>
-
-
-<p>Creates a plot of the binning error coefficient <code>R</code> as a function of bin size.</p>
-<p>The coefficient <code>R</code> should (up to statistical fluctuations) show a plateau for larger bin sizes, indicating that the bin averages have become independent. For correlated data one has <code>R&gt;≈1</code> and <code>sqrt(R)</code> quantifies how much one would have underestimated the one-sigma errorbar.</p>
-<p>See <a href="../statistics/#MonteCarloObservable.binning_error-Tuple{AbstractArray{#s25,1} where #s25&lt;:Number}"><code>binning_error</code></a>.</p>
-<p><a id='MonteCarloObservable.corrplot-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#MonteCarloObservable.corrplot-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
-<strong><code>MonteCarloObservable.corrplot</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span>corrplot(obs::Observable{T})
-</pre></div>
-
-
-<p>Plot the autocorrelation function of the observable.</p>
-<p><a id='MonteCarloObservable.errorplot-Tuple{Observable}' href='#MonteCarloObservable.errorplot-Tuple{Observable}'>#</a>
-<strong><code>MonteCarloObservable.errorplot</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span>errorplot(obs::Observable{T})
-</pre></div>
-
-
-<p>Creates a plot of the statistical standard error as a function of bin size.</p>
-<p>The standard error should (up to statistical fluctuations) show a plateau for larger bin sizes, indicating that the bin averages have become independent.</p>
-<p>See <a href="../statistics/#MonteCarloObservable.binning_error-Tuple{AbstractArray{#s25,1} where #s25&lt;:Number}"><code>binning_error</code></a>, <a href="../statistics/#Base.error-Tuple{Observable}"><code>error</code></a>.</p>
-<p><a id='MonteCarloObservable.hist-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#MonteCarloObservable.hist-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
-<strong><code>MonteCarloObservable.hist</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span><span class="nt">hist</span><span class="o">(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="cp">[</span><span class="p">;</span> <span class="n">errors</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="cp">]</span><span class="o">)</span>
-</pre></div>
-
-
-<p>Plot a histogram of the observable's time series.</p>
-<p><a id='PyPlot.plot-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T' href='#PyPlot.plot-Union{Tuple{Observable{T,MeanType} where MeanType<:Union{Number, Array}}, Tuple{T}} where T'>#</a>
-<strong><code>PyPlot.plot</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span><span class="nt">plot</span><span class="o">(</span><span class="nt">obs</span><span class="p">::</span><span class="nd">Observable</span><span class="p">{</span><span class="err">T</span><span class="p">}</span><span class="cp">[</span><span class="p">;</span> <span class="n">errors</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="cp">]</span><span class="o">)</span>
-</pre></div>
-
-
-<p>Plot the observable's time series.</p>
                 
                   
                 

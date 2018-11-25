@@ -468,12 +468,12 @@
 <div class="codehilite"><pre><span></span>julia&gt; using MonteCarloObservable
 
 julia&gt; obs = Observable(Float64, &quot;myobservable&quot;)
-Observable &quot;myobservable&quot; of type Float64 with 0 measurements
+Float64 Observable
 
 julia&gt; add!(obs, 1.23) # add measurement
 
 julia&gt; obs
-Observable &quot;myobservable&quot; of type  Float64 with 1 measurement
+Float64 Observable
 
 julia&gt; push!(obs, rand(4)) # same as add!
 
@@ -483,27 +483,27 @@ julia&gt; length(obs)
 julia&gt; timeseries(obs)
 5-element Array{Float64,1}:
  1.23
- 0.8674750380179719
- 0.12187233397758201
- 0.14329453623654032
- 0.23984126864675104
+ 0.6554939874990802
+ 0.01121513020970033
+ 0.2671410410753714
+ 0.23860447591704603
 
 julia&gt; obs[3] # conventional element accessing
-0.12187233397758201
+0.01121513020970033
 
 julia&gt; obs[end-2:end]
 3-element Array{Float64,1}:
- 0.12187233397758201
- 0.14329453623654032
- 0.23984126864675104
+ 0.01121513020970033
+ 0.2671410410753714
+ 0.23860447591704603
 
 julia&gt; add!(obs, rand(995))
 
 julia&gt; mean(obs)
-0.5004756959486305
+0.49341564583130043
 
 julia&gt; error(obs) # one-sigma error of mean (binning analysis)
-0.009352504036751768
+0.009620340401164915
 
 julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)
 </pre></div>
