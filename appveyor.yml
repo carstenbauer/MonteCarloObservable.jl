@@ -3,9 +3,9 @@ environment:
   #- julia_version: 0.7
   #  PYTHON: "Conda"
   - julia_version: 1
-    PYTHON: "Conda"
+    # PYTHON: "Conda"
   - julia_version: nightly
-    PYTHON: "Conda"
+    # PYTHON: "Conda"
 
 platform:
   - x64 # 64-bit
