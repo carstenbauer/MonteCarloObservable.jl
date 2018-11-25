@@ -483,27 +483,27 @@ julia&gt; length(obs)
 julia&gt; timeseries(obs)
 5-element Array{Float64,1}:
  1.23
- 0.7654620115492707
- 0.7607586995673452
- 0.16955375571821496
- 0.598233903511624
+ 0.03458212620952472
+ 0.8320700103766148
+ 0.42888623771366463
+ 0.4414459513260649
 
 julia&gt; obs[3] # conventional element accessing
-0.7607586995673452
+0.8320700103766148
 
 julia&gt; obs[end-2:end]
 3-element Array{Float64,1}:
- 0.7607586995673452
- 0.16955375571821496
- 0.598233903511624
+ 0.8320700103766148
+ 0.42888623771366463
+ 0.4414459513260649
 
 julia&gt; add!(obs, rand(995))
 
 julia&gt; mean(obs)
-0.5026303758766412
+0.5083861597190847
 
 julia&gt; error(obs) # one-sigma error of mean (binning analysis)
-0.009463199649720552
+0.009047321795696263
 
 julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)
 </pre></div>
