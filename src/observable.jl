@@ -13,7 +13,7 @@ mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union
     # internal
     n_meas::Int # total number of measurements
     elsize::Tuple{Vararg{Int}}
-    colons::Vector{Colon}
+    colons::Vector{Colon} # substitute for .. for JLD datasets
     n_dims::Int
     timeseries::Vector{MeasurementType}
     tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for inmemory == false)
@@ -814,7 +814,7 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         obs.n_meas = n_meas
         obs.elsize = elsize
         obs.mean = themean
-        obs.timeseries = [last_ts_chunk[obs.colons...,i] for i in 1:alloc]
+        obs.timeseries = [last_ts_chunk[..,i] for i in 1:alloc]
 
         return obs
     end
@@ -879,7 +879,6 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
             element_type = read(f, joinpath(grp, "eltype"))
             chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
             T = jltype(element_type)
-            # colons = [Colon() for _ in 1:ndims(T)]
 
             firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
             chunks = Vector{typeof(firstchunk)}(undef, chunk_count)
