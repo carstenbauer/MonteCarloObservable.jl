@@ -236,6 +236,9 @@ import HDF5
 
                     add!(obs, 1.0:9.0)
                     @test !isfile(obs.outfile)
+                    @test timeseries(obs) == 1.0:9.0
+                    @test obs[1] == 1.0
+                    @test obs[1:3] == 1.0:3.0
                     add!(obs, 10.0)
                     @test isfile(obs.outfile)
 
@@ -261,6 +264,22 @@ import HDF5
                     @test_throws ErrorException view(obs, 1:3) # views not yet supported for diskobs
                     @test_throws ErrorException view(obs, 1) # views not yet supported for diskobs
                     @test_throws ErrorException view(obs, :) # views not yet supported for diskobs
+
+
+                    # test manual flushing
+                    obs = Observable(Float64, "flushtest"; inmemory=false, alloc=10)
+                    add!(obs, 1.0:5.0)
+                    isfile(obs.outfile) ? rm(obs.outfile) : nothing
+                    @test flush(obs) == nothing
+                    @test isfile(obs.outfile)
+                    @test ts(obs.outfile, "flushtest") == 1.0:5.0
+                    @test ts_flat(obs.outfile, "flushtest") == 1.0:5.0
+                    obs2 = loadobs_frommemory(obs.outfile, "flushtest")
+                    @test obs == obs2
+                    add!(obs, 6.0:10.0) # force regular flush
+                    obs2 = loadobs_frommemory(obs.outfile, "flushtest")
+                    @test obs == obs2
+
                 end
             end
         end
@@ -332,9 +351,24 @@ import HDF5
                     @test obs[2:end] == data[2:end]
                     @test obs[3] == data[3]
                     @test obs[:] == timeseries(obs)
+
+                    # test manual flushing
+                    obs = Observable(Matrix{Float64}, "mflushtest"; inmemory=false, alloc=5)
+                    obsts = [rand(2,2) for _ in 1:5]
+                    add!(obs, obsts[1:3])
+                    isfile(obs.outfile) ? rm(obs.outfile) : nothing
+                    @test flush(obs) == nothing
+                    @test isfile(obs.outfile)
+                    @test ts(obs.outfile, "mflushtest") == obsts[1:3]
+                    @test ts_flat(obs.outfile, "mflushtest") == cat(obsts[1:3]..., dims=3)
+                    obs2 = loadobs_frommemory(obs.outfile, "mflushtest")
+                    @test obs == obs2
+                    add!(obs, obsts[4:5]) # force regular flush
+                    obs2 = loadobs_frommemory(obs.outfile, "mflushtest")
+                    @test obs == obs2
                 end
             end
-        end
+            end
     end
 
 
