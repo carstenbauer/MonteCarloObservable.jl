@@ -9,10 +9,6 @@ module MonteCarloObservable
     using JLD, EllipsisNotation
     import HDF5
 
-    import Base: push!, eltype, length, getindex, view, isempty, ndims, size, iterate, summary, error
-    import Base.==
-    import Statistics: mean, std, var
-
     include("helpers.jl")
     include("observable.jl")
 

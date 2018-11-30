@@ -239,7 +239,7 @@ isinmemory(obs::Observable) = obs.inmemory
 """
 Check if two observables have equal timeseries.
 """
-function ==(a::Observable, b::Observable)
+function Base.:(==)(a::Observable, b::Observable)
     timeseries(a) == timeseries(b)
 end
 
@@ -315,7 +315,7 @@ Add measurements to an observable.
 
 Note that because of internal preallocation this isn't really a push.
 """
-function push!(obs::Observable) end
+function Base.push!(obs::Observable) end
 
 
 
@@ -975,21 +975,21 @@ end
 """
 Mean of the observable's time series.
 """
-mean(obs::Observable{T}) where T = length(obs) > 0 ? obs.mean : error("Can't calculate mean of empty observable.")
+Statistics.mean(obs::Observable{T}) where T = length(obs) > 0 ? obs.mean : error("Can't calculate mean of empty observable.")
 
 """
 Standard deviation of the observable's time series (assuming uncorrelated data).
 
 See also [`mean(obs)`](@ref), [`var(obs)`](@ref), and [`error(obs)`](@ref).
 """
-std(obs::Observable{T}) where T = length(obs) > 0 ? std(timeseries(obs)) : error("Can't calculate std of empty observable.")
+Statistics.std(obs::Observable{T}) where T = length(obs) > 0 ? std(timeseries(obs)) : error("Can't calculate std of empty observable.")
 
 """
 Variance of the observable's time series (assuming uncorrelated data).
 
 See also [`mean(obs)`](@ref), [`std(obs)`](@ref), and [`error(obs)`](@ref).
 """
-var(obs::Observable{T}) where T = length(obs) > 0 ? var(timeseries(obs)) : error("Can't calculate variance of empty observable.")
+Statistics.var(obs::Observable{T}) where T = length(obs) > 0 ? var(timeseries(obs)) : error("Can't calculate variance of empty observable.")
 
 
 
@@ -1009,8 +1009,8 @@ for uncorrelated measurements.
 
 See also [`mean(obs)`](@ref).
 """
-error(obs::Observable) = binning_error(timeseries(obs))
-error(obs::Observable, binsize::Int) = binning_error(timeseries(obs), binsize)
+Base.error(obs::Observable) = binning_error(timeseries(obs))
+Base.error(obs::Observable, binsize::Int) = binning_error(timeseries(obs), binsize)
 
 """
 Returns one sigma error and convergence flag (don't trust it!).
