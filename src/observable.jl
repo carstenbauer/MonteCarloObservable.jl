@@ -101,7 +101,7 @@ function _init!(obs::Observable{T}) where T
     obs.n_dims = ndims(T)
 
     obs.tsidx = 1
-    obs.timeseries = Vector{T}(undef, obs.alloc) # init with Missing values in Julia 1.0
+    obs.timeseries = Vector{T}(undef, obs.alloc) # init with Missing values in Julia 1.0?
 
     if ndims(T) == 0
         obs.mean = convert(T, zero(eltype(T)))
@@ -229,12 +229,12 @@ rename(obs::Observable{T}, name::AbstractString) where T = begin obs.name = name
 """
 Checks wether the observable is kept in memory (vs. on disk).
 """
-inmemory(obs::Observable{T}) where T = obs.inmemory
+@inline inmemory(obs::Observable{T}) where T = obs.inmemory
 
 """
 Checks wether the observable is kept in memory (vs. on disk).
 """
-isinmemory(obs::Observable) = obs.inmemory
+@inline isinmemory(obs::Observable) = obs.inmemory
 
 """
 Check if two observables have equal timeseries.
@@ -372,7 +372,7 @@ Base.push!(obs::Observable{T}, measurements::AbstractArray; kwargs...) where T =
             obs.timeseries = new_timeseries
         else
             verbose && println("Dumping time series chunk to disk.")
-            updateondisk(obs)
+            flush(obs)
             verbose && println("Setting time series index to 1.")
             obs.tsidx = 1
         end
@@ -386,66 +386,76 @@ end
 
 
 """
-    updateondisk(obs::Observable{T}[, filename::AbstractString, group::AbstractString])
+    flush(obs::Observable)
 
 This is the crucial function if `inmemory(obs) == false`. It updates the time series on disk.
 It is called from `add!` everytime the alloc limit is reached (overflow).
+
+You can call the function manually to save an intermediate state.
 """
-function updateondisk(obs::Observable{T}, filename::AbstractString=obs.outfile, dataset::AbstractString=obs.HDF5_dset) where T
-    @assert !obs.inmemory
-    @assert obs.tsidx == length(obs.timeseries)+1
+function Base.flush(obs::Observable)
+    @assert !isinmemory(obs) "Can only flush disk observables (`!inmemory(obs)`)."
 
-    jldopen(filename, isfile(filename) ? "r+" : "w", compress=true) do f
-        _updateondisk(obs, f, dataset)
-    end
-    nothing
-end
-
-function _updateondisk(obs::Observable{T}, f::JLD.JldFile, dataset::AbstractString=obs.HDF5_dset) where T
-    @assert !obs.inmemory
-    @assert obs.tsidx == length(obs.timeseries)+1
-
-    obsname = name(obs)
-    grp = dataset*"/"
-    tsgrp = dataset*"/timeseries/"
+    fname = obs.outfile
+    grp = endswith(obs.HDF5_dset, "/") ? obs.HDF5_dset : obs.HDF5_dset*"/"
+    tsgrp = joinpath(grp, "timeseries")
     alloc = obs.alloc
 
-    if !HDF5.has(f.plain, grp)
-        # initialize
-        write(f, joinpath(grp,"count"), length(obs))
-        write(f, joinpath(tsgrp,"chunk_count"), 1)
-        write(f, joinpath(tsgrp,"ts_chunk1"), TimeSeriesSerializer(obs.timeseries))
-        write(f, joinpath(grp, "mean"), mean(obs))
+    try
+        jldopen(fname, isfile(fname) ? "r+" : "w", compress=true) do f
+            if !HDF5.has(f.plain, grp) # first flush?
+                write(f, joinpath(grp,"count"), length(obs))
+                write(f, joinpath(grp, "mean"), mean(obs))
 
-        write(f, joinpath(grp, "name"), name(obs))
-        write(f, joinpath(grp, "alloc"), obs.alloc)
-        write(f, joinpath(grp, "elsize"), [obs.elsize...])
-        write(f, joinpath(grp, "eltype"), string(eltype(obs)))
-    else
-        try
-            cc = read(f, joinpath(tsgrp, "chunk_count"))
-            write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries))
+                write(f, joinpath(grp, "name"), name(obs))
+                write(f, joinpath(grp, "alloc"), obs.alloc)
+                write(f, joinpath(grp, "elsize"), [obs.elsize...])
+                write(f, joinpath(grp, "eltype"), string(eltype(obs)))
+                write(f, joinpath(tsgrp,"chunk_count"), 1)
+                if obs.tsidx == length(obs.timeseries) + 1 # regular flush
+                    # write full chunk
+                    write(f, joinpath(tsgrp,"ts_chunk1"), TimeSeriesSerializer(obs.timeseries))
+                else # (early) manual flush
+                    # write partial chunk
+                    hdf5ver = HDF5.libversion
+                    hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
+                    write(f, joinpath(tsgrp,"ts_chunk1"), TimeSeriesSerializer(obs.timeseries[1:obs.tsidx-1]))
+                end
 
-            delete!(f, joinpath(tsgrp, "chunk_count"))
-            write(f, joinpath(tsgrp,"chunk_count"), cc+1)
+            else # not first flush
+                c = read(f[joinpath(grp, "count")])
+                cc = read(f[joinpath(tsgrp, "chunk_count")])
 
-            c = read(f, joinpath(grp, "count"))
-            c+alloc == length(obs) || (@warn "length(obs) != number of measurements found on disk")
-            delete!(f, joinpath(grp, "count"))
-            write(f, joinpath(grp,"count"), c+alloc)
+                if !(cc * alloc == c) # was last flushed manually
+                    # delete last incomplete chunk
+                    delete!(f, joinpath(tsgrp, "ts_chunk$(cc)"))
+                    cc -= 1
+                end
 
-            delete!(f, joinpath(grp, "mean"))
-            write(f, joinpath(grp, "mean"), mean(obs))
-        catch er
-            error("Couldn't update on disk! Error: ", er)
+                if obs.tsidx == length(obs.timeseries) + 1 # regular flush
+                    # write full chunk
+                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries))
+                else # (early) manual flush
+                    # write partial chunk
+                    hdf5ver = HDF5.libversion
+                    hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
+                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries[1:obs.tsidx-1]))
+                end
+
+                delete!(f, joinpath(tsgrp, "chunk_count"))
+                write(f, joinpath(tsgrp,"chunk_count"), cc+1)
+
+                delete!(f, joinpath(grp, "count"))
+                write(f, joinpath(grp,"count"), length(obs))
+
+                delete!(f, joinpath(grp, "mean"))
+                write(f, joinpath(grp, "mean"), mean(obs))
+            end
         end
+    catch er
+        error("Couldn't update observable on disk! Error: ", er)
     end
-    nothing
 end
-
-
-
-
 
 
 
@@ -515,7 +525,11 @@ function Base.getindex(obs::Observable{T}, idx::Int) where T
     if obs.inmemory
         return getindex(obs.timeseries, idx)
     else
-        return getindex_fromfile(obs, idx)
+        if length(obs) < obs.alloc # no chunk dumped to disk yet
+            return obs.timeseries[idx]
+        else
+            return getindex_fromfile(obs, idx)
+        end
     end
 end
 function Base.getindex(obs::Observable{T}, rng::UnitRange{Int}) where T
@@ -523,7 +537,11 @@ function Base.getindex(obs::Observable{T}, rng::UnitRange{Int}) where T
     if obs.inmemory
         return getindex(obs.timeseries, rng)
     else
-        return getindexrange_fromfile(obs, rng)
+        if length(obs) < obs.alloc # no chunk dumped to disk yet
+            return obs.timeseries[rng]
+        else
+            return getindexrange_fromfile(obs, rng)
+        end
     end
 end
 Base.getindex(obs::Observable, c::Colon) = getindex(obs, 1:length(obs))
@@ -784,21 +802,22 @@ Create an observable based on a memory dump (`inmemory==false`).
 """
 function loadobs_frommemory(filename::AbstractString, group::AbstractString)
     grp = endswith(group, "/") ? group : group*"/"
-    tsgrp = grp*"timeseries/"
+    tsgrp = joinpath(grp, "timeseries")
 
     isfile(filename) || error("File not found.")
+
     jldopen(filename) do f
         HDF5.has(f.plain, grp) || error("Group not found in file.")
         name = read(f, joinpath(grp, "name"))
         alloc = read(f, joinpath(grp, "alloc"))
         outfile = filename
         dataset = grp[1:end-1]
-        n_meas = read(f, joinpath(grp, "count"))
+        c = read(f, joinpath(grp, "count"))
         elsize = Tuple(read(f,joinpath(grp, "elsize")))
         element_type = read(f, joinpath(grp, "eltype"))
         themean = read(f,joinpath(grp, "mean"))
-        chunk_count = read(f,joinpath(tsgrp, "chunk_count"))
-        last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(chunk_count)"))
+        cc = read(f,joinpath(tsgrp, "chunk_count"))
+        last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(cc)"))
 
         T = jltype(element_type)
         MT = typeof(themean)
@@ -811,10 +830,17 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         obs.HDF5_dset = dataset
         _init!(obs)
 
-        obs.n_meas = n_meas
+        obs.n_meas = c
         obs.elsize = elsize
         obs.mean = themean
-        obs.timeseries = [last_ts_chunk[..,i] for i in 1:alloc]
+
+        for i in axes(last_ts_chunk, ndims(last_ts_chunk))
+            obs.timeseries[i] = last_ts_chunk[..,i]
+        end
+
+        if !(cc * alloc == c) # was last flushed manually
+            obs.tsidx = size(last_ts_chunk, ndims(last_ts_chunk)) + 1
+        end
 
         return obs
     end
@@ -869,7 +895,7 @@ array whose last dimension corresponds to Monte Carlo time.
 """
 function timeseries_frommemory_flat(filename::AbstractString, group::AbstractString; verbose=false)
     grp = endswith(group, "/") ? group : group*"/"
-    tsgrp = grp*"timeseries/"
+    tsgrp = joinpath(grp, "timeseries")
 
     isfile(filename) || error("File not found.")
     jldopen(filename) do f

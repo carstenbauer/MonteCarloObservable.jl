@@ -42,6 +42,7 @@ module MonteCarloObservable
     export timeseries_frommemory, timeseries_frommemory_flat, mean_frommemory, error_frommemory
     export timeseries_flat, ts_flat
     export getfrom
+    export flush
 
     # plotting
     # export plot, hist, binningplot, errorplot, corrplot
