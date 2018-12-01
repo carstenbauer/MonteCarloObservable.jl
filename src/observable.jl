@@ -25,7 +25,7 @@ mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union
 end
 
 
-
+const DiskObservable = Observable{T, MT, false} where {T, MT}
 
 
 
