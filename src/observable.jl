@@ -1,12 +1,11 @@
 """
 A Markov Chain Monte Carlo observable.
 """
-mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union{Array, Number}}
+mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union{Array, Number}, InMemory}
 
     # parameters (external)
     name::String
     alloc::Int
-    inmemory::Bool # and maybe dump to HDF5 in the end vs keeping on disk (dumping in chunks)
     outfile::String # format deduced from extension
     HDF5_dset::String # where to put data in HDF5 and JLD case
 
@@ -22,7 +21,7 @@ mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union
 
     outformat::String
 
-    Observable{T, MT}() where {T, MT} = new()
+    Observable{T, MT, IM}() where {T, MT, IM} = new()
 end
 
 
@@ -74,10 +73,9 @@ function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=t
 
     @assert ndims(t)==ndims(mt)
 
-    obs = Observable{t, mt}()
+    obs = Observable{t, mt, inmemory}()
     obs.name = name
     obs.alloc = alloc
-    obs.inmemory = inmemory
     obs.outfile = outfile
     obs.HDF5_dset = dataset
 
@@ -229,12 +227,12 @@ rename(obs::Observable{T}, name::AbstractString) where T = begin obs.name = name
 """
 Checks wether the observable is kept in memory (vs. on disk).
 """
-@inline inmemory(obs::Observable{T}) where T = obs.inmemory
+@inline inmemory(obs::Observable{T, MT, IM}) where {T, MT, IM} = IM
 
 """
 Checks wether the observable is kept in memory (vs. on disk).
 """
-@inline isinmemory(obs::Observable) = obs.inmemory
+@inline isinmemory(obs::Observable) = inmemory(obs)
 
 """
 Check if two observables have equal timeseries.
@@ -364,7 +362,7 @@ Base.push!(obs::Observable{T}, measurements::AbstractArray; kwargs...) where T =
 
     if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow
         verbose && println("Handling time series [chunk] overflow.")
-        if obs.inmemory
+        if inmemory(obs)
             verbose && println("Increasing time series size.")
             tslength = length(obs.timeseries)
             new_timeseries = Vector{T}(undef, tslength + obs.alloc)
@@ -501,7 +499,7 @@ function Base.getindex(obs::Observable) end
 # implementation
 function Base.view(obs::Observable{T}, idx::Int) where T
     1 <= idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
-    if obs.inmemory
+    if inmemory(obs)
         view(obs.timeseries, idx)
     else
         error("Only supported for `inmemory(obs) == true`. Alternatively, load the timeseries as an array (e.g. with timeseries_frommemory_flat) and use views into this array.");
@@ -509,7 +507,7 @@ function Base.view(obs::Observable{T}, idx::Int) where T
 end
 function Base.view(obs::Observable{T}, rng::UnitRange{Int}) where T
     rng.start >= 1 && rng.stop <= length(obs) || throw(BoundsError(typeof(obs), rng))
-    if obs.inmemory
+    if inmemory(obs)
         view(obs.timeseries, rng)
     else
         error("Only supported for `inmemory(obs) == true`. Alternatively, load the timeseries as an array (e.g. with timeseries_frommemory_flat) and use views into this array.");
@@ -522,7 +520,7 @@ Base.view(obs::Observable, c::Colon) = view(obs, 1:length(obs))
 
 function Base.getindex(obs::Observable{T}, idx::Int) where T
     1 <= idx <= length(obs) || throw(BoundsError(typeof(obs), idx))
-    if obs.inmemory
+    if inmemory(obs)
         return getindex(obs.timeseries, idx)
     else
         if length(obs) < obs.alloc # no chunk dumped to disk yet
@@ -534,7 +532,7 @@ function Base.getindex(obs::Observable{T}, idx::Int) where T
 end
 function Base.getindex(obs::Observable{T}, rng::UnitRange{Int}) where T
     rng.start >= 1 && rng.stop <= length(obs) || throw(BoundsError(typeof(obs), rng))
-    if obs.inmemory
+    if inmemory(obs)
         return getindex(obs.timeseries, rng)
     else
         if length(obs) < obs.alloc # no chunk dumped to disk yet
@@ -689,7 +687,7 @@ Default filename is "Observables.jld" and default entryname is `name(obs)`.
 See also [`loadobs`](@ref).
 """
 function saveobs(obs::Observable{T}, filename::AbstractString=obs.outfile, 
-                    entryname::AbstractString=(obs.inmemory ? obs.HDF5_dset : obs.HDF5_dset*"/observable")) where T
+                    entryname::AbstractString=(inmemory(obs) ? obs.HDF5_dset : obs.HDF5_dset*"/observable")) where T
     fileext(filename) == "jld" || error("\"$(filename)\" is not a valid JLD filename.")
     if !isfile(filename)
         save(filename, entryname, obs)
@@ -821,11 +819,10 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
 
         T = jltype(element_type)
         MT = typeof(themean)
-        obs = Observable{T, MT}()
+        obs = Observable{T, MT, false}()
 
         obs.name = name
         obs.alloc = alloc
-        obs.inmemory = false
         obs.outfile = outfile
         obs.HDF5_dset = dataset
         _init!(obs)
