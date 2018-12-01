@@ -338,6 +338,12 @@ function add!(obs::Observable{T}, measurements::AbstractArray{S, N}; kwargs...) 
     end
 end
 
+# promote
+function add!(obs::Observable{T}, measurement::S; kwargs...) where {T<:Number, S<:Number}
+    promote_type(T, S) == T || throw(TypeError(:(add!), "measurement", T, S))
+    _add!(obs, convert(T, measurement); kwargs...)
+end
+
 Base.push!(obs::Observable{T}, measurement::T; kwargs...) where T = add!(obs, measurement; kwargs...)
 Base.push!(obs::Observable{T}, measurements::AbstractArray; kwargs...) where T = add!(obs, measurements; kwargs...)
 
