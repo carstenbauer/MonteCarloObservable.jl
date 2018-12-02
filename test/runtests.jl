@@ -61,6 +61,12 @@ import HDF5
         @test !isempty(obs)
         @test obs == (@obs 1.0:10.0)
 
+        # more than alloc test
+        obs = Observable(Float64, "alloctest"; alloc=2)
+        obsts = rand(3)
+        @test add!(obs, obsts) == nothing
+        @test ts(obs) == obsts
+
         # adding matrix observables
         ots = Array{Complex{Float64},2}[[0.756093+0.842213im 0.229536+0.982145im; 0.996734+0.104368im 0.198649+0.601362im], [0.66988+0.916039im 0.804259+0.976707im; 0.554345+0.249875im 0.369942+0.297061im], [0.714291+0.158981im 0.220397+0.845512im; 0.0493697+0.543434im 0.0556234+0.993021im], [0.319155+0.733874im 0.998182+0.729351im; 0.263825+0.568651im 0.848669+0.694285im]]
         obs = Observable(Matrix{ComplexF64}, "mcxobs")
@@ -69,7 +75,7 @@ import HDF5
         @test add!(obs, ots[2:3]) == nothing
         @test push!(obs, ots[2:3]) == nothing
         @test add!(obs, rand(ComplexF64, 2,2,3)) == nothing
-        @test_throws TypeError add!(obs, rand(["a", "b"], 2,2,3))
+        @test_throws MethodError add!(obs, rand(["a", "b"], 2,2,3))
         @test_throws DimensionMismatch add!(obs, rand(ComplexF64, 2,2,3,4))
         @test_throws ErrorException add!(obs, rand(ComplexF64, 3,4,3))
 
@@ -81,7 +87,7 @@ import HDF5
         @test add!(obs, ots[2:3]) == nothing
         @test push!(obs, ots[2:3]) == nothing
         @test add!(obs, rand(ComplexF64, 2,3)) == nothing
-        @test_throws TypeError add!(obs, rand(["a", "b"], 2,3))
+        @test_throws MethodError add!(obs, rand(["a", "b"], 2,3))
         @test_throws DimensionMismatch add!(obs, rand(ComplexF64, 2,3,4))
         @test_throws ErrorException add!(obs, rand(ComplexF64, 3,3))
 

@@ -1,7 +1,9 @@
+const SUPPORTED_TYPES = Union{Array{<:Number}, Number}
+
 """
 A Markov Chain Monte Carlo observable.
 """
-mutable struct Observable{MeasurementType<:Union{Array, Number}, MeanType<:Union{Array, Number}}
+mutable struct Observable{MeasurementType<:SUPPORTED_TYPES, MeanType<:SUPPORTED_TYPES}
 
     # parameters (external)
     name::String
@@ -49,8 +51,10 @@ The following keywords are allowed:
 
 See also [`Observable`](@ref).
 """
-function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=true,
-                       outfile::String="Observables.jld", dataset::String=name, meantype::DataType=Type{Union{}})
+function Observable(::Type{T}, name::String; alloc::Int=1000, inmemory::Bool=true,
+                       outfile::String="Observables.jld", dataset::String=name, meantype::DataType=Type{Union{}}) where T
+
+    @assert T <: SUPPORTED_TYPES "Only numbers or arrays of numbers supported as measurement types."
 
     # load olf memory dump if !inmemory
     oldfound = false
@@ -65,16 +69,16 @@ function Observable(t::DataType, name::String; alloc::Int=1000, inmemory::Bool=t
     # trying to find sensible DataType for mean if not given
     mt = meantype
     if mt == Type{Union{}} # not set
-        if eltype(t)<:Real
-            mt = ndims(t)>0 ? Array{Float64, ndims(t)} : Float64
+        if eltype(T)<:Real
+            mt = ndims(T)>0 ? Array{Float64, ndims(T)} : Float64
         else
-            mt = ndims(t)>0 ? Array{ComplexF64, ndims(t)} : ComplexF64
+            mt = ndims(T)>0 ? Array{ComplexF64, ndims(T)} : ComplexF64
         end
     end
 
-    @assert ndims(t)==ndims(mt)
+    @assert ndims(T)==ndims(mt)
 
-    obs = Observable{t, mt}()
+    obs = Observable{T, mt}()
     obs.name = name
     obs.alloc = alloc
     obs.inmemory = inmemory
@@ -145,7 +149,7 @@ Convenience macro for generating an Observable from a vector of measurements.
 macro obs(arg)
     return quote
         # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
-        local o = Observable($(esc(eltype))($(esc(arg))), "observable")
+        local o = Observable($(esc(eltype))($(esc(arg))), "unnamed")
         add!(o, $(esc(arg)))
         o
     end
@@ -157,7 +161,7 @@ Convenience macro for generating a "disk observable" (`inmemory=false`) from a v
 macro diskobs(arg)
     return quote
         # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
-        local o = Observable($(esc(eltype))($(esc(arg))), "observable"; inmemory=false)
+        local o = Observable($(esc(eltype))($(esc(arg))), "unnamed"; inmemory=false)
         add!(o, $(esc(arg)))
         o
     end
@@ -320,31 +324,38 @@ function Base.push!(obs::Observable) end
 
 
 
-# interface
-add!(obs::Observable{T}, measurement::T; kwargs...) where {T<:Number} = _add!(obs, measurement; kwargs...)
-add!(obs::Observable{T}, measurement::T; kwargs...) where {T<:AbstractArray} = _add!(obs, measurement; kwargs...)
+# adding single: numbers
+add!(obs::Observable{T}, measurement::S; kwargs...) where {T<:Number, S<:Number} = _add!(obs, measurement; kwargs...);
+
+# adding single: arrays
+add!(obs::Observable{Array{T,N}}, measurement::AbstractArray{S,N}; kwargs...) where {T, S<:Number, N} = _add!(obs, measurement; kwargs...);
+
+# adding multiple: vector of measurements
 function add!(obs::Observable{T}, measurements::AbstractVector{T}; kwargs...) where T
     @inbounds for i in eachindex(measurements)
         _add!(obs, measurements[i]; kwargs...)
     end
+    nothing
 end
-function add!(obs::Observable{T}, measurements::AbstractArray{S, N}; kwargs...) where {T,S,N}
-    S === eltype(T) || throw(TypeError(:add!, "", AbstractArray{eltype(T)}, AbstractArray{S})) # TODO: check if S is subtype of T
+
+# adding multiple: arrays one dimension higher (last dim == ts dim)
+function add!(obs::Observable{T}, measurements::AbstractArray{S, N}; kwargs...) where {T,S<:Number,N}
     N == obs.n_dims + 1 || throw(DimensionMismatch("Dimensions of given measurements ($(N-1)) don't match observable's dimensions ($(obs.n_dims))."))
     length(obs) == 0 || size(measurements)[1:N-1] == obs.elsize || error("Sizes of measurements don't match observable size.")
 
     @inbounds for i in Base.axes(measurements, ndims(measurements))
         _add!(obs, measurements[.., i]; kwargs...)
     end
+    nothing
 end
 
-Base.push!(obs::Observable{T}, measurement::T; kwargs...) where T = add!(obs, measurement; kwargs...)
-Base.push!(obs::Observable{T}, measurements::AbstractArray; kwargs...) where T = add!(obs, measurements; kwargs...)
+
+Base.push!(obs::Observable, measurement; kwargs...) = add!(obs, measurement; kwargs...);
 
 
 
 # implementation
-@inline function _add!(obs::Observable{T}, measurement::T; verbose=false) where T
+@inline function _add!(obs::Observable{T}, measurement; verbose=false) where T
     if obs.elsize == (-1,) # first add
         obs.elsize = size(measurement)
         obs.mean = zero(measurement)
@@ -352,15 +363,15 @@ Base.push!(obs::Observable{T}, measurements::AbstractArray; kwargs...) where T =
 
     size(measurement) == obs.elsize || error("Measurement size != observable size")
 
-    # update mean estimate
-    verbose && println("Updating mean estimate.")
-    obs.mean = (obs.n_meas * obs.mean + measurement) / (obs.n_meas + 1)
-    obs.n_meas += 1
-
     # add to time series
     verbose && println("Adding measurment to time series [chunk].")
     obs.timeseries[obs.tsidx] = copy(measurement)
     obs.tsidx += 1
+
+    # update mean estimate
+    verbose && println("Updating mean estimate.")
+    obs.mean = (obs.n_meas * obs.mean + measurement) / (obs.n_meas + 1)
+    obs.n_meas += 1
 
     if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow
         verbose && println("Handling time series [chunk] overflow.")
