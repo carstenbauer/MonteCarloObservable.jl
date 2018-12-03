@@ -19,7 +19,7 @@ module MonteCarloObservable
     export Jackknife
 
     # general
-    export Observable
+    export Observable, DiskObservable
     export @obs, @diskobs
 
     # statistics
