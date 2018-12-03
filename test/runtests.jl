@@ -6,14 +6,14 @@ import HDF5
     @testset "General" begin
 
         # constructor
-        @test typeof(Observable(Float64, "myobs")) == Observable{Float64, Float64}
-        @test typeof(Observable(ComplexF64, "myobs")) == Observable{ComplexF64, ComplexF64}
-        @test typeof(Observable(Matrix{Float64}, "myobs")) == Observable{Matrix{Float64}, Matrix{Float64}}
-        @test typeof(Observable(Matrix{ComplexF64}, "myobs")) == Observable{Matrix{ComplexF64}, Matrix{ComplexF64}}
+        @test typeof(Observable(Float64, "myobs")) == Observable{Float64, Float64, true}
+        @test typeof(Observable(ComplexF64, "myobs")) == Observable{ComplexF64, ComplexF64, true}
+        @test typeof(Observable(Matrix{Float64}, "myobs")) == Observable{Matrix{Float64}, Matrix{Float64}, true}
+        @test typeof(Observable(Matrix{ComplexF64}, "myobs")) == Observable{Matrix{ComplexF64}, Matrix{ComplexF64}, true}
 
-        @test typeof(Observable(Int64, "myobs")) == Observable{Int64, Float64}
-        @test typeof(Observable(Int64, "myobs"; meantype=Int64)) == Observable{Int64, Int64}
-        @test typeof(Observable(Matrix{Int64}, "myobs")) == Observable{Matrix{Int64}, Matrix{Float64}}
+        @test typeof(Observable(Int64, "myobs")) == Observable{Int64, Float64, true}
+        @test typeof(Observable(Int64, "myobs"; meantype=Int64)) == Observable{Int64, Int64, true}
+        @test typeof(Observable(Matrix{Int64}, "myobs")) == Observable{Matrix{Int64}, Matrix{Float64}, true}
 
         @test eltype(Observable(Int64, "myobs")) == Int64
         @test eltype(Observable(Matrix{Int64}, "myobs")) == Matrix{Int64}
