@@ -8,26 +8,21 @@ mutable struct Observable{MeasurementType<:SUPPORTED_TYPES, MeanType<:SUPPORTED_
     # parameters (external)
     name::String
     alloc::Int
-    outfile::String # format deduced from extension
-    HDF5_dset::String # where to put data in HDF5 and JLD case
+    outfile::String
+    group::String # where to put data in JLD file
 
     # internal
     n_meas::Int # total number of measurements
     elsize::Tuple{Vararg{Int}}
-    colons::Vector{Colon} # substitute for .. for JLD datasets
     n_dims::Int
     timeseries::Vector{MeasurementType}
     tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for inmemory == false)
+    colons::Vector{Colon} # substitute for .. for JLD datasets
 
     mean::MeanType # estimate for mean
 
-    outformat::String
-
     Observable{T, MT, IM}() where {T, MT, IM} = new()
 end
-
-
-const DiskObservable = Observable{T, MT, false} where {T, MT}
 
 
 
@@ -44,25 +39,31 @@ The following keywords are allowed:
 
 * `alloc`: preallocated size of time series container
 * `outfile`: default HDF5/JLD output file for io operations
-* `dataset`: target path within `outfile`
+* `group`: target path within `outfile`
 * `inmemory`: wether to keep the time series in memory or on disk
 * `meantype`: type of the mean (should be compatible with measurement type `t`)
 
 See also [`Observable`](@ref).
 """
-function Observable(::Type{T}, name::String; alloc::Int=1000, inmemory::Bool=true,
-                       outfile::String="Observables.jld", dataset::String=name, meantype::DataType=Type{Union{}}) where T
+function Observable(::Type{T};
+                    name::String="unnamed",
+                    alloc::Int=1000,
+                    inmemory::Bool=true,
+                    outfile::String="Observables.jld",
+                    group::String=name,
+                    meantype::DataType=Type{Union{}}) where T
 
     @assert T <: SUPPORTED_TYPES "Only numbers or arrays of numbers supported as measurement types."
+    @assert isconcretetype(T) "Type must be concrete."
 
-    # load olf memory dump if !inmemory
+    # load old memory dump if !inmemory
     oldfound = false
     if !inmemory && isfile(outfile)
         jldopen(outfile) do f
-            HDF5.has(f.plain, dataset) && (oldfound = true)
+            HDF5.has(f.plain, group) && (oldfound = true)
         end
     end
-    oldfound && (return loadobs_frommemory(outfile, dataset))
+    oldfound && (return loadobs_frommemory(outfile, group))
 
 
     # trying to find sensible DataType for mean if not given
@@ -75,17 +76,21 @@ function Observable(::Type{T}, name::String; alloc::Int=1000, inmemory::Bool=tru
         end
     end
 
-    @assert ndims(T)==ndims(mt)
+    @assert ndims(T) == ndims(mt)
 
     obs = Observable{T, mt, inmemory}()
     obs.name = name
     obs.alloc = alloc
     obs.outfile = outfile
-    obs.HDF5_dset = dataset
+    obs.group = group
 
     _init!(obs)
     return obs
 end
+
+Observable(::Type{T}, name::String; kw...) where T = Observable(T; name=name, kw...)
+
+DiskObservable(args...; kw...) = Observable(args...; kw..., inmemory=false)
 
 
 
@@ -108,16 +113,7 @@ function _init!(obs::Observable{T}) where T
     if ndims(T) == 0
         obs.mean = convert(T, zero(eltype(T)))
     else
-        obs.mean = convert(T, fill(zero(eltype(T)),fill(0, ndims(T))...))
-    end
-
-    # figure out outformat
-    allowed_ext = ["jld"] # ["h5", "hdf5", "jld", "bin", "csv"]
-    try
-        ext = fileext(obs.outfile)
-        ext in allowed_ext  || error("Unknown outfile extension \"", ext ,"\".")
-        obs.outformat = ext
-    catch
+        obs.mean = convert(T, fill(zero(eltype(T)), fill(0, ndims(T))...))
     end
     nothing
 end
@@ -274,7 +270,10 @@ function _println_body(io::IO, obs::Observable{T}) where T
     !inmemory(obs) && print("| In Memory: ", false,"\n")
     print("| Measurements: ", length(obs))
     if length(obs) > 0
-        ndims(obs) == 0 && print("\n| Mean: ", mean(obs))
+        if ndims(obs) == 0
+            print("\n| Mean: ", round(mean(obs), digits=5))
+            print("\n| Std: ", round(std(obs), digits=5))
+        end
     end
 end
 
@@ -323,32 +322,32 @@ function Base.push!(obs::Observable) end
 
 
 # adding single: numbers
-add!(obs::Observable{T}, measurement::S; kwargs...) where {T<:Number, S<:Number} = _add!(obs, measurement; kwargs...);
+add!(obs::Observable{T}, measurement::S; kw...) where {T<:Number, S<:Number} = _add!(obs, measurement; kw...);
 
 # adding single: arrays
-add!(obs::Observable{Array{T,N}}, measurement::AbstractArray{S,N}; kwargs...) where {T, S<:Number, N} = _add!(obs, measurement; kwargs...);
+add!(obs::Observable{Array{T,N}}, measurement::AbstractArray{S,N}; kw...) where {T, S<:Number, N} = _add!(obs, measurement; kw...);
 
 # adding multiple: vector of measurements
-function add!(obs::Observable{T}, measurements::AbstractVector{T}; kwargs...) where T
+function add!(obs::Observable{T}, measurements::AbstractVector{T}; kw...) where T
     @inbounds for i in eachindex(measurements)
-        _add!(obs, measurements[i]; kwargs...)
+        _add!(obs, measurements[i]; kw...)
     end
     nothing
 end
 
 # adding multiple: arrays one dimension higher (last dim == ts dim)
-function add!(obs::Observable{T}, measurements::AbstractArray{S, N}; kwargs...) where {T,S<:Number,N}
+function add!(obs::Observable{T}, measurements::AbstractArray{S, N}; kw...) where {T,S<:Number,N}
     N == obs.n_dims + 1 || throw(DimensionMismatch("Dimensions of given measurements ($(N-1)) don't match observable's dimensions ($(obs.n_dims))."))
     length(obs) == 0 || size(measurements)[1:N-1] == obs.elsize || error("Sizes of measurements don't match observable size.")
 
     @inbounds for i in Base.axes(measurements, ndims(measurements))
-        _add!(obs, measurements[.., i]; kwargs...)
+        _add!(obs, measurements[.., i]; kw...)
     end
     nothing
 end
 
 
-Base.push!(obs::Observable, measurement; kwargs...) = add!(obs, measurement; kwargs...);
+Base.push!(obs::Observable, measurement; kw...) = add!(obs, measurement; kw...);
 
 
 
@@ -406,7 +405,7 @@ function Base.flush(obs::Observable)
     @assert !isinmemory(obs) "Can only flush disk observables (`!inmemory(obs)`)."
 
     fname = obs.outfile
-    grp = endswith(obs.HDF5_dset, "/") ? obs.HDF5_dset : obs.HDF5_dset*"/"
+    grp = endswith(obs.group, "/") ? obs.group : obs.group*"/"
     tsgrp = joinpath(grp, "timeseries")
     alloc = obs.alloc
 
@@ -560,7 +559,7 @@ Base.getindex(obs::Observable, c::Colon) = getindex(obs, 1:length(obs))
 
 # disk observables: get from file
 function getindex_fromfile(obs::Observable{T}, idx::Int)::T where T
-    tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+    tsgrp = joinpath(obs.group, "timeseries/")
 
     currmemchunk = ceil(Int, obs.n_meas / obs.alloc)
     chunknr = ceil(Int,idx / obs.alloc)
@@ -618,7 +617,7 @@ end
 
 
 function _getindex_ts_chunk(obs::Observable{T}, chunknr::Int, idx_in_chunk::Int)::T where T
-    tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+    tsgrp = joinpath(obs.group, "timeseries/")
 
     # Use hyperslab to only read the requested element from disk
     return jldopen(obs.outfile, "r") do f
@@ -629,7 +628,7 @@ function _getindex_ts_chunk(obs::Observable{T}, chunknr::Int, idx_in_chunk::Int)
 end
 
 function _getindex_ts_chunk(obs::Observable{T}, chunknr::Int, rng::UnitRange{Int})::Vector{T} where T
-    tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+    tsgrp = joinpath(obs.group, "timeseries/")
 
     # Use hyperslab to only read the requested elements from disk
     return jldopen(obs.outfile, "r") do f
@@ -647,7 +646,7 @@ end
 
 # function _getindex_ts_chunk!(out::AbstractVector{T}, obs::Observable{T}, chunknr::Int, rng::UnitRange{Int})::Nothing where T
 #     @assert length(out) == length(rng)
-#     tsgrp = joinpath(obs.HDF5_dset, "timeseries/")
+#     tsgrp = joinpath(obs.group, "timeseries/")
 
 #     # Use hyperslab to only read the requested elements from disk
 #     jldopen(obs.outfile, "r") do f
@@ -698,7 +697,7 @@ Default filename is "Observables.jld" and default entryname is `name(obs)`.
 See also [`loadobs`](@ref).
 """
 function saveobs(obs::Observable{T}, filename::AbstractString=obs.outfile, 
-                    entryname::AbstractString=(inmemory(obs) ? obs.HDF5_dset : obs.HDF5_dset*"/observable")) where T
+                    entryname::AbstractString=(inmemory(obs) ? obs.group : obs.group*"/observable")) where T
     fileext(filename) == "jld" || error("\"$(filename)\" is not a valid JLD filename.")
     if !isfile(filename)
         save(filename, entryname, obs)
@@ -752,7 +751,7 @@ Export result for given observable nicely to JLD.
 Will export name, number of measurements, estimates for mean and one-sigma error.
 Optionally (`timeseries==true`) exports the full time series as well.
 """
-function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset*"_export"; timeseries=false, error=true) where T
+function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.group*"_export"; timeseries=false, error=true) where T
     grp = endswith(group, "/") ? group : group*"/"
 
     jldopen(filename, isfile(filename) ? "r+" : "w") do f
@@ -778,7 +777,7 @@ end
 
 Export one-sigma error estimate and convergence flag.
 """
-function export_error(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.HDF5_dset) where T
+function export_error(obs::Observable{T}, filename::AbstractString=obs.outfile, group::AbstractString=obs.group) where T
     grp = endswith(group, "/") ? group : group*"/"
 
     jldopen(filename, isfile(filename) ? "r+" : "w") do f
@@ -820,13 +819,12 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         name = read(f, joinpath(grp, "name"))
         alloc = read(f, joinpath(grp, "alloc"))
         outfile = filename
-        dataset = grp[1:end-1]
+        group = grp[1:end-1]
         c = read(f, joinpath(grp, "count"))
         elsize = Tuple(read(f,joinpath(grp, "elsize")))
         element_type = read(f, joinpath(grp, "eltype"))
         themean = read(f,joinpath(grp, "mean"))
         cc = read(f,joinpath(tsgrp, "chunk_count"))
-        last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(cc)"))
 
         T = jltype(element_type)
         MT = typeof(themean)
@@ -835,18 +833,18 @@ function loadobs_frommemory(filename::AbstractString, group::AbstractString)
         obs.name = name
         obs.alloc = alloc
         obs.outfile = outfile
-        obs.HDF5_dset = dataset
+        obs.group = group
         _init!(obs)
 
         obs.n_meas = c
         obs.elsize = elsize
         obs.mean = themean
 
-        for i in axes(last_ts_chunk, ndims(last_ts_chunk))
-            obs.timeseries[i] = last_ts_chunk[..,i]
-        end
-
         if !(cc * alloc == c) # was last flushed manually
+            last_ts_chunk = read(f, joinpath(tsgrp, "ts_chunk$(cc)"))
+            for i in axes(last_ts_chunk, ndims(last_ts_chunk))
+                obs.timeseries[i] = last_ts_chunk[..,i]
+            end
             obs.tsidx = size(last_ts_chunk, ndims(last_ts_chunk)) + 1
         end
 
@@ -885,7 +883,7 @@ function timeseries_frommemory(filename::AbstractString, group::AbstractString; 
     r = [ts[.., i] for i in 1:size(ts, ndims(ts))]
     return r
 end
-timeseries_frommemory(obs::Observable{T}; kw...) where T = timeseries_frommemory(obs.outfile, obs.HDF5_dset; kw...)
+timeseries_frommemory(obs::Observable{T}; kw...) where T = timeseries_frommemory(obs.outfile, obs.group; kw...)
 
 
 
