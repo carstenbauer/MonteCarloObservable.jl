@@ -565,9 +565,15 @@ function getindex_fromfile(obs::Observable{T}, idx::Int)::T where T
     chunknr = ceil(Int,idx / obs.alloc)
     idx_in_chunk = mod1(idx, obs.alloc)
 
-    chunknr != currmemchunk || (return obs.timeseries[idx_in_chunk]) # chunk not stored to file yet
-    
-    return _getindex_ts_chunk(obs, chunknr, idx_in_chunk)
+    if chunknr != currmemchunk
+        return _getindex_ts_chunk(obs, chunknr, idx_in_chunk)
+    else
+        if idx_in_chunk < obs.tsidx
+            return obs.timeseries[idx_in_chunk]
+        else
+            return _getindex_ts_chunk(obs, chunknr, idx_in_chunk)
+        end
+    end
 end
 
 

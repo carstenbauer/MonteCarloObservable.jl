@@ -254,7 +254,13 @@ import HDF5
                     @test timeseries_flat("Observables.jld", "myobs") == 1.0:10.0
                     @test ts("Observables.jld", "myobs") == 1.0:10.0
                     @test ts_flat("Observables.jld", "myobs") == 1.0:10.0
-                    @test loadobs_frommemory("Observables.jld", "myobs") == obs
+                    x = loadobs_frommemory("Observables.jld", "myobs")
+                    @test x == obs
+                    @test x[1:end] == ts(obs)
+                    for i in 1:length(x)
+                        @test x[i] == obs[i]
+                    end
+
 
                     add!(obs, 11.0:20.0)
                     @test ts(obs) == 1.0:20.0
@@ -285,6 +291,7 @@ import HDF5
                     add!(obs, 6.0:10.0) # force regular flush
                     obs2 = loadobs_frommemory(obs.outfile, "flushtest")
                     @test obs == obs2
+
 
                 end
             end
