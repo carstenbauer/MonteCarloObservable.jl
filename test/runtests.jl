@@ -292,7 +292,13 @@ import HDF5
                     obs2 = loadobs_frommemory(obs.outfile, "flushtest")
                     @test obs == obs2
 
-
+                    # test no flush if obs.tsidx == 1 (there is nothing to flush)
+                    rm("Observables.jld")
+                    obs = Observable(Float64, "flushtest"; inmemory=false, alloc=10)
+                    push!(obs, rand(10))
+                    @test HDF5.h5read("Observables.jld", "flushtest/timeseries/chunk_count") == 1
+                    flush(obs)
+                    @test HDF5.h5read("Observables.jld", "flushtest/timeseries/chunk_count") == 1
                 end
             end
         end

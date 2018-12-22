@@ -444,6 +444,8 @@ function Base.flush(obs::Observable)
                     # write full chunk
                     write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries))
                 else # (early) manual flush
+                    obs.tsidx == 1 && (return nothing) # there is nothing to flush
+
                     # write partial chunk
                     hdf5ver = HDF5.libversion
                     hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
@@ -463,6 +465,8 @@ function Base.flush(obs::Observable)
     catch er
         error("Couldn't update observable on disk! Error: ", er)
     end
+
+    nothing
 end
 
 
