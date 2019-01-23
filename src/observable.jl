@@ -923,8 +923,15 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
             T = jltype(element_type)
 
             firstchunk = read(f, joinpath(tsgrp,"ts_chunk1"))
+            # ignore potential empty last chunk
+            lastchunk = read(f, joinpath(tsgrp,"ts_chunk$(chunk_count)"))
+            if length(lastchunk) == 0
+                chunk_count -= 1
+            end
+            
             chunks = Vector{typeof(firstchunk)}(undef, chunk_count)
             chunks[1] = firstchunk
+
 
             for c in 2:chunk_count
                 chunks[c] = read(f, joinpath(tsgrp,"ts_chunk$(c)"))
