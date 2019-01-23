@@ -19,7 +19,7 @@ function R_function(X::AbstractVector{T}; min_nbins=50) where T<:Real
     max_binsize = floor(Int, length(X)/min_nbins)
     binsizes = 1:max_binsize
 
-    R = zeros(max_binsize)
+    R = Vector{Float64}(undef, length(binsizes))
     @inbounds for bs in binsizes
         R[bs] = R_value(X, bs)
     end
