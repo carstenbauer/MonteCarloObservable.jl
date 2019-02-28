@@ -6,7 +6,7 @@ See http://github.com/crstnbr/MonteCarloObservable.jl for more information.
 module MonteCarloObservable
 
     using Statistics
-    using JLD, EllipsisNotation
+    using JLD, EllipsisNotation, BinningAnalysis
     import HDF5
 
     include("helpers.jl")
