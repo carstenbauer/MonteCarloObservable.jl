@@ -9,7 +9,10 @@ module MonteCarloObservable
     using JLD, EllipsisNotation, BinningAnalysis
     import HDF5
 
+    abstract type AbstractObservable end
+
     include("helpers.jl")
+    include("general.jl")
     include("observable.jl")
 
     include("binning.jl")
