@@ -426,7 +426,7 @@ function Base.flush(obs::Observable)
                     # write partial chunk
                     hdf5ver = HDF5.libversion
                     hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
-                    write(f, joinpath(tsgrp,"ts_chunk1"), obs.timeseries[1:obs.tsidx-1])
+                    write(f, joinpath(tsgrp,"ts_chunk1"), BinningAnalysis.FullBinner(obs.timeseries[1:obs.tsidx-1]))
                 end
 
             else # not first flush
@@ -448,7 +448,7 @@ function Base.flush(obs::Observable)
                     # write partial chunk
                     hdf5ver = HDF5.libversion
                     hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
-                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), obs.timeseries[1:obs.tsidx-1])
+                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), BinningAnalysis.FullBinner(obs.timeseries[1:obs.tsidx-1]))
                 end
 
                 delete!(f, joinpath(tsgrp, "chunk_count"))
