@@ -75,11 +75,7 @@ const types = Dict(
 
 
 
-"""
-Thin wrapper type used in `JLD.writeas` to dump the contained vector as a higher-dimensional matrix.
-"""
-struct TimeSeriesSerializer{T}
-    v::Vector{T}
-end
-@inline JLD.writeas(x::TimeSeriesSerializer{T}) where T<:AbstractArray = cat(x.v..., dims=ndims(T)+1)
-@inline JLD.writeas(x::TimeSeriesSerializer{T}) where T<:Number = x.v
+@inline JLD.writeas(F::BinningAnalysis.FullBinner{T}) where T<:AbstractArray = cat(F.x..., dims=ndims(T)+1)
+@inline JLD.writeas(F::BinningAnalysis.FullBinner{T}) where T<:Number = F.x
+
+Base.convert(::Type{FullBinner{T, A}}, x::A) where {T,A} = FullBinner(x)

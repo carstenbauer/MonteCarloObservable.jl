@@ -15,7 +15,8 @@ mutable struct Observable{MeasurementType<:SUPPORTED_TYPES, MeanType<:SUPPORTED_
     n_meas::Int # total number of measurements
     elsize::Tuple{Vararg{Int}}
     n_dims::Int
-    timeseries::Vector{MeasurementType}
+    # timeseries::Vector{MeasurementType}
+    timeseries::FullBinner{MeasurementType, Vector{MeasurementType}}
     tsidx::Int # points to next free slot in timeseries (!= n_meas+1 for inmemory == false)
     colons::Vector{Colon} # substitute for .. for JLD datasets
 
@@ -108,7 +109,8 @@ function _init!(obs::Observable{T}) where T
     obs.n_dims = ndims(T)
 
     obs.tsidx = 1
-    obs.timeseries = Vector{T}(undef, obs.alloc) # init with Missing values in Julia 1.0?
+    # obs.timeseries = Vector{T}(undef, obs.alloc) # init with Missing values in Julia 1.0?
+    obs.timeseries = Vector{T}(undef, obs.alloc)
 
     if ndims(T) == 0
         obs.mean = convert(T, zero(eltype(T)))
@@ -374,10 +376,7 @@ Base.push!(obs::Observable, measurement; kw...) = add!(obs, measurement; kw...);
         verbose && println("Handling time series [chunk] overflow.")
         if inmemory(obs)
             verbose && println("Increasing time series size.")
-            tslength = length(obs.timeseries)
-            new_timeseries = Vector{T}(undef, tslength + obs.alloc)
-            new_timeseries[1:tslength] = obs.timeseries
-            obs.timeseries = new_timeseries
+            resize!(obs.timeseries, length(obs.timeseries) + obs.alloc)
         else
             verbose && println("Dumping time series chunk to disk.")
             flush(obs)
@@ -422,12 +421,12 @@ function Base.flush(obs::Observable)
                 write(f, joinpath(tsgrp,"chunk_count"), 1)
                 if obs.tsidx == length(obs.timeseries) + 1 # regular flush
                     # write full chunk
-                    write(f, joinpath(tsgrp,"ts_chunk1"), TimeSeriesSerializer(obs.timeseries))
+                    write(f, joinpath(tsgrp,"ts_chunk1"), obs.timeseries)
                 else # (early) manual flush
                     # write partial chunk
                     hdf5ver = HDF5.libversion
                     hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
-                    write(f, joinpath(tsgrp,"ts_chunk1"), TimeSeriesSerializer(obs.timeseries[1:obs.tsidx-1]))
+                    write(f, joinpath(tsgrp,"ts_chunk1"), obs.timeseries[1:obs.tsidx-1])
                 end
 
             else # not first flush
@@ -442,14 +441,14 @@ function Base.flush(obs::Observable)
 
                 if obs.tsidx == length(obs.timeseries) + 1 # regular flush
                     # write full chunk
-                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries))
+                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), obs.timeseries)
                 else # (early) manual flush
                     obs.tsidx == 1 && (return nothing) # there is nothing to flush
 
                     # write partial chunk
                     hdf5ver = HDF5.libversion
                     hdf5ver >= v"1.10" || @warn "HDF5 version $(hdf5ver) < 1.10.x Manual flushing might lead to larger output file because space won't be freed on dataset delete."
-                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), TimeSeriesSerializer(obs.timeseries[1:obs.tsidx-1]))
+                    write(f, joinpath(tsgrp,"ts_chunk$(cc+1)"), obs.timeseries[1:obs.tsidx-1])
                 end
 
                 delete!(f, joinpath(tsgrp, "chunk_count"))
@@ -468,7 +467,6 @@ function Base.flush(obs::Observable)
 
     nothing
 end
-
 
 
 
@@ -768,7 +766,7 @@ function export_result(obs::Observable{T}, filename::AbstractString=obs.outfile,
         !HDF5.has(f.plain, grp) || delete!(f, grp)
         write(f, joinpath(grp, "name"), name(obs))
         write(f, joinpath(grp, "count"), length(obs))
-        timeseries && write(f, joinpath(grp, "timeseries"), TimeSeriesSerializer(MonteCarloObservable.timeseries(obs)))
+        timeseries && write(f, joinpath(grp, "timeseries"), MonteCarloObservable.timeseries(obs))
         write(f, joinpath(grp, "mean"), mean(obs))
         if error
             err, conv = error_with_convergence(obs)
