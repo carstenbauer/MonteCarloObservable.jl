@@ -91,7 +91,8 @@ Export result for given observable nicely to JLD.
 
 Will export name, number of measurements, estimates for mean and standard error.
 """
-function export_result(obs::LightObservable, filename::AbstractString=obs.outfile, group::AbstractString=obs.group*"_export"; error=true)
+function export_result(obs::LightObservable, filename::AbstractString=obs.outfile,
+                         group::AbstractString=obs.group*"_export"; error=true)
     grp = endswith(group, "/") ? group : group*"/"
 
     jldopen(filename, isfile(filename) ? "r+" : "w") do f
@@ -116,7 +117,8 @@ end
 
 Export standard error estimate.
 """
-function export_error(obs::LightObservable, filename::AbstractString=obs.outfile, group::AbstractString=obs.group)
+function export_error(obs::LightObservable, filename::AbstractString=obs.outfile,
+                         group::AbstractString=obs.group)
     grp = endswith(group, "/") ? group : group*"/"
 
     jldopen(filename, isfile(filename) ? "r+" : "w") do f
