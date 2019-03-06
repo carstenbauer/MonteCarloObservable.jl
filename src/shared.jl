@@ -73,9 +73,9 @@ Base.show(io::IO, m::MIME"text/plain", r::ObservableResult) = (_print_header(io,
 
 
 
-function load_result(filename::AbstractString, obsname::AbstractString, group::AbstractString="obs/")
+function load_result(filename::AbstractString, obsname::AbstractString)
     @assert isfile(filename) "File not found."
-    p = joinpath(group, obsname)
+    p = occursin("/", obsname) ? obsname : joinpath("obs/", obsname)
 
     local name, n, m, err
     jldopen(filename) do f
@@ -89,6 +89,23 @@ function load_result(filename::AbstractString, obsname::AbstractString, group::A
 end
 
 
+
+# function combined_mean_and_var(ors::ObservableResult{<:Number, <:Number}...)
+#     ns = [r.count for r in ors]
+#     μs = [r.mean for r in ors]
+#     vs = [r.error^2 for r in ors]
+
+#     return Helpers.combined_mean_and_var(ns, μs, vs)
+# end
+
+
+# function combined_mean_and_var(ors::ObservableResult{<:Number, <:AbstractArray}...)
+#     ns = [r.count for r in ors]
+#     μs = [r.mean for r in ors]
+#     vs = [r.error^2 for r in ors]
+
+#     return Helpers.combined_mean_and_var(ns, μs, vs)
+# end
 
 
 
