@@ -12,6 +12,7 @@ module MonteCarloObservable
     abstract type AbstractObservable end
 
     include("helpers.jl")
+    include("shared.jl")
     include("observable.jl")
     include("lightobservable.jl")
 
