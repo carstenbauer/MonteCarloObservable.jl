@@ -2,7 +2,8 @@ environment:
   matrix:
   #- julia_version: 0.7
   #  PYTHON: "Conda"
-  - julia_version: 1
+  - julia_version: 1.0
+  - julia_version: 1.1
     # PYTHON: "Conda"
   - julia_version: nightly
     # PYTHON: "Conda"
