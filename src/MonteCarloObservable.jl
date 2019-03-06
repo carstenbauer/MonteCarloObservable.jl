@@ -47,6 +47,7 @@ module MonteCarloObservable
     export timeseries_flat, ts_flat
     export getfrom
     export flush
+    export ObservableResult, load_result
 
     # plotting
     # export plot, hist, binningplot, errorplot, corrplot
