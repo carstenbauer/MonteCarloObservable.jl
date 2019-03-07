@@ -39,6 +39,7 @@ end
 
 @inline name(obs::LightObservable) = obs.name
 @inline inmemory(obs::LightObservable) = true
+@inline Base.size(obs::LightObservable) = @inbounds size(obs.B.x_sum[1])
 
 
 
