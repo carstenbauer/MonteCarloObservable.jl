@@ -60,119 +60,43 @@
     end
 
 
-    # @testset "Statistics" begin
-    #     @testset "Real Observables" begin
-    #         ots = [0.00124803, 0.643089, 0.183268, 0.799899, 0.0857666, 0.955348, 0.165763, 0.765998, 0.63942, 0.308818]
-    #         obs = @obs ots
-    #         @test mean(ots) == mean(obs)
-    #         @test mean(obs) == 0.454861763
-    #         @test std(ots) == std(obs)
-    #         @test std(obs) == 0.3426207601556565
-    #         @test var(obs) == var(ots)
-    #         @test var(obs) == 0.1173889852896399
+    @testset "Statistics" begin
+        @testset "Real Observables" begin
+            ots = [0.00124803, 0.643089, 0.183268, 0.799899, 0.0857666, 0.955348, 0.165763, 0.765998, 0.63942, 0.308818]
+            obs = LightObservable(ots)
+            @test isapprox(mean(ots), mean(obs))
+            @test isapprox(std(ots), std(obs))
+            @test isapprox(var(ots), var(obs))
 
-    #         @test error(obs) == 0.1083461975750141
-    #         @test binning_error(ots) == 0.1083461975750141
-    #         @test error(obs, 2) == 0.03447037957199948
-    #         @test binning_error(ots, 2) == 0.03447037957199948
-    #         @test tau(obs) == 0.0
-    #         @test tau(obs, 1.23) == 0.11499999999999999
-    #         @test tau(ots) == 0.0
-    #         @test tau(1.23) == 0.11499999999999999
-    #         @test error_with_convergence(obs) == (0.1083461975750141, false)
-    #         @test error_with_convergence(@obs rand(100000))[2] == true
+            @test_deprecated error(obs)
+            @test std_error(obs) == 0.1083461975750141
+            @test tau(obs) == 0.0
+        end
 
-    #         # details
-    #         @test MonteCarloObservable.R_value(ots, 2) == 0.10121963870000192
-    #         @test typeof(MonteCarloObservable.R_function(ots)) == Tuple{UnitRange{Int},Array{Float64,1},Array{Float64,1}}
+        @testset "Complex Observables" begin
+            ots = Complex{Float64}[0.458585+0.676913im, 0.41603+0.0800011im, 0.439703+0.472044im, 0.86602+0.756838im, 0.615955+0.312498im, 0.916813+0.150829im, 0.434218+0.839293im, 0.888952+0.648892im, 0.799521+0.734382im, 0.678336+0.810805im]
+            obs = LightObservable(ots)
+            @test isapprox(mean(ots), mean(obs))
+            @test isapprox(std(ots), std(obs))
+            @test isapprox(var(ots), var(obs))
 
-    #         # jackknife
-    #         @test jackknife_error(x->mean(x), obs) == 0.10834619757501414
-    #         @test jackknife_error(x->mean(1 ./ x), obs) == 79.76537738034833
-    #         @test Jackknife.estimate(x->mean(x), ts(obs)) == 0.45486176300000025
-    #         obs2 = @obs [0.606857, 0.0227746, 0.805997, 0.978731, 0.0853112, 0.311463, 0.628918, 0.0190664, 0.515998, 0.0223728]
-    #         g(x) = @views mean(x[:,1])^2 - mean(x[:,2].^2)
-    #         @test jackknife_error(g, obs, obs2) == 0.14501699232741938
+            @test_deprecated error(obs)
+            @test std_error(obs) == 0.10946759231383459
+            @test tau(obs) == 0.0
+        end
 
-    #         # scalar
-    #         @test !iswithinerrorbars(3.123,3.12,0.001)
-    #         @test !iswithinerrorbars(3.123,3.12,0.001, true) # print=true
-    #         @test iswithinerrorbars(3.123,3.12,0.004)
-    #         @test iswithinerrorbars(0.0,-0.1,0.1)
-    #         # TODO: fix method first (make it reasonable)
-    #         # obs2 = @obs ots .+ 0.02
-    #         # @test iswithinerrorbars(obs, obs2, 0.03)
-    #     end
+        @testset "Matrix Observables" begin
+            ots = Array{Float64,2}[[0.127479 0.144452; 0.0934332 0.465612], [0.716647 0.576685; 0.44389 0.256331], [0.811945 0.457262; 0.634971 0.188656]]
+            obs = LightObservable(ots)
+            @test isapprox(mean(ots), mean(obs))
+            @test isapprox(std(ots), std(obs))
+            @test isapprox(var(ots), var(obs))
 
-    #     @testset "Complex Observables" begin
-    #         ots = Complex{Float64}[0.458585+0.676913im, 0.41603+0.0800011im, 0.439703+0.472044im, 0.86602+0.756838im, 0.615955+0.312498im, 0.916813+0.150829im, 0.434218+0.839293im, 0.888952+0.648892im, 0.799521+0.734382im, 0.678336+0.810805im]
-    #         obs = @obs ots
-    #         @test mean(ots) == mean(obs)
-    #         @test mean(obs) == 0.6514133 + 0.54824951im
-    #         @test std(ots) == std(obs)
-    #         @test std(obs) == 0.34616692168645863
-    #         @test var(obs) == var(ots)
-    #         @test var(obs) == 0.11983153766987877
-
-    #         @test error(obs) == 0.09206504762323696
-    #         @test binning_error(ots) == 0.09206504762323696
-    #         @test error(obs, 2) == 0.12019696825992575
-    #         @test binning_error(ots, 2) == 0.12019696825992575
-    #         @test tau(obs) == -0.14633796917389313
-    #         @test tau(obs, 1.23) == 0.11499999999999999
-    #         @test tau(ots) == -0.14633796917389313
-    #         @test tau(1.23) == 0.11499999999999999
-    #         @test error_with_convergence(obs) == (0.09206504762323696, false)
-    #         @test error_with_convergence(@obs rand(ComplexF64, 100000))[2] == true
-
-    #         # jackknife
-    #         @test jackknife_error(x->mean(x), obs) == 0.10946759231383452
-    #         @test jackknife_error(x->mean(1 ./ x), obs) == 0.1930517185451075
-    #         @test Jackknife.estimate(x->mean(x), ts(obs)) == 0.6514132999999989 + 0.5482495099999998im
-
-    #         # scalar
-    #         @test !iswithinerrorbars(0.195 + 0.519im, 0.196 + 0.519im ,0.001)
-    #         @test iswithinerrorbars(0.195 + 0.519im, 0.196 + 0.519im, 0.01)
-    #         @test !iswithinerrorbars(0.195 + 0.519im, 0.195 + 0.520im, 0.001)
-    #         @test iswithinerrorbars(0.195 + 0.519im, 0.195 + 0.520im, 0.01)
-    #     end
-
-    #     @testset "Matrix Observables" begin
-    #         ots = Array{Float64,2}[[0.127479 0.144452; 0.0934332 0.465612], [0.716647 0.576685; 0.44389 0.256331], [0.811945 0.457262; 0.634971 0.188656]]
-    #         obs = @obs ots
-    #         @test mean(ots) == mean(obs)
-    #         @test isapprox(mean(obs), [0.552024 0.3928; 0.390765 0.303533], atol=1e-6)
-    #         @test std(ots) == std(obs)
-    #         @test isapprox(std(obs), [0.370741 0.22321; 0.27465 0.144386], atol=1e-6)
-    #         @test var(obs) == var(ots)
-    #         @test isapprox(var(obs), [0.137449 0.0498229; 0.0754325 0.0208472], atol=1e-6)
-
-    #         @test isapprox(error(obs), [0.214048 0.128871; 0.158569 0.083361], atol=1e-6)
-    #         @test isapprox(binning_error(ots), [0.214048 0.128871; 0.158569 0.083361], atol=1e-6)
-    #         @test error(obs, 2) == [Inf Inf; Inf Inf]
-    #         @test binning_error(ots, 2) == [Inf Inf; Inf Inf]
-    #         @test isapprox(tau(obs), [2.036790901 -3.804975758; 1.318619 -2.876001], atol=1e-6)
-    #         @test isapprox(tau(ots), [2.036790901 -3.804975758; 1.318619 -2.876001], atol=1e-6)
-    #         ec = error_with_convergence(obs)
-    #         @test isapprox(ec[1], [0.214048 0.128871; 0.158569 0.083361], atol=1e-6)
-    #         @test ec[2] == Bool[false false; false false]
-
-    #         # jackknife
-    #         # TODO: missing Base.error(g::Function, x::AbstractArray) or similar in jackknife.jl
-    #         # @test jackknife_error(x->mean(x), obs)
-    #         # @test jackknife_error(x->mean(1 ./ x), obs)
-    #         # @test Jackknife.estimate(x->mean(x), ts(obs))
-
-    #         A = rand(2,2)
-    #         B = A .+ 0.02
-    #         @test iswithinerrorbars(A,B,fill(0.1, 2,2))
-    #         @test !iswithinerrorbars(A,B,fill(0.01, 2,2))
-    #         @test !iswithinerrorbars(A,B,fill(0.01, 2,2), true)
-    #         A = rand(ComplexF64, 2,2)
-    #         B = A .+ 0.02
-    #         @test_logs (:warn, "Unfortunately print=true is only supported for real input.") !iswithinerrorbars(A,B,fill(0.01, 2,2), true)
-    #     end
-    # end
+            @test_deprecated error(obs)
+            @test all(isapprox.(std_error(obs), [0.214048 0.128871; 0.158569 0.083361], atol=1e-6))
+            @test all(isapprox.(tau(obs), [0.0 0.0; 0.0 0.0], atol=1e-6))
+        end
+    end
 
 
 
@@ -212,5 +136,5 @@
     #         end
     #     end
     # end
-    
+
 end
