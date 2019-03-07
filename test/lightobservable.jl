@@ -103,38 +103,28 @@
 
 
 
-    # @testset "IO" begin
-    #     mktempdir() do d
-    #         cd(d) do
-    #             obs = @obs rand(10)
-    #             saveobs(obs, "myobs.jld", "myobservables/obs")
-    #             saveobs(obs, "myobs.jld", "myobservables/obs_again") # test writing to already existing file
-    #             x = loadobs("myobs.jld", "myobservables/obs")
-    #             @test x == obs
-    #             @test "obs" in listobs("myobs.jld", "myobservables/")
-    #             rmobs("myobs.jld", "obs", "myobservables/")
-    #             @test !("obs" in listobs("myobs.jld", "myobservables/"))
+    @testset "IO" begin
+        mktempdir() do d
+            cd(d) do
+                obs = LightObservable(rand(10))
 
-    #             export_result(obs, "myresults.jld", "myobservables"; timeseries=true)
-    #             ots = timeseries_frommemory_flat("myresults.jld", "myobservables/")
-    #             @test ots == timeseries(obs)
-    #             ots = timeseries_frommemory("myresults.jld", "myobservables/")
-    #             @test ots == timeseries(obs)
+                @test export_result(obs, "myresults.jld", "myobservables") == nothing
+                or = load_result("myresults.jld", "myobservables")
+                @test typeof(or) == ObservableResult{Float64,Float64}
+                rm("myresults.jld")
 
-    #             MonteCarloObservable.export_error(obs, "myobs.jld" ,"myobservables/obserror")
-    #             HDF5.h5open("myobs.jld", "r") do f
-    #                 @test HDF5.has(f, "myobservables/obserror/error")
-    #                 @test HDF5.has(f, "myobservables/obserror/error_rel")
-    #                 @test HDF5.has(f, "myobservables/obserror/error_conv")
-    #                 @test HDF5.read(f["myobservables/obserror/error"]) == error(obs)
-    #                 @test HDF5.read(f["myobservables/obserror/error_rel"]) == error(obs)/mean(obs)
-    #                 @test parse(Bool, HDF5.read(f["myobservables/obserror/error_conv"])) == false
-    #             end
-
-    #             rm("myobs.jld")
-    #             rm("myresults.jld")
-    #         end
-    #     end
-    # end
+                # import BinningAnalysis # necessary! can we avoid this?
+                # saveobs(obs, "myobs.jld", "myobservables/obs")
+                # saveobs(obs, "myobs.jld", "myobservables/obs_again") # test writing to already existing file
+                # x = loadobs("myobs.jld", "myobservables/obs")
+                # @test mean(x) == mean(obs)
+                # @test std_error(x) == std_error(obs)
+                # @test "obs" in listobs("myobs.jld", "myobservables/")
+                # rmobs("myobs.jld", "obs", "myobservables/")
+                # @test !("obs" in listobs("myobs.jld", "myobservables/"))
+                # rm("myobs.jld")
+            end
+        end
+    end
 
 end
