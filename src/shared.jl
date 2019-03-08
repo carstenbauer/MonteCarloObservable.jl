@@ -73,9 +73,10 @@ Base.show(io::IO, m::MIME"text/plain", r::ObservableResult) = (_print_header(io,
 
 
 
-function load_result(filename::AbstractString, obsname::AbstractString)
+function load_result(filename::AbstractString, obs::AbstractString)
     @assert isfile(filename) "File not found."
-    p = occursin("/", obsname) ? obsname : joinpath("obs/", obsname)
+
+    p = joinpath("/", obs)
 
     local name, n, m, err
     jldopen(filename) do f

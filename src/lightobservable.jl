@@ -1,6 +1,6 @@
 # Basically an augmented LogBinner
 struct LightObservable{T, N} <: AbstractObservable
-    B::LogBinner{N,T}
+    B::LogBinner{T,N}
 
     # parameters (external)
     name::String
@@ -39,6 +39,7 @@ end
 
 @inline name(obs::LightObservable) = obs.name
 @inline inmemory(obs::LightObservable) = true
+@inline Base.size(obs::LightObservable) = @inbounds size(obs.B.x_sum[1])
 
 
 
@@ -72,6 +73,8 @@ Base.show(io::IO, m::MIME"text/plain", obs::LightObservable) = (_print_header(io
 
 import Base: error
 @deprecate error(obs::LightObservable) std_error(obs)
+
+tau(obs::LightObservable) = BinningAnalysis.tau(obs.B)
 
 # Assure var(obs) == var(data) and same for std
 Statistics.var(obs::LightObservable) = var(obs, 1)
