@@ -31,7 +31,7 @@ module MonteCarloObservable
     # interface
     export add!, push!, reset!
     export timeseries, ts
-    export rename, name
+    export rename!, name
     export inmemory, isinmemory, length, eltype, getindex, view, isempty, ndims, size, iterate
 
     # io
@@ -46,5 +46,4 @@ module MonteCarloObservable
 
     # deprecations
     include("deprecated.jl")
-    export error
 end

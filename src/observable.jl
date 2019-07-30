@@ -222,7 +222,7 @@ name(obs::Observable{T}) where T = obs.name
 
 Renames the observable.
 """
-rename(obs::Observable{T}, name::AbstractString) where T = begin obs.name = name; nothing end
+rename!(obs::Observable{T}, name::AbstractString) where T = begin obs.name = name; nothing end
 
 """
 Checks wether the observable is kept in memory (vs. on disk).
