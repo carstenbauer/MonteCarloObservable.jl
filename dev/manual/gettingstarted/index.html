@@ -486,19 +486,19 @@
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">timeseries</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span>
 <span class="mi">5</span><span class="o">-</span><span class="nv">element</span> <span class="nv">Array</span>{<span class="nv">Float64</span>,<span class="mi">1</span>}:
  <span class="mi">1</span>.<span class="mi">23</span>
- <span class="mi">0</span>.<span class="mi">0985216604257837</span>
- <span class="mi">0</span>.<span class="mi">9860280783593351</span>
- <span class="mi">0</span>.<span class="mi">29515135377126245</span>
- <span class="mi">0</span>.<span class="mi">35878355550060004</span>
+ <span class="mi">0</span>.<span class="mi">685233625958394</span>
+ <span class="mi">0</span>.<span class="mi">15497983248399105</span>
+ <span class="mi">0</span>.<span class="mi">9561564492719026</span>
+ <span class="mi">0</span>.<span class="mi">7090507299130662</span>
 
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">obs</span>[<span class="mi">3</span>] # <span class="nv">conventional</span> <span class="nv">element</span> <span class="nv">accessing</span>
-<span class="mi">0</span>.<span class="mi">9860280783593351</span>
+<span class="mi">0</span>.<span class="mi">15497983248399105</span>
 
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">obs</span>[<span class="k">end</span><span class="o">-</span><span class="mi">2</span>:<span class="k">end</span>]
 <span class="mi">3</span><span class="o">-</span><span class="nv">element</span> <span class="nv">Array</span>{<span class="nv">Float64</span>,<span class="mi">1</span>}:
- <span class="mi">0</span>.<span class="mi">9860280783593351</span>
- <span class="mi">0</span>.<span class="mi">29515135377126245</span>
- <span class="mi">0</span>.<span class="mi">35878355550060004</span>
+ <span class="mi">0</span>.<span class="mi">15497983248399105</span>
+ <span class="mi">0</span>.<span class="mi">9561564492719026</span>
+ <span class="mi">0</span>.<span class="mi">7090507299130662</span>
 
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">add</span><span class="o">!</span><span class="ss">(</span><span class="nv">obs</span>, <span class="nv">rand</span><span class="ss">(</span><span class="mi">995</span><span class="ss">))</span>
 ┌ <span class="nv">Warning</span>: `<span class="nv">add</span><span class="o">!</span><span class="ss">(</span><span class="nv">obs</span>::<span class="nv">Observable</span>, <span class="nv">measurement</span><span class="c1">; kw...)` is deprecated, use `push!(obs::Observable, measurement; kw...)` instead.</span>
@@ -506,13 +506,13 @@
 └ @ <span class="nv">Core</span> <span class="nv">none</span>:<span class="mi">0</span>
 
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">mean</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span>
-<span class="mi">0</span>.<span class="mi">48956225290647903</span>
+<span class="mi">0</span>.<span class="mi">4972807767679682</span>
 
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">error</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span> # <span class="nv">one</span><span class="o">-</span><span class="nv">sigma</span> <span class="nv">error</span> <span class="nv">of</span> <span class="nv">mean</span> <span class="ss">(</span><span class="nv">binning</span> <span class="nv">analysis</span><span class="ss">)</span>
 ┌ <span class="nv">Warning</span>: `<span class="nv">error</span><span class="ss">(</span><span class="nv">obs</span>::<span class="nv">Observable</span><span class="ss">)</span>` <span class="nv">is</span> <span class="nv">deprecated</span>, <span class="nv">use</span> `<span class="nv">std_error</span><span class="ss">(</span><span class="nv">obs</span>::<span class="nv">Observable</span><span class="ss">)</span>` <span class="nv">instead</span>.
 │   <span class="nv">caller</span> <span class="o">=</span> <span class="nv">top</span><span class="o">-</span><span class="nv">level</span> <span class="nv">scope</span> <span class="nv">at</span> <span class="nv">none</span>:<span class="mi">0</span>
 └ @ <span class="nv">Core</span> <span class="nv">none</span>:<span class="mi">0</span>
-<span class="mi">0</span>.<span class="mi">009092473817427385</span>
+<span class="mi">0</span>.<span class="mi">009709185061114392</span>
 
 <span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">saveobs</span><span class="ss">(</span><span class="nv">obs</span>, <span class="s2">&quot;</span><span class="s">myobservable.jld</span><span class="s2">&quot;</span><span class="ss">)</span>
 </pre></div>
