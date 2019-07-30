@@ -8,3 +8,5 @@ export binning_error
 
 @deprecate rename(obs::Observable, name) rename!(obs::Observable, name)
 export rename
+
+@deprecate add!(obs::Observable, measurement; kw...) push!(obs::Observable, measurement; kw...)

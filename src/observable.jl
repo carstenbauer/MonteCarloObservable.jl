@@ -103,7 +103,7 @@ Initialize non-external fields of observable `obs`.
 function _init!(obs::Observable{T}) where T
     # internal
     obs.n_meas = 0
-    obs.elsize = (-1,) # will be determined on first add! call
+    obs.elsize = (-1,) # will be determined on first push! call
     obs.colons = [Colon() for _ in 1:ndims(T)]
     obs.n_dims = ndims(T)
 
@@ -144,7 +144,7 @@ macro obs(arg)
     return quote
         # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
         local o = Observable($(esc(eltype))($(esc(arg))), "unnamed")
-        add!(o, $(esc(arg)))
+        push!(o, $(esc(arg)))
         o
     end
 end
@@ -156,7 +156,7 @@ macro diskobs(arg)
     return quote
         # local o = Observable($(esc(eltype))($(esc(arg))), $(esc(string(arg))))
         local o = Observable($(esc(eltype))($(esc(arg))), "unnamed"; inmemory=false)
-        add!(o, $(esc(arg)))
+        push!(o, $(esc(arg)))
         o
     end
 end
@@ -297,17 +297,8 @@ Base.summary(obs::Observable{T}) where T = summary(stdout, obs)
 
 
 # -------------------------------------------------------------------------
-#   add! and push!
+#   push! and push!
 # -------------------------------------------------------------------------
-"""
-Add measurements to an observable.
-
-    add!(obs::Observable{T}, measurement::T; verbose=false)
-    add!(obs::Observable{T}, measurements::AbstractVector{T}; verbose=false)
-
-"""
-function add!(obs::Observable) end
-
 """
 Add measurements to an observable.
 
@@ -322,37 +313,36 @@ function Base.push!(obs::Observable) end
 
 
 # adding single: numbers
-add!(obs::Observable{T}, measurement::S; kw...) where {T<:Number, S<:Number} = _add!(obs, measurement; kw...);
+Base.push!(obs::Observable{T}, measurement::S; kw...) where {T<:Number, S<:Number} = _push!(obs, measurement; kw...);
 
 # adding single: arrays
-add!(obs::Observable{Array{T,N}}, measurement::AbstractArray{S,N}; kw...) where {T, S<:Number, N} = _add!(obs, measurement; kw...);
+Base.push!(obs::Observable{Array{T,N}}, measurement::AbstractArray{S,N}; kw...) where {T, S<:Number, N} = _push!(obs, measurement; kw...);
 
 # adding multiple: vector of measurements
-function add!(obs::Observable{T}, measurements::AbstractVector{T}; kw...) where T
+function Base.push!(obs::Observable{T}, measurements::AbstractVector{T}; kw...) where T
     @inbounds for i in eachindex(measurements)
-        _add!(obs, measurements[i]; kw...)
+        _push!(obs, measurements[i]; kw...)
     end
     nothing
 end
 
 # adding multiple: arrays one dimension higher (last dim == ts dim)
-function add!(obs::Observable{T}, measurements::AbstractArray{S, N}; kw...) where {T,S<:Number,N}
+function Base.push!(obs::Observable{T}, measurements::AbstractArray{S, N}; kw...) where {T,S<:Number,N}
     N == obs.n_dims + 1 || throw(DimensionMismatch("Dimensions of given measurements ($(N-1)) don't match observable's dimensions ($(obs.n_dims))."))
     length(obs) == 0 || size(measurements)[1:N-1] == obs.elsize || error("Sizes of measurements don't match observable size.")
 
     @inbounds for i in Base.axes(measurements, ndims(measurements))
-        _add!(obs, measurements[.., i]; kw...)
+        _push!(obs, measurements[.., i]; kw...)
     end
     nothing
 end
 
 
-Base.push!(obs::Observable, measurement; kw...) = add!(obs, measurement; kw...);
-
+Base.append!(obs::Observable, measurement; kwargs...) = push!(obs, measurement; kwargs...)
 
 
 # implementation
-@inline function _add!(obs::Observable{T}, measurement; verbose=false) where T
+@inline function _push!(obs::Observable{T}, measurement; verbose=false) where T
     if obs.elsize == (-1,) # first add
         obs.elsize = size(measurement)
         obs.mean = zero(measurement)
@@ -370,7 +360,7 @@ Base.push!(obs::Observable, measurement; kw...) = add!(obs, measurement; kw...);
     obs.mean = (obs.n_meas * obs.mean + measurement) / (obs.n_meas + 1)
     obs.n_meas += 1
 
-    if obs.tsidx == length(obs.timeseries)+1 # next add! would overflow
+    if obs.tsidx == length(obs.timeseries)+1 # next push! would overflow
         verbose && println("Handling time series [chunk] overflow.")
         if inmemory(obs)
             verbose && println("Increasing time series size.")
@@ -397,7 +387,7 @@ end
     flush(obs::Observable)
 
 This is the crucial function if `inmemory(obs) == false`. It updates the time series on disk.
-It is called from `add!` everytime the alloc limit is reached (overflow).
+It is called from `push!` everytime the alloc limit is reached (overflow).
 
 You can call the function manually to save an intermediate state.
 """

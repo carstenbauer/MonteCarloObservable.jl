@@ -29,7 +29,7 @@ module MonteCarloObservable
     export mean, var, std
 
     # interface
-    export add!, push!, reset!
+    export push!, append!, reset!
     export timeseries, ts
     export rename!, name
     export inmemory, isinmemory, length, eltype, getindex, view, isempty, ndims, size, iterate
