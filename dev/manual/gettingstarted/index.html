@@ -465,47 +465,47 @@
 <p><a id='Simple-Example-1'></a></p>
 <h2 id="simple-example">Simple Example</h2>
 <p>This is a basic demontration of how to use the package:</p>
-<div class="codehilite"><pre><span></span>julia&gt; using MonteCarloObservable
+<div class="codehilite"><pre><span></span><span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">using</span> <span class="nv">MonteCarloObservable</span>
 
-julia&gt; obs = Observable(Float64, &quot;myobservable&quot;)
-Float64 Observable
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">obs</span> <span class="o">=</span> <span class="nv">Observable</span><span class="ss">(</span><span class="nv">Float64</span>, <span class="s2">&quot;</span><span class="s">myobservable</span><span class="s2">&quot;</span><span class="ss">)</span>
+<span class="nv">Float64</span> <span class="nv">Observable</span>
 
-julia&gt; add!(obs, 1.23) # add measurement
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">add</span><span class="o">!</span><span class="ss">(</span><span class="nv">obs</span>, <span class="mi">1</span>.<span class="mi">23</span><span class="ss">)</span> # <span class="nv">add</span> <span class="nv">measurement</span>
 
-julia&gt; obs
-Float64 Observable
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">obs</span>
+<span class="nv">Float64</span> <span class="nv">Observable</span>
 
-julia&gt; push!(obs, rand(4)) # same as add!
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">push</span><span class="o">!</span><span class="ss">(</span><span class="nv">obs</span>, <span class="nv">rand</span><span class="ss">(</span><span class="mi">4</span><span class="ss">))</span> # <span class="nv">same</span> <span class="nv">as</span> <span class="nv">add</span><span class="o">!</span>
 
-julia&gt; length(obs)
-5
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">length</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span>
+<span class="mi">5</span>
 
-julia&gt; timeseries(obs)
-5-element Array{Float64,1}:
- 1.23
- 0.30081698866212947
- 0.7908101673876309
- 0.47469005032851497
- 0.9102276692645839
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">timeseries</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span>
+<span class="mi">5</span><span class="o">-</span><span class="nv">element</span> <span class="nv">Array</span>{<span class="nv">Float64</span>,<span class="mi">1</span>}:
+ <span class="mi">1</span>.<span class="mi">23</span>
+ <span class="mi">0</span>.<span class="mi">7817319443250468</span>
+ <span class="mi">0</span>.<span class="mi">16397256452380238</span>
+ <span class="mi">0</span>.<span class="mi">24467999097145432</span>
+ <span class="mi">0</span>.<span class="mi">9028816347982003</span>
 
-julia&gt; obs[3] # conventional element accessing
-0.7908101673876309
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">obs</span>[<span class="mi">3</span>] # <span class="nv">conventional</span> <span class="nv">element</span> <span class="nv">accessing</span>
+<span class="mi">0</span>.<span class="mi">16397256452380238</span>
 
-julia&gt; obs[end-2:end]
-3-element Array{Float64,1}:
- 0.7908101673876309
- 0.47469005032851497
- 0.9102276692645839
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">obs</span>[<span class="k">end</span><span class="o">-</span><span class="mi">2</span>:<span class="k">end</span>]
+<span class="mi">3</span><span class="o">-</span><span class="nv">element</span> <span class="nv">Array</span>{<span class="nv">Float64</span>,<span class="mi">1</span>}:
+ <span class="mi">0</span>.<span class="mi">16397256452380238</span>
+ <span class="mi">0</span>.<span class="mi">24467999097145432</span>
+ <span class="mi">0</span>.<span class="mi">9028816347982003</span>
 
-julia&gt; add!(obs, rand(995))
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">add</span><span class="o">!</span><span class="ss">(</span><span class="nv">obs</span>, <span class="nv">rand</span><span class="ss">(</span><span class="mi">995</span><span class="ss">))</span>
 
-julia&gt; mean(obs)
-0.4961590271536957
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">mean</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span>
+<span class="mi">0</span>.<span class="mi">4941775052422311</span>
 
-julia&gt; error(obs) # one-sigma error of mean (binning analysis)
-0.009343730053907087
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">error</span><span class="ss">(</span><span class="nv">obs</span><span class="ss">)</span> # <span class="nv">one</span><span class="o">-</span><span class="nv">sigma</span> <span class="nv">error</span> <span class="nv">of</span> <span class="nv">mean</span> <span class="ss">(</span><span class="nv">binning</span> <span class="nv">analysis</span><span class="ss">)</span>
+<span class="mi">0</span>.<span class="mi">008900794296289719</span>
 
-julia&gt; saveobs(obs, &quot;myobservable.jld&quot;)
+<span class="nv">julia</span><span class="o">&gt;</span> <span class="nv">saveobs</span><span class="ss">(</span><span class="nv">obs</span>, <span class="s2">&quot;</span><span class="s">myobservable.jld</span><span class="s2">&quot;</span><span class="ss">)</span>
 </pre></div>
 
 
