@@ -4,6 +4,7 @@
 [![travis][travis-img]](https://travis-ci.org/crstnbr/MonteCarloObservable.jl)
 [![appveyor][appveyor-img]](https://ci.appveyor.com/project/crstnbr/montecarloobservable-jl/branch/master)
 [![codecov][codecov-img]](http://codecov.io/github/crstnbr/MonteCarloObservable.jl?branch=master)
+[![license: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 
 [travis-img]: https://img.shields.io/travis/crstnbr/MonteCarloObservable.jl/master.svg?label=Linux
 [appveyor-img]: https://img.shields.io/appveyor/ci/crstnbr/montecarloobservable-jl/master.svg?label=Windows
