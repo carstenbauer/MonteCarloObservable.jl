@@ -6,8 +6,10 @@ See http://github.com/crstnbr/MonteCarloObservable.jl for more information.
 module MonteCarloObservable
 
     using Statistics
-    using JLD, EllipsisNotation, BinningAnalysis, Lazy
+    using JLD, EllipsisNotation, Lazy, Reexport
     import HDF5
+
+    @reexport using BinningAnalysis
 
     abstract type AbstractObservable end
 
@@ -16,21 +18,14 @@ module MonteCarloObservable
     include("observable.jl")
     include("lightobservable.jl")
 
-    include("binning.jl")
-
-    # Jackknife
-    include("Jackknife.jl")
-    export Jackknife
-
     # general
     export Observable, DiskObservable, LightObservable
     export @obs, @diskobs
 
     # statistics
     export tau, iswithinerrorbars
-    export error, error_naive, error_with_convergence, std_error
-    export binning_error, jackknife_error
-    # export isconverged # experimental
+    export std_error
+    export jackknife
     export mean, var, std
 
     # interface
@@ -49,6 +44,7 @@ module MonteCarloObservable
     export flush
     export ObservableResult, load_result
 
-    # plotting
-    # export plot, hist, binningplot, errorplot, corrplot
+    # deprecations
+    include("deprecated.jl")
+    export error
 end

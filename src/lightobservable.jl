@@ -74,7 +74,7 @@ Base.show(io::IO, m::MIME"text/plain", obs::LightObservable) = (_print_header(io
 import Base: error
 @deprecate error(obs::LightObservable) std_error(obs)
 
-tau(obs::LightObservable) = BinningAnalysis.tau(obs.B)
+BinningAnalysis.tau(obs::LightObservable) = BinningAnalysis.tau(obs.B)
 
 # Assure var(obs) == var(data) and same for std
 Statistics.var(obs::LightObservable) = var(obs, 1)
