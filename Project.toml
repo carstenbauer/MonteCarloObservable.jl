@@ -2,7 +2,7 @@ name = "MonteCarloObservable"
 uuid = "8a675f2c-1eea-59ef-99a5-5eebc71d1519"
 license = "MIT"
 authors = ["Carsten Bauer <crstnbr@gmail.com>"]
-version = "0.2.1"
+version = "0.3.0"
 
 [deps]
 BinningAnalysis = "b7192094-8e58-5052-a244-180a858778ee"
