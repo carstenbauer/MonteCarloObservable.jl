@@ -62,7 +62,7 @@ function _println_body(io::IO, obs::LightObservable{T,N}) where {T,N}
 end
 
 # short version (shows up in arrays etc.)
-Base.show(io::IO, obs::LightObservable{T,N}) where {T,N} = print(io, "LightObservable{$(T),$(N)}()")
+Base.show(io::IO, obs::LightObservable{T,N}) where {T,N} = print(io, "$T LightObservable")
 # verbose version (shows up in the REPL)
 Base.show(io::IO, m::MIME"text/plain", obs::LightObservable) = (_print_header(io, obs); _println_body(io, obs))
 

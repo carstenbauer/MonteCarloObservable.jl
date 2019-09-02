@@ -173,7 +173,7 @@ rename!(obs::NoErrorObservable{T}, name::AbstractString) where T = begin obs.nam
 # -------------------------------------------------------------------------
 #   Cosmetics: Base.show, Base.summary
 # -------------------------------------------------------------------------
-function _println_header(io::IO, obs::NoErrorObservable{T}) where T
+function _print_header(io::IO, obs::NoErrorObservable{T}) where T
     sizestr = ""
     if length(obs) > 0 
         if ndims(T) == 0
@@ -185,7 +185,7 @@ function _println_header(io::IO, obs::NoErrorObservable{T}) where T
         end
     end
     # disk = inmemory(obs) ? "" : "Disk-"
-    println(io, "$(sizestr)$(T) NoErrorObservable")
+    print(io, "$(sizestr)$(T) NoErrorObservable")
     nothing
 end
 
@@ -199,15 +199,15 @@ function _println_body(io::IO, obs::NoErrorObservable{T}) where T
     end
 end
 
-Base.show(io::IO, obs::NoErrorObservable{T}) where T = begin
-    _println_header(io, obs)
+
+Base.show(io::IO, obs::NoErrorObservable{T,M}) where {T,M} = print(io, "$T NoErrorObservable")
+
+Base.show(io::IO, m::MIME"text/plain", obs::NoErrorObservable{T}) where T = begin
+    _print_header(io, obs)
+    println(io)
     _println_body(io, obs)
     nothing
 end
-Base.show(io::IO, m::MIME"text/plain", obs::NoErrorObservable{T}) where T = print(io, obs)
-
-Base.summary(io::IO, obs::NoErrorObservable{T}) where T = _println_header(io, obs)
-Base.summary(obs::NoErrorObservable{T}) where T = summary(stdout, obs)
 
 
 

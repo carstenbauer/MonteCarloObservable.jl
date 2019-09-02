@@ -249,7 +249,7 @@ end
 # -------------------------------------------------------------------------
 #   Cosmetics: Base.show, Base.summary
 # -------------------------------------------------------------------------
-function _println_header(io::IO, obs::Observable{T}) where T
+function _print_header(io::IO, obs::Observable{T}) where T
     sizestr = ""
     if length(obs) > 0 
         if ndims(T) == 0
@@ -261,7 +261,7 @@ function _println_header(io::IO, obs::Observable{T}) where T
         end
     end
     # disk = inmemory(obs) ? "" : "Disk-"
-    println(io, "$(sizestr)$(T) Observable")
+    print(io, "$(sizestr)$(T) Observable")
     nothing
 end
 
@@ -272,20 +272,19 @@ function _println_body(io::IO, obs::Observable{T}) where T
     if length(obs) > 0
         if ndims(obs) == 0
             print("\n| Mean: ", round(mean(obs), digits=5))
-            print("\n| Std: ", round(std(obs), digits=5))
         end
     end
 end
 
-Base.show(io::IO, obs::Observable{T}) where T = begin
-    _println_header(io, obs)
+
+Base.show(io::IO, obs::Observable{T,M,IM}) where {T,M,IM} = print(io, "$T Observable")
+
+Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = begin
+    _print_header(io, obs)
+    println(io)
     _println_body(io, obs)
     nothing
 end
-Base.show(io::IO, m::MIME"text/plain", obs::Observable{T}) where T = print(io, obs)
-
-Base.summary(io::IO, obs::Observable{T}) where T = _println_header(io, obs)
-Base.summary(obs::Observable{T}) where T = summary(stdout, obs)
 
 
 
