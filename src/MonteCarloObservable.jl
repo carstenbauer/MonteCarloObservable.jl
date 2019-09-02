@@ -17,9 +17,10 @@ module MonteCarloObservable
     include("shared.jl")
     include("observable.jl")
     include("lightobservable.jl")
+    include("noerrorobservable.jl")
 
     # general
-    export Observable, DiskObservable, LightObservable
+    export Observable, DiskObservable, LightObservable, NoErrorObservable
     export @obs, @diskobs
 
     # statistics
