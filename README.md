@@ -1,8 +1,7 @@
 ![logo](https://github.com/crstnbr/MonteCarloObservable.jl/blob/master/docs/src/assets/logo_with_text.png)
 
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://crstnbr.github.io/MonteCarloObservable.jl/latest)
-[![travis][travis-img]](https://travis-ci.org/crstnbr/MonteCarloObservable.jl)
-[![appveyor][appveyor-img]](https://ci.appveyor.com/project/crstnbr/montecarloobservable-jl/branch/master)
+[![github-ci](https://github.com/crstnbr/MonteCarloObservable.jl/workflows/Run%20tests/badge.svg)](https://github.com/crstnbr/MonteCarloObservable.jl/actions?query=workflow%3A%22Run+tests%22)
 [![codecov][codecov-img]](http://codecov.io/github/crstnbr/MonteCarloObservable.jl?branch=master)
 [![license: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 
