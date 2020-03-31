@@ -124,7 +124,7 @@ end
 
 Resets all measurement information in `obs`.
 """
-empty!(obs::Observable{T}) where T = _init!(obs)
+Base.empty!(obs::Observable{T}) where T = _init!(obs)
 @deprecate reset!(obs) empty!(obs)
 
 
