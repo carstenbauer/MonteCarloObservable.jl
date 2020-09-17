@@ -1,5 +1,5 @@
 @testset "Observable" begin
-    
+
     @testset "General" begin
 
         # constructor
@@ -29,7 +29,7 @@
         obs = Observable(Float64, "myobs")
         @test name(obs) == "myobs"
         @test name(Observable(ComplexF64, "julia")) == "julia"
-        rename(obs, "juhu")
+        rename!(obs, "juhu")
         @test name(obs) == "juhu"
 
         # adding and reading
@@ -89,7 +89,7 @@
         @test_throws ErrorException push!(obs, rand(ComplexF64, 3,3))
 
         # reset
-        reset!(obs)
+        empty!(obs)
         @test length(obs) == 0
         @test isempty(obs)
 
@@ -395,5 +395,5 @@
             end
         end
     end
-    
+
 end

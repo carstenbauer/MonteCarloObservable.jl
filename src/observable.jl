@@ -120,11 +120,12 @@ end
 
 
 """
-    reset!(obs::Observable{T})
+    empty!(obs::Observable{T})
 
 Resets all measurement information in `obs`.
 """
-reset!(obs::Observable{T}) where T = _init!(obs)
+Base.empty!(obs::Observable{T}) where T = _init!(obs)
+@deprecate reset!(obs) empty!(obs)
 
 
 
@@ -251,7 +252,7 @@ end
 # -------------------------------------------------------------------------
 function _println_header(io::IO, obs::Observable{T}) where T
     sizestr = ""
-    if length(obs) > 0 
+    if length(obs) > 0
         if ndims(T) == 0
             nothing
         elseif ndims(T) == 1
@@ -576,7 +577,7 @@ function getindexrange_fromfile(obs::Observable{T}, rng::UnitRange{Int})::Vector
     getchunknr = i -> fld1(i, obs.alloc)
     chunknr_start = getchunknr(rng.start)
     chunknr_stop = getchunknr(rng.stop)
-    
+
     chunkidx_first_start = mod1(rng.start, obs.alloc)
     chunkidx_first_stop = chunknr_start * obs.alloc
     chunkidx_last_start = 1
@@ -871,7 +872,7 @@ function timeseries_frommemory_flat(filename::AbstractString, group::AbstractStr
             if length(lastchunk) == 0
                 chunk_count -= 1
             end
-            
+
             chunks = Vector{typeof(firstchunk)}(undef, chunk_count)
             chunks[1] = firstchunk
 
@@ -973,7 +974,7 @@ BinningAnalysis.tau(obs::Observable) = BinningAnalysis.tau(ts(obs))
 """
     jackknife(g::Function, obs1, ob2, ...)
 
-Computes the jackknife one sigma error of `g(obs1, obs2, ...)` by performing 
+Computes the jackknife one sigma error of `g(obs1, obs2, ...)` by performing
 a "leave-one-out" analysis.
 
 See BinningAnalysis.jl for more details.
